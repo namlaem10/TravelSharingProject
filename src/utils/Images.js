@@ -9,4 +9,8 @@ export default {
   IC_NOTIFICATION_DEACTIVE: require('../assets/images/ic-notification-deactive.png'),
   IC_DIFFERENCE_ACTIVE: require('../assets/images/ic-difference-active.png'),
   IC_DIFFERENCE_DEACTIVE: require('../assets/images/ic-difference-deactive.png'),
+  IC_LOGO: require('../assets/images/ic-logo.png'),
+  IC_HIDE_PASSWORD: require('../assets/images/ic-hide-password.png'),
+  IC_SHOW_PASSWORD: require('../assets/images/ic-show-password.png'),
+  IC_CLEAR: require('../assets/images/ic-clear.png'),
 };

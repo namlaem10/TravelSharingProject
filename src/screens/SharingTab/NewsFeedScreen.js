@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Platform, StatusBar} from 'react-native';
 
 export default class NewsFeedScreen extends Component {
   constructor(props) {
@@ -9,7 +9,10 @@ export default class NewsFeedScreen extends Component {
 
   render() {
     return (
-      <View>
+      <View
+        style={{
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        }}>
         <Text> NewsFeed </Text>
       </View>
     );

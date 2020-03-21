@@ -7,10 +7,11 @@ import {
   createBottomTabNavigator,
   createAppContainer,
 } from 'react-navigation';
+import StartScreen from '../screens/Authentication/StartScreen';
 import Onboarding from '../screens/Authentication/OnboardingScreen';
-import SignIn from '../screens/Authentication/OnboardingScreen';
-import SignUp from '../screens/Authentication/OnboardingScreen';
-import ForgotPassword from '../screens/Authentication/OnboardingScreen';
+import SignIn from '../screens/Authentication/SignInScreen';
+import SignUp from '../screens/Authentication/SignUpScreen';
+import ForgotPassword from '../screens/Authentication/ForgotPasswordScreen';
 import NewsFeed from '../screens/SharingTab/NewsFeedScreen';
 import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
 import ManageGroup from '../screens/ManageGroupTab/ManageGroupScreen';
@@ -22,6 +23,9 @@ EStyleSheet.build({$rem: WIDTH / 380});
 
 const AuthStack = createStackNavigator(
   {
+    Start: {
+      screen: StartScreen,
+    },
     Onboarding: {
       screen: Onboarding,
     },
@@ -36,7 +40,7 @@ const AuthStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'Onboarding',
+    initialRouteName: 'Start',
     defaultNavigationOptions: {
       header: null,
     },
@@ -54,8 +58,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_NEWSFEED_ACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -63,8 +67,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_NEWSFEED_DEACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -80,8 +84,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_MYTRAVEL_ACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -89,8 +93,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_MYTRAVEL_DEACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -106,8 +110,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_MANAGEGROUP_ACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -115,8 +119,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_MANAGEGROUP_DEACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -132,8 +136,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_NOTIFICATION_ACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -141,8 +145,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_NOTIFICATION_DEACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -158,8 +162,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_DIFFERENCE_ACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -167,8 +171,8 @@ const MainStack = createBottomTabNavigator(
             <Image
               source={Images.IC_DIFFERENCE_DEACTIVE}
               style={{
-                width: EStyleSheet.value('23rem'),
-                height: EStyleSheet.value('21rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
               }}
               resizeMode="contain"
             />
@@ -199,9 +203,9 @@ const MainStack = createBottomTabNavigator(
 );
 
 const AppStack = createSwitchNavigator({
-  // Auth: {
-  //   screen: AuthStack,
-  // },
+  Auth: {
+    screen: AuthStack,
+  },
   Main: {
     screen: MainStack,
   },

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {View, StatusBar} from 'react-native';
 import AppContainer from './src/utils/Navigator';
 
 export default class App extends Component {
@@ -8,6 +9,15 @@ export default class App extends Component {
   }
 
   render() {
-    return <AppContainer />;
+    return (
+      <View style={{flex: 1}}>
+        <StatusBar
+          translucent
+          backgroundColor={'transparent'}
+          barStyle="dark-content"
+        />
+        <AppContainer />
+      </View>
+    );
   }
 }
