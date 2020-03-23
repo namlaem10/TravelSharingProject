@@ -13,4 +13,6 @@ export default {
   IC_HIDE_PASSWORD: require('../assets/images/ic-hide-password.png'),
   IC_SHOW_PASSWORD: require('../assets/images/ic-show-password.png'),
   IC_CLEAR: require('../assets/images/ic-clear.png'),
+  IC_SEARCH: require('../assets/images/ic-search.png'),
+  IMG_AVATAR: require('../assets/images/avatar.png')
 };
