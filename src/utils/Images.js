@@ -13,4 +13,10 @@ export default {
   IC_HIDE_PASSWORD: require('../assets/images/ic-hide-password.png'),
   IC_SHOW_PASSWORD: require('../assets/images/ic-show-password.png'),
   IC_CLEAR: require('../assets/images/ic-clear.png'),
+  IC_SEARCH: require('../assets/images/ic-search.png'),
+  IC_GOLD_STAR: require('../assets/images/ic-gold-star.png'),
+  IC_NORMAL_STAR: require('../assets/images/ic-normal-star.png'),
+  IC_COMMENT: require('../assets/images/ic-comment.png'),
+  IC_HEART: require('../assets/images/ic-heart.png'),
+  IC_MONEY: require('../assets/images/ic-money.png'),
 };

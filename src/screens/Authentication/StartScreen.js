@@ -3,7 +3,7 @@ import {View, Text, StatusBar, Image} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Contants';
+import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
 
 EStyleSheet.build({$rem: WIDTH / 380});
 

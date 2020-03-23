@@ -18,7 +18,7 @@ import ManageGroup from '../screens/ManageGroupTab/ManageGroupScreen';
 import Notification from '../screens/NotificationTab/NotificationScreen';
 import Account from '../screens/AcountTab/AccountScreen';
 
-import {Images, FontSizes, Fonts, Colors, WIDTH} from './Contants';
+import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
 
 const AuthStack = createStackNavigator(
@@ -183,6 +183,7 @@ const MainStack = createBottomTabNavigator(
   {
     initialRouteName: 'Sharing',
     tabBarOptions: {
+      keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,
       inactiveBackgroundColor: Colors.white,
       activeBackgroundColor: Colors.white,
@@ -195,17 +196,17 @@ const MainStack = createBottomTabNavigator(
         height: EStyleSheet.value('50rem'),
       },
       tabStyle: {
-        borderTopWidth: 0.5,
-        borderTopColor: Colors.deactive,
+        borderTopWidth: 0.3,
+        borderTopColor: '#CDCDCD',
       },
     },
   },
 );
 
 const AppStack = createSwitchNavigator({
-  Auth: {
-    screen: AuthStack,
-  },
+  // Auth: {
+  //   screen: AuthStack,
+  // },
   Main: {
     screen: MainStack,
   },
