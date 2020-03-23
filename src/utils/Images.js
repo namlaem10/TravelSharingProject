@@ -19,4 +19,10 @@ export default {
   IC_COMMENT: require('../assets/images/ic-comment.png'),
   IC_HEART: require('../assets/images/ic-heart.png'),
   IC_MONEY: require('../assets/images/ic-money.png'),
+  IC_ARROW_BACK: require('../assets/images/backarrow.png'),
+  IC_ARROW_BACK_GREEN: require('../assets/images/arrow-back-green.png'),
+  IC_3DOT: require('../assets/images/3dot.png'),
+  IC_LOCATION: require('../assets/images/location.png'),
+  IC_TIME: require('../assets/images/ic-time.png'),
+  IC_MONEY_GRAY: require('../assets/images/ic-money-gray.png'),
 };

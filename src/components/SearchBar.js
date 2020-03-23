@@ -59,7 +59,7 @@ export default class SearchBar extends Component {
           <Text
             style={{
               fontSize: EStyleSheet.value('22rem'),
-              fontFamily: constants.Fonts.black,
+              fontFamily: constants.Fonts.regular,
               letterSpacing: 2,
             }}>
             {title}
@@ -87,7 +87,6 @@ const styles = EStyleSheet.create({
     height: '45rem',
     justifyContent: 'center',
     borderRadius: '10rem',
-    backgroundColor: '#CDCDCD',
   },
   container2: {
     width: '100%',

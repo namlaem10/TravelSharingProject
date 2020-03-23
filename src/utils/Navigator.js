@@ -12,11 +12,13 @@ import Onboarding from '../screens/Authentication/OnboardingScreen';
 import SignIn from '../screens/Authentication/SignInScreen';
 import SignUp from '../screens/Authentication/SignUpScreen';
 import ForgotPassword from '../screens/Authentication/ForgotPasswordScreen';
-import NewsFeed from '../screens/SharingTab/NewsFeedScreen';
 import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
 import ManageGroup from '../screens/ManageGroupTab/ManageGroupScreen';
 import Notification from '../screens/NotificationTab/NotificationScreen';
 import Account from '../screens/AcountTab/AccountScreen';
+
+import NewsFeed from '../screens/SharingTab/NewsFeedScreen';
+import PostDetail from '../screens/SharingTab/PostDetailScreen';
 
 import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
@@ -47,10 +49,40 @@ const AuthStack = createStackNavigator(
   },
 );
 
+const SharingStack = createStackNavigator(
+  {
+    NewFeed: {
+      screen: NewsFeed,
+    },
+    PostDetail: {
+      screen: PostDetail,
+    },
+  },
+  {
+    initialRouteName: 'PostDetail',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+//hide Bottom tab navigation
+SharingStack.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+
+  let routeName = navigation.state.routes[navigation.state.index].routeName;
+
+  if (routeName !== 'NewFeed') {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 const MainStack = createBottomTabNavigator(
   {
     Sharing: {
-      screen: NewsFeed,
+      screen: SharingStack,
       navigationOptions: {
         title: 'Bài viết',
         tabBarIcon: ({focused}) =>

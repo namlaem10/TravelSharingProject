@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import * as constants from '../../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -43,7 +43,7 @@ export default class NewsFeedItem extends Component {
   render() {
     const {data} = this.props;
     return (
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container}>
         <View style={styles.header}>
           <Image
             source={data.image}
@@ -148,7 +148,7 @@ export default class NewsFeedItem extends Component {
             </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }
