@@ -1,9 +1,20 @@
-import React, { Component } from 'react';
-import { View, Text, Platform, StatusBar, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
+import React, {Component} from 'react';
+import {
+  View,
+  Text,
+  Platform,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
 import SearchBar from '../../components/SearchBar';
-import * as contants from '../../utils/Contants';
+import * as constants from '../../utils/Constants';
 import NewsFeedItem from './SharingTapComponents/NewsFeedItem';
-import { FeedNews } from './SharingTapComponents/fakedata';
+import {FeedNews} from './SharingTapComponents/fakedata';
+import EStyleSheet from 'react-native-extended-stylesheet';
+
+EStyleSheet.build({$rem: constants.WIDTH / 380});
 export default class NewsFeedScreen extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +30,7 @@ export default class NewsFeedScreen extends Component {
   };
 
   render() {
-    const { searchText } = this.state;
+    const {searchText} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -34,32 +45,39 @@ export default class NewsFeedScreen extends Component {
           <View style={styles.userInfo}>
             <View style={styles.avatar}>
               <Image
-                style={{ width: 85, height: 85 }}
-                source={require("../../assets/images/avatar.png")}
+                style={{
+                  width: EStyleSheet.value('80rem'),
+                  height: EStyleSheet.value('80rem'),
+                }}
+                source={require('../../assets/images/avatar.png')}
               />
             </View>
             <View style={styles.infoText}>
-              <Text style={{ ...styles.Text, fontFamily: contants.Fonts.medium }}>
+              <Text
+                style={{...styles.Text, fontFamily: constants.Fonts.medium}}>
                 Nam ngu si
               </Text>
               <Text style={styles.Text}>
-                Số bài viết: <Text style={{ fontFamily: contants.Fonts.medium }}>69</Text>
+                Số bài viết:{' '}
+                <Text style={{fontFamily: constants.Fonts.medium}}>69</Text>
               </Text>
               <Text style={styles.Text}>
-                Lượt yêu thích : <Text style={{ fontFamily: contants.Fonts.medium }}>69</Text>
+                Lượt yêu thích:{' '}
+                <Text style={{fontFamily: constants.Fonts.medium}}>69</Text>
               </Text>
             </View>
             <View style={styles.shareButtonGroup}>
               <TouchableOpacity style={styles.ShareButton}>
                 <Text
                   style={{
-                    ...styles.Text, textAlign: 'center',
-                    textAlignVertical: 'center', flex: 1,
+                    ...styles.Text,
+                    textAlign: 'center',
+                    textAlignVertical: 'center',
+                    flex: 1,
                     color: 'white',
-                    fontFamily: contants.Fonts.medium
+                    fontFamily: constants.Fonts.medium,
                   }}>
-                  Chia sẻ {"\n"}
-                  Hành trình của bạn
+                  {'Chia sẻ \n hành trình của bạn'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -68,13 +86,8 @@ export default class NewsFeedScreen extends Component {
         <View style={styles.content}>
           <FlatList
             data={FeedNews}
-            renderItem={
-              ({ item }) => <NewsFeedItem
-                key={item.id}
-                data={item}
-              />
-            }
-            keyExtractor={item => item.id}
+            renderItem={({item}) => <NewsFeedItem data={item} />}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
       </View>
@@ -82,7 +95,7 @@ export default class NewsFeedScreen extends Component {
   }
 }
 
-const styles = new StyleSheet.create({
+const styles = EStyleSheet.create({
   container: {
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
@@ -90,50 +103,52 @@ const styles = new StyleSheet.create({
     flexDirection: 'column',
   },
   header: {
-    flex: 1,
+    width: constants.WIDTH,
+    height: '150rem',
     flexDirection: 'column',
     justifyContent: 'center',
     borderBottomWidth: 0.3,
-    borderBottomColor: '#CFCFCF'
+    borderBottomColor: '#CDCDCD',
+    marginTop: '10rem',
   },
   content: {
     flex: 3,
   },
   titleGroup: {
-    marginHorizontal: 10,
-    flex: 1,
+    paddingHorizontal: '15rem',
+    width: constants.WIDTH,
   },
   userInfo: {
     flex: 3,
     flexDirection: 'row',
-    marginHorizontal: 15,
+    paddingHorizontal: '15rem',
   },
   avatar: {
     flex: 1,
     justifyContent: 'center',
   },
   infoText: {
-    flex: 1.3,
+    flex: 1.2,
     flexDirection: 'column',
     justifyContent: 'space-around',
-    paddingVertical: 10,
+    paddingVertical: '10rem',
   },
   shareButtonGroup: {
-    flex: 1.3,
+    flex: 1.4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 2,
     elevation: 4,
   },
   Text: {
-    fontSize: 12.5,
-    letterSpacing: 1.5,
+    fontSize: '13rem',
+    letterSpacing: 0.1,
   },
   ShareButton: {
-    height: 49,
+    height: '55rem',
     backgroundColor: '#34D374',
-    borderRadius: 5,
-    marginTop: contants.HEIGHT / 50,
-  }
+    borderRadius: '5rem',
+    marginTop: '20rem',
+  },
 });

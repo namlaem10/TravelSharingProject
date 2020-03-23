@@ -4,7 +4,7 @@ import Carousel, {Pagination} from 'react-native-snap-carousel';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Contants';
+import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
 
 EStyleSheet.build({$rem: WIDTH / 380});
 
