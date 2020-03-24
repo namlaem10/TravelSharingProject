@@ -28,7 +28,12 @@ export default class NewsFeedScreen extends Component {
       searchText: text,
     });
   };
-
+  onPressItem = id => {
+    console.log(id);
+    this.props.navigation.navigate('PostDetail', {
+      id: id,
+    });
+  };
   render() {
     const {searchText} = this.state;
     return (
@@ -86,7 +91,13 @@ export default class NewsFeedScreen extends Component {
         <View style={styles.content}>
           <FlatList
             data={FeedNews}
-            renderItem={({item}) => <NewsFeedItem data={item} />}
+            renderItem={({item}) => (
+              <NewsFeedItem
+                data={item}
+                onPressItem={this.onPressItem}
+                key={item.id}
+              />
+            )}
             keyExtractor={(item, index) => index.toString()}
           />
         </View>

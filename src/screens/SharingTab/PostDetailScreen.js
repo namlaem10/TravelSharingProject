@@ -10,13 +10,13 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import * as contains from '../../utils/Constants';
+import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
 
-EStyleSheet.build({$rem: contains.WIDTH / 380});
+EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 const HEADER_MAX_HEIGHT = EStyleSheet.value('290rem');
 const HEADER_MIN_HEIGHT = EStyleSheet.value('120rem');
@@ -28,6 +28,9 @@ export default class PostDetailScreen extends Component {
       scrollY: new Animated.Value(0), // animation
     };
   }
+  onPressBack = () => {
+    this.props.navigation.goBack();
+  };
   render() {
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -68,7 +71,7 @@ export default class PostDetailScreen extends Component {
             <ImageBackground
               source={require('../../assets/images/vinhhalong.jpeg')}
               style={{width: '100%', height: '100%'}}>
-              <TitleBarCustom />
+              <TitleBarCustom onPress={this.onPressBack} />
             </ImageBackground>
             <View style={styles.infoBoxGroup}>
               <View style={styles.infoPlace}>
@@ -77,14 +80,14 @@ export default class PostDetailScreen extends Component {
                     style={{
                       ...styles.text,
                       fontSize: EStyleSheet.value('18rem'),
-                      fontFamily: contains.Fonts.regular,
+                      fontFamily: constants.Fonts.regular,
                     }}>
                     Vịnh Hạ Long
                   </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
                   <Image
-                    source={contains.Images.IC_LOCATION}
+                    source={constants.Images.IC_LOCATION}
                     style={styles.infoBoxIcon}
                   />
                   <Text style={{...styles.text}}>
@@ -93,14 +96,14 @@ export default class PostDetailScreen extends Component {
                 </View>
                 <View style={{...styles.infoBoxText}}>
                   <Image
-                    source={contains.Images.IC_TIME}
+                    source={constants.Images.IC_TIME}
                     style={styles.infoBoxIcon}
                   />
                   <Text style={{...styles.text}}>20/03/2020 - 22/03/2020</Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
                   <Image
-                    source={contains.Images.IC_MONEY_GRAY}
+                    source={constants.Images.IC_MONEY_GRAY}
                     style={styles.infoBoxIcon}
                   />
                   <Text style={{...styles.text}}>3.000.000đ</Text>
@@ -110,7 +113,7 @@ export default class PostDetailScreen extends Component {
                   <Text
                     style={{
                       ...styles.text,
-                      fontFamily: contains.Fonts.regular,
+                      fontFamily: constants.Fonts.regular,
                     }}>
                     Nam ngu si
                   </Text>
@@ -136,7 +139,7 @@ export default class PostDetailScreen extends Component {
                     fontSize: EStyleSheet.value('12rem'),
                     letterSpacing: EStyleSheet.value('1rem'),
                     color: 'white',
-                    fontFamily: contains.Fonts.bold,
+                    fontFamily: constants.Fonts.bold,
                   }}>
                   Nhận lịch trình
                 </Text>
@@ -173,7 +176,7 @@ const styles = EStyleSheet.create({
     backgroundColor: 'white',
     alignSelf: 'flex-end',
     height: '143rem',
-    width: '95%',
+    width: '97%',
     marginTop: '125rem',
     position: 'absolute',
     borderTopLeftRadius: '10rem',
@@ -219,7 +222,7 @@ const styles = EStyleSheet.create({
   text: {
     marginVertical: '3rem',
     letterSpacing: '1rem',
-    fontFamily: contains.Fonts.light,
+    fontFamily: constants.Fonts.light,
   },
   infoBoxIcon: {
     width: '15rem',

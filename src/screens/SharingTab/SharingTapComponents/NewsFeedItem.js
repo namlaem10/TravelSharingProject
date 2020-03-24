@@ -41,9 +41,11 @@ export default class NewsFeedItem extends Component {
   };
 
   render() {
-    const {data} = this.props;
+    const {data, onPressItem} = this.props;
     return (
-      <TouchableOpacity style={styles.container}>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={() => onPressItem(data.id)}>
         <View style={styles.header}>
           <Image
             source={data.image}

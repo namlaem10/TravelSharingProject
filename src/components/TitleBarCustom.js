@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {View, Text, Image} from 'react-native';
-import * as contains from '../utils/Constants';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
+import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-EStyleSheet.build({$rem: contains.WIDTH / 380});
+EStyleSheet.build({$rem: constants.WIDTH / 380});
 export default class TitleBarCustom extends Component {
   constructor(props) {
     super(props);
@@ -11,21 +11,30 @@ export default class TitleBarCustom extends Component {
   }
 
   render() {
-    const {title} = this.props;
+    const {title, onPress} = this.props;
     if (!title) {
       return (
         <View style={styles.container}>
-          <Image style={styles.icon} source={contains.Images.IC_ARROW_BACK} />
-          <Image style={styles.icon} source={contains.Images.IC_3DOT} />
+          <TouchableOpacity onPress={() => onPress()}>
+            <Image
+              style={styles.icon}
+              source={constants.Images.IC_ARROW_BACK}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Image style={styles.icon} source={constants.Images.IC_3DOT} />
+          </TouchableOpacity>
         </View>
       );
     } else {
       return (
         <View style={styles.container2}>
-          <Image
-            style={styles.icon}
-            source={contains.Images.IC_ARROW_BACK_GREEN}
-          />
+          <TouchableOpacity>
+            <Image
+              style={styles.icon}
+              source={constants.Images.IC_ARROW_BACK_GREEN}
+            />
+          </TouchableOpacity>
           <Text style={styles.text}>{title}</Text>
         </View>
       );
@@ -54,8 +63,8 @@ const styles = EStyleSheet.create({
     height: '24rem',
   },
   text: {
-    fontFamily: contains.Fonts.medium,
-    fontSize: contains.FontSizes.header,
+    fontFamily: constants.Fonts.medium,
+    fontSize: constants.FontSizes.header,
     marginLeft: '90rem',
   },
 });

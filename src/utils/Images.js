@@ -25,4 +25,9 @@ export default {
   IC_LOCATION: require('../assets/images/location.png'),
   IC_TIME: require('../assets/images/ic-time.png'),
   IC_MONEY_GRAY: require('../assets/images/ic-money-gray.png'),
+  IC_VEHICLE_GRAY: require('../assets/images/ic-vehicle-gray.png'),
+  IC_AVATAR1: require('../assets/images/avatar.png'),
+  IC_AVATAR2: require('../assets/images/avatar2.png'),
+  IC_AVATAR3: require('../assets/images/avatar3.png'),
+  IC_LEADER: require('../assets/images/ic-leader.png'),
 };
