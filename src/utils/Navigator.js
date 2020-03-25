@@ -19,6 +19,7 @@ import Account from '../screens/AcountTab/AccountScreen';
 
 import NewsFeed from '../screens/SharingTab/NewsFeedScreen';
 import PostDetail from '../screens/SharingTab/PostDetailScreen';
+import TravelTimelineDetail from '../screens/SharingTab/TravelTimelineDetailScreen';
 
 import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
@@ -57,9 +58,12 @@ const SharingStack = createStackNavigator(
     PostDetail: {
       screen: PostDetail,
     },
+    TravelTimelineDetail: {
+      screen: TravelTimelineDetail,
+    },
   },
   {
-    initialRouteName: 'PostDetail',
+    initialRouteName: 'TravelTimelineDetail',
     defaultNavigationOptions: {
       header: null,
     },
