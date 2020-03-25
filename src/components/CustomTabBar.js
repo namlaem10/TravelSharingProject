@@ -2,27 +2,36 @@ import React, {Component} from 'react';
 import ReactNative from 'react-native';
 import PropTypes from 'prop-types';
 
-const {StyleSheet, Text, View, ViewPropTypes, Animated} = ReactNative;
+const {Text, View, ViewPropTypes, Animated, ScrollView} = ReactNative;
 import Button from './Button';
+import * as constants from '../utils/Constants';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
-const defaultProps = {
-  activeTextColor: 'navy',
-  inactiveTextColor: 'black',
-  backgroundColor: null,
-};
+EStyleSheet.build({$rem: constants.WIDTH / 380});
 
+let currentTab = 0;
+let jumpX = 0;
 export default class CustomTabBar extends React.Component {
   constructor(props) {
     super(props);
     this.renderTab = this.renderTab.bind(this);
   }
 
+  componentDidMount = () => {
+    currentTab = this.props.tab;
+  };
+
   renderTabOption(name, page) {}
 
   renderTab(name, page, isTabActive, onPressHandler) {
-    const {activeTextColor, inactiveTextColor, textStyle} = this.props;
+    const {activeTextColor, inactiveTextColor} = this.props;
     const textColor = isTabActive ? activeTextColor : inactiveTextColor;
-    const fontWeight = isTabActive ? 'bold' : 'normal';
+    const fonFamily = isTabActive
+      ? constants.Fonts.bold
+      : constants.Fonts.regular;
+    const fontSize = isTabActive
+      ? EStyleSheet.value('16rem')
+      : EStyleSheet.value('14rem');
 
     return (
       <Button
@@ -32,23 +41,59 @@ export default class CustomTabBar extends React.Component {
         accessibilityLabel={name}
         accessibilityTraits="button"
         onPress={() => onPressHandler(page)}>
-        <View style={[styles.tab, this.props.tabStyle]}>
-          <Text style={[{color: textColor, fontWeight}, textStyle]}>
-            {name}
-          </Text>
-        </View>
+        <Text
+          style={{
+            ...styles.textStyle,
+            color: textColor,
+            fontFamily: fonFamily,
+            fontSize: fontSize,
+            backgroundColor: isTabActive ? 'rgba(52,220,120,0.98)' : 'white',
+          }}>
+          {name}
+        </Text>
       </Button>
     );
   }
+  jumpTab = () => {
+    const {tab} = this.props;
+
+    if (tab >= 2) {
+      if (tab < currentTab) {
+        if (tab === 2) {
+          jumpX = 0;
+          this.listView.scrollTo({
+            x: EStyleSheet.value(jumpX + 'rem'),
+            animated: true,
+          });
+          jumpX = 120;
+          currentTab = tab;
+        } else {
+          jumpX = jumpX - 120;
+          this.listView.scrollTo({
+            x: EStyleSheet.value(jumpX + 'rem'),
+            animated: true,
+          });
+          currentTab = tab;
+        }
+      } else if (tab > currentTab) {
+        jumpX = jumpX + 120;
+        this.listView.scrollTo({
+          x: EStyleSheet.value(jumpX + 'rem'),
+          animated: true,
+        });
+        currentTab = tab;
+      }
+    }
+  };
 
   render() {
+    this.jumpTab();
     const containerWidth = this.props.containerWidth;
     const numberOfTabs = this.props.tabs.length;
     const tabUnderlineStyle = {
       position: 'absolute',
-      width: containerWidth / numberOfTabs,
-      height: 4,
-      backgroundColor: 'navy',
+      width: EStyleSheet.value(containerWidth / numberOfTabs + 'rem'),
+      height: EStyleSheet.value('4rem'),
       bottom: 0,
     };
 
@@ -57,8 +102,10 @@ export default class CustomTabBar extends React.Component {
       outputRange: [0, containerWidth / numberOfTabs],
     });
     return (
-      <View
-        style={[
+      <ScrollView
+        ref={ref => (this.listView = ref)}
+        horizontal={true}
+        contentContainerStyle={[
           styles.tabs,
           {backgroundColor: this.props.backgroundColor},
           this.props.style,
@@ -71,7 +118,7 @@ export default class CustomTabBar extends React.Component {
         <Animated.View
           style={[tabUnderlineStyle, {left}, this.props.underlineStyle]}
         />
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -83,7 +130,6 @@ CustomTabBar.propTypes = {
   backgroundColor: PropTypes.string,
   activeTextColor: PropTypes.string,
   inactiveTextColor: PropTypes.string,
-  textStyle: Text.propTypes.style,
   tabStyle: ViewPropTypes.style,
   renderTab: PropTypes.func,
   underlineStyle: ViewPropTypes.style,
@@ -95,24 +141,33 @@ CustomTabBar.defaultProps = {
   backgroundColor: null,
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   tab: {
-    flex: 1,
+    width: '90rem',
+    height: '30rem',
+    borderRadius: '20rem',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 10,
+    marginLeft: '30rem',
   },
   flexOne: {
     flex: 1,
   },
   tabs: {
-    height: 50,
+    height: '50rem',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderColor: '#ccc',
+    borderBottomLeftRadius: '20rem',
+    borderBottomRightRadius: '20rem',
+    minWidth: constants.WIDTH,
+  },
+  textStyle: {
+    width: '90rem',
+    height: '30rem',
+    borderRadius: '20rem',
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginHorizontal: '18rem',
   },
 });

@@ -15,8 +15,14 @@ export default class ScrollVerticalLichTrinh extends Component {
   }
   _RenderScrollTravelItem = () => {
     let Items = [];
-    for (let i = 1; i <= 4; i++) {
-      Items.push(<TravelScrollItem key={i} data={i} />);
+    for (let i = 1; i <= 6; i++) {
+      Items.push(
+        <TravelScrollItem
+          key={i}
+          page={i}
+          onPressTravelDay={this.props.onPressTravelDay}
+        />,
+      );
     }
     return Items;
   };
@@ -28,6 +34,7 @@ export default class ScrollVerticalLichTrinh extends Component {
     return Items;
   };
   render() {
+    const {onPressDetailButton} = this.props;
     return (
       <View style={styles.container}>
         <View
@@ -44,7 +51,7 @@ export default class ScrollVerticalLichTrinh extends Component {
             }}>
             Lịch trình
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => onPressDetailButton()}>
             <Text
               style={{
                 fontFamily: constants.Fonts.regular,

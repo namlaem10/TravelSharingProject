@@ -30,4 +30,5 @@ export default {
   IC_AVATAR2: require('../assets/images/avatar2.png'),
   IC_AVATAR3: require('../assets/images/avatar3.png'),
   IC_LEADER: require('../assets/images/ic-leader.png'),
+  IC_CAR: require('../assets/images/ic-car.png'),
 };

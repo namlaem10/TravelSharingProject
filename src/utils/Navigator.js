@@ -63,7 +63,7 @@ const SharingStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'TravelTimelineDetail',
+    initialRouteName: 'PostDetail',
     defaultNavigationOptions: {
       header: null,
     },

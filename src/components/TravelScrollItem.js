@@ -12,9 +12,10 @@ export default class TravelScrollItem extends Component {
   }
 
   render() {
+    const {page, onPressTravelDay} = this.props;
     return (
       <View style={styles.container}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => onPressTravelDay(page)}>
           <View style={styles.pictureView}>
             <Image
               style={{
@@ -34,7 +35,7 @@ export default class TravelScrollItem extends Component {
                 marginLeft: EStyleSheet.value('7rem'),
               }}>
               {/* FakeDate */}
-              Ngày {this.props.data}
+              Ngày {page}
             </Text>
           </View>
         </TouchableOpacity>

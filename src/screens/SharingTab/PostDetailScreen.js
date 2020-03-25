@@ -31,6 +31,14 @@ export default class PostDetailScreen extends Component {
   onPressBack = () => {
     this.props.navigation.goBack();
   };
+  onPressDetailButton = () => {
+    this.props.navigation.navigate('TravelTimelineDetail', {page: 1});
+  };
+  onPressTravelDay = page => {
+    this.props.navigation.navigate('TravelTimelineDetail', {
+      page: page,
+    });
+  };
   render() {
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -55,7 +63,10 @@ export default class PostDetailScreen extends Component {
             {nativeEvent: {contentOffset: {y: this.state.scrollY}}},
           ])}>
           <View style={styles.scrollViewContent}>
-            <ScrollVerticalLichTrinh />
+            <ScrollVerticalLichTrinh
+              onPressDetailButton={this.onPressDetailButton}
+              onPressTravelDay={this.onPressTravelDay}
+            />
           </View>
         </ScrollView>
         <Animated.View
