@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
-import {View, StatusBar} from 'react-native';
+import {StatusBar} from 'react-native';
+import {Provider} from 'react-redux';
+import {persistStore} from 'redux-persist';
+import {PersistGate} from 'redux-persist/es/integration/react';
+
 import AppContainer from './src/utils/Navigator';
+import configureStore from './src/redux/stores/configureStore';
 
 export default class App extends Component {
   constructor(props) {
@@ -9,15 +14,18 @@ export default class App extends Component {
   }
 
   render() {
+    const persistor = persistStore(configureStore);
     return (
-      <View style={{flex: 1}}>
-        <StatusBar
-          translucent
-          backgroundColor={'transparent'}
-          barStyle="dark-content"
-        />
-        <AppContainer />
-      </View>
+      <Provider store={configureStore}>
+        <PersistGate persistor={persistor}>
+          <StatusBar
+            translucent
+            backgroundColor={'transparent'}
+            barStyle="dark-content"
+          />
+          <AppContainer />
+        </PersistGate>
+      </Provider>
     );
   }
 }
