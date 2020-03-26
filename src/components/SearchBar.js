@@ -17,6 +17,9 @@ export default class SearchBar extends Component {
     this.setState({
       isClickSearch: true,
     });
+    setTimeout(() => {
+      this.searchBar.focus();
+    }, 100);
   };
   onEndEditing = () => {
     if (this.props.value === '') {
@@ -27,7 +30,7 @@ export default class SearchBar extends Component {
   };
 
   render() {
-    const {value, onChangeText, title, placeHolder} = this.props;
+    const {value, onChangeText, title, placeHolder, tab} = this.props;
     const {isClickSearch} = this.state;
     return isClickSearch ? (
       <View style={styles.container1}>
@@ -44,6 +47,7 @@ export default class SearchBar extends Component {
         </View>
         <View style={styles.inputText}>
           <TextInput
+            ref={ref => (this.searchBar = ref)}
             placeholder={placeHolder}
             style={styles.searchBar}
             onChangeText={text => onChangeText(text)}
@@ -55,11 +59,20 @@ export default class SearchBar extends Component {
       </View>
     ) : (
       <View style={styles.container2}>
-        <View style={styles.title}>
+        <View
+          style={
+            [styles.title, tab === 'MyTravel'] ? {alignItems: 'center'} : null
+          }>
           <Text
             style={{
-              fontSize: EStyleSheet.value('22rem'),
-              fontFamily: constants.Fonts.black,
+              fontSize:
+                tab === 'MyTravel'
+                  ? EStyleSheet.value('18rem')
+                  : EStyleSheet.value('22rem'),
+              fontFamily:
+                tab === 'MyTravel'
+                  ? constants.Fonts.regular
+                  : constants.Fonts.black,
               letterSpacing: 2,
             }}>
             {title}
