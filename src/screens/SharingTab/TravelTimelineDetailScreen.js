@@ -20,19 +20,13 @@ const Dates = [
   {id: 'date6', date: '25/02/2020'},
 ];
 const tabStyle = {};
-const textStyle = {};
 export default class TravelTimelineDetailScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      tab: 0,
-    };
   }
+
   onPressBack = () => {
     this.props.navigation.goBack();
-  };
-  handleChangeTab = i => {
-    this.setState({tab: i});
   };
   render() {
     //trừ 1 vì Tính từ 0, nhưng page lấy từ 1
@@ -48,18 +42,13 @@ export default class TravelTimelineDetailScreen extends Component {
           </ImageBackground>
         </View>
         <ScrollableTabView
-          onChangeTab={({i, ref}) => {
-            this.handleChangeTab(i);
-          }}
           initialPage={page}
           renderTabBar={() => (
             <CustomTabBar
-              activeTextColor={'#FFFFFF'}
+              activeTextColor={'black'}
               inactiveTextColor={'#B7B7B7'}
               tabStyle={tabStyle}
-              textStyle={textStyle}
               backgroundColor={'white'}
-              tab={this.state.tab}
             />
           )}>
           {Dates.map(item => {
@@ -82,6 +71,7 @@ export default class TravelTimelineDetailScreen extends Component {
     );
   }
 }
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,

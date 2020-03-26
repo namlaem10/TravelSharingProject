@@ -1,46 +1,17 @@
 export const types = {
-  RESET: 'RESET',
-  TEST: 'TEST',
+  UPDATE_TAB: 'UPDATE_TAB',
+  UPDATE_TAB_FAIL: 'UPDATE_TAB_FAIL',
 };
 export const actions = {
-  resetState: () => {
+  update_tab: tab => {
     return async dispatch => {
-      try {
-        dispatch({
-          type: types.RESET,
-          payload: initialState,
-        });
-      } catch (error) {
-        dispatch({
-          type: types.RESET,
-          payload: initialState,
-        });
-      } finally {
-        dispatch(actions.updateLoading(false));
-      }
+      dispatch({
+        type: types.UPDATE_TAB,
+        payload: {data: tab},
+      });
     };
   },
-  test: () => {
-    return async dispatch => {
-      try {
-        dispatch({
-          type: types.TEST,
-          payload: {
-            data: 'TEST nhẹ',
-          },
-        });
-      } catch (error) {
-        dispatch({
-          type: types.TEST,
-          payload: {
-            data: 'Nát',
-          },
-        });
-      } finally {
-        dispatch(actions.updateLoading(false));
-      }
-    };
-  },
+
   updateLoading: (status, type) => ({
     type: type,
     payload: {error: status},
@@ -56,15 +27,9 @@ const initialState = {
 export const postDetailReducer = (state = initialState, action) => {
   const {type, payload} = action;
   switch (type) {
-    case types.RESET: {
+    case types.UPDATE_TAB: {
       return {
         type: types.RESET,
-        data: null,
-      };
-    }
-    case types.TEST: {
-      return {
-        type: types.TEST,
         data: payload.data,
       };
     }

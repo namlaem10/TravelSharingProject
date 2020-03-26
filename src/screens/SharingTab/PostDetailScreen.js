@@ -17,24 +17,29 @@ import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/postDetailReducer';
 
 const HEADER_MAX_HEIGHT = EStyleSheet.value('290rem');
 const HEADER_MIN_HEIGHT = EStyleSheet.value('120rem');
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-export default class PostDetailScreen extends Component {
+class PostDetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       scrollY: new Animated.Value(0), // animation
     };
   }
+
   onPressBack = () => {
     this.props.navigation.goBack();
   };
   onPressDetailButton = () => {
+    // this.props.updateTab(1);
     this.props.navigation.navigate('TravelTimelineDetail', {page: 1});
   };
   onPressTravelDay = page => {
+    // this.props.updateTab(page);
     this.props.navigation.navigate('TravelTimelineDetail', {
       page: page,
     });
@@ -162,6 +167,15 @@ export default class PostDetailScreen extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    updateTab: params => dispatch(actions.update_tab(params)),
+  };
+};
+
+// eslint-disable-next-line prettier/prettier
+export default connect(null, mapDispatchToProps)(PostDetailScreen);
 
 const styles = EStyleSheet.create({
   container: {
