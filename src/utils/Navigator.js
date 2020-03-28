@@ -20,6 +20,7 @@ import Account from '../screens/AcountTab/AccountScreen';
 import NewsFeed from '../screens/SharingTab/NewsFeedScreen';
 import PostDetail from '../screens/SharingTab/PostDetailScreen';
 import TravelTimelineDetail from '../screens/SharingTab/TravelTimelineDetailScreen';
+import CreateTeam from '../screens/ManageGroupTab/CreateTeamScreen';
 
 import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
@@ -83,6 +84,36 @@ SharingStack.navigationOptions = ({navigation}) => {
     tabBarVisible,
   };
 };
+const ManageGroupStack = createStackNavigator(
+  {
+    ManageGroup: {
+      screen: ManageGroup,
+    },
+    CreateTeam: {
+      screen: CreateTeam,
+    },
+  },
+  {
+    initialRouteName: 'ManageGroup',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+//hide Bottom tab navigation
+ManageGroupStack.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+
+  let routeName = navigation.state.routes[navigation.state.index].routeName;
+
+  if (routeName !== 'ManageGroup') {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 const MainStack = createBottomTabNavigator(
   {
     Sharing: {
@@ -138,7 +169,7 @@ const MainStack = createBottomTabNavigator(
       },
     },
     ManageGroup: {
-      screen: ManageGroup,
+      screen: ManageGroupStack,
       navigationOptions: {
         title: 'Quản lý nhóm',
         tabBarIcon: ({focused}) =>
@@ -217,7 +248,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Sharing',
+    initialRouteName: 'ManageGroup',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,

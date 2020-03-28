@@ -31,4 +31,7 @@ export default {
   IC_AVATAR3: require('../assets/images/avatar3.png'),
   IC_LEADER: require('../assets/images/ic-leader.png'),
   IC_CAR: require('../assets/images/ic-car.png'),
+  IMAGE_ADD_CIRCLE_BUTTON: require('../assets/images/add_circle_button.png'),
+  IC_CREATE: require('../assets/images/ic-create.png'),
+  IC_EARTH: require('../assets/images/ic-earth.png'),
 };
