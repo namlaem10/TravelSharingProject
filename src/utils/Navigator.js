@@ -63,7 +63,7 @@ const SharingStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'PostDetail',
+    initialRouteName: 'NewFeed',
     defaultNavigationOptions: {
       header: null,
     },

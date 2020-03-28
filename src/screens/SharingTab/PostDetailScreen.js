@@ -64,6 +64,7 @@ class PostDetailScreen extends Component {
       <View style={styles.container}>
         <ScrollView
           scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: this.state.scrollY}}},
           ])}>
@@ -200,7 +201,7 @@ const styles = EStyleSheet.create({
   infoBoxGroup: {
     backgroundColor: 'white',
     alignSelf: 'flex-end',
-    height: '143rem',
+    height: '153rem',
     width: '97%',
     marginTop: '125rem',
     position: 'absolute',
@@ -219,8 +220,8 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
   },
   AddButton: {
-    height: 35,
-    width: 128,
+    height: '35rem',
+    width: '128rem',
     backgroundColor: '#34D374',
     marginTop: '255rem',
     marginLeft: '210rem',

@@ -90,6 +90,7 @@ export default class NewsFeedScreen extends Component {
         </View>
         <View style={styles.content}>
           <FlatList
+            showsVerticalScrollIndicator={false}
             data={FeedNews}
             renderItem={({item}) => (
               <NewsFeedItem

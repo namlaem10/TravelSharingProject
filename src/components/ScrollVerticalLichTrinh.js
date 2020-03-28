@@ -62,7 +62,7 @@ export default class ScrollVerticalLichTrinh extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <ScrollView horizontal={true}>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View style={styles.scrollViewContent}>
             {this._RenderScrollTravelItem()}
           </View>
@@ -75,7 +75,7 @@ export default class ScrollVerticalLichTrinh extends Component {
             }}>
             Thành viên
           </Text>
-          <ScrollView horizontal={true}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <View style={styles.memberScrollView}>
               {this._RenderScrollMemberItem()}
             </View>
