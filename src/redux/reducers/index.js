@@ -1,4 +1,7 @@
-import {postDetailReducer} from './postDetailReducer';
+import {managerGroupTripReducer} from './managerGroupTripReducer';
+import {managerGroupMemberReducer} from './managerGroupMemberReducer';
+
 export default {
-  tabIndex: postDetailReducer,
+  trip: managerGroupTripReducer,
+  membersId: managerGroupMemberReducer,
 };

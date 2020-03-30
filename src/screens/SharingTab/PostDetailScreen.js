@@ -17,13 +17,11 @@ import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-import {connect} from 'react-redux';
-import {actions, types} from '../../redux/reducers/postDetailReducer';
 
 const HEADER_MAX_HEIGHT = EStyleSheet.value('290rem');
 const HEADER_MIN_HEIGHT = EStyleSheet.value('120rem');
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-class PostDetailScreen extends Component {
+export default class PostDetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -168,15 +166,6 @@ class PostDetailScreen extends Component {
     );
   }
 }
-
-const mapDispatchToProps = dispatch => {
-  return {
-    updateTab: params => dispatch(actions.update_tab(params)),
-  };
-};
-
-// eslint-disable-next-line prettier/prettier
-export default connect(null, mapDispatchToProps)(PostDetailScreen);
 
 const styles = EStyleSheet.create({
   container: {

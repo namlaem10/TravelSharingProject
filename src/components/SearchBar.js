@@ -4,7 +4,7 @@ import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-// truyền props bắt buộc phải có : onChangeText,value,title
+// truyền props bắt buộc phải có : onChangeText,value,title,onPressBack
 export default class SearchBar extends Component {
   constructor(props) {
     super(props);
@@ -12,9 +12,6 @@ export default class SearchBar extends Component {
       isClickSearch: false,
     };
   }
-  onPressBack = () => {
-    console.log('back');
-  };
   onPressSearchIcon = () => {
     this.setState({
       isClickSearch: true,
@@ -39,7 +36,7 @@ export default class SearchBar extends Component {
             left: EStyleSheet.value('10rem'),
           }}>
           <View style={{}}>
-            <TouchableOpacity onPressBack={this.onPressBack}>
+            <TouchableOpacity onPress={this.props.onPressBack}>
               <Image
                 style={{
                   width: EStyleSheet.value('25rem'),
@@ -50,7 +47,7 @@ export default class SearchBar extends Component {
             </TouchableOpacity>
           </View>
           <View style={{marginLeft: EStyleSheet.value('5rem')}}>
-            <TouchableOpacity onPressBack={this.onPressBack}>
+            <TouchableOpacity>
               <Image
                 style={{
                   width: EStyleSheet.value('35rem'),
@@ -72,7 +69,7 @@ export default class SearchBar extends Component {
           flexDirection: 'row',
           left: EStyleSheet.value('10rem'),
         }}>
-        <TouchableOpacity onPress={this.onPressBack}>
+        <TouchableOpacity>
           <Image
             style={{
               width: EStyleSheet.value('35rem'),
@@ -88,7 +85,7 @@ export default class SearchBar extends Component {
     if (this.props.isBack) {
       return (
         <View style={styles.iconBack}>
-          <TouchableOpacity onPressBack={this.onPressBack}>
+          <TouchableOpacity onPress={this.props.onPressBack}>
             <Image
               style={{
                 width: EStyleSheet.value('25rem'),

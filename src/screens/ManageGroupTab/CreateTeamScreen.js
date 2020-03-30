@@ -8,20 +8,32 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
+import {connect} from 'react-redux';
 
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
+import {
+  actions as actionsTrip,
+  types as typesTrip,
+} from '../../redux/reducers/managerGroupTripReducer';
+import {
+  actions as actionsMems,
+  types as typesMem,
+} from '../../redux/reducers/managerGroupMemberReducer';
 
-export default class ManageGroupScreen extends Component {
+class CreateTeamScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       nameText: '',
-      MemberGroup: 0,
-      haveTrip: false,
     };
   }
+  UNSAFE_componentWillMount = () => {
+    this.props.resetTrip();
+    this.props.resetMem();
+    console.log('resetState');
+  };
   onSearchChangeText = text => {
     this.setState({
       nameText: text,
@@ -29,18 +41,21 @@ export default class ManageGroupScreen extends Component {
   };
   onPressBack = () => {
     this.props.navigation.goBack();
+    console.log('back');
   };
   onPressMember = () => {
-    console.log('pick member');
+    this.props.navigation.navigate('AddMember');
   };
   onPressTrip = () => {
-    console.log('pick trip');
+    this.props.navigation.navigate('AddTrip');
   };
   onPressConfirm = () => {
     console.log('confirm');
   };
   render() {
-    const {nameText, MemberGroup, haveTrip} = this.state;
+    const {nameText} = this.state;
+    const haveTrip = this.props.trip.data;
+    const MemberGroup = this.props.memsId.data.length;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -52,7 +67,7 @@ export default class ManageGroupScreen extends Component {
               flexDirection: 'row',
               left: EStyleSheet.value('15rem'),
             }}>
-            <TouchableOpacity onPress={() => this.onPressBack()}>
+            <TouchableOpacity onPress={this.onPressBack}>
               <Image
                 style={{
                   width: EStyleSheet.value('25rem'),
@@ -95,13 +110,41 @@ export default class ManageGroupScreen extends Component {
           </View>
           <View style={styles.inputGroup}>
             <Image
-              source={constants.Images.IC_CREATE}
+              source={constants.Images.IC_MANAGEGROUP_DEACTIVE}
               style={{
                 width: EStyleSheet.value('35rem'),
                 height: EStyleSheet.value('35rem'),
               }}
             />
-            {MemberGroup > 0 ? null : (
+            {MemberGroup > 0 ? (
+              <View style={styles.TouchGroup}>
+                <Text style={styles.label}>Thành viên nhóm</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.onPressMember();
+                  }}
+                  style={{
+                    justifyContent: 'center',
+                    height: '80%',
+                  }}>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: EStyleSheet.value('35rem'),
+                      right: EStyleSheet.value('5rem'),
+                    }}>
+                    <Text style={{color: '#1161D8'}}> Chỉnh sửa </Text>
+                  </View>
+                  <Text
+                    style={{
+                      ...styles.textPlace,
+                      paddingLeft: EStyleSheet.value('2rem'),
+                    }}>
+                    {MemberGroup} người
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
               <View style={styles.TextGroup}>
                 <Text style={styles.label}>Thành viên nhóm</Text>
                 <TouchableOpacity
@@ -126,13 +169,48 @@ export default class ManageGroupScreen extends Component {
           </View>
           <View style={styles.inputGroup}>
             <Image
-              source={constants.Images.IC_CREATE}
+              source={constants.Images.IC_EARTH}
               style={{
                 width: EStyleSheet.value('35rem'),
                 height: EStyleSheet.value('35rem'),
               }}
             />
-            {haveTrip ? null : (
+            {haveTrip !== null ? (
+              <View style={styles.TouchGroup}>
+                <Text style={styles.label}>Lịch trình</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.onPressTrip();
+                  }}
+                  style={{
+                    justifyContent: 'center',
+                    height: '80%',
+                  }}>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: EStyleSheet.value('35rem'),
+                      right: EStyleSheet.value('5rem'),
+                    }}>
+                    <Text style={{color: '#1161D8'}}> Chỉnh sửa </Text>
+                  </View>
+                  <Text
+                    style={{
+                      ...styles.textPlace,
+                      paddingLeft: EStyleSheet.value('2rem'),
+                    }}>
+                    {haveTrip.place}
+                  </Text>
+                  <Text
+                    style={{
+                      ...styles.textTime,
+                      paddingLeft: EStyleSheet.value('2rem'),
+                    }}>
+                    {haveTrip.time}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
               <View style={styles.TextGroup}>
                 <Text style={styles.label}>Lịch trình</Text>
                 <TouchableOpacity
@@ -174,6 +252,20 @@ export default class ManageGroupScreen extends Component {
     );
   }
 }
+const mapStateToProps = ({trip, membersId}) => {
+  return {
+    trip: trip,
+    memsId: membersId,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    resetTrip: () => dispatch(actionsTrip.reset()),
+    resetMem: () => dispatch(actionsMems.reset()),
+  };
+};
+// eslint-disable-next-line prettier/prettier
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTeamScreen);
 
 const styles = EStyleSheet.create({
   container: {
@@ -236,7 +328,16 @@ const styles = EStyleSheet.create({
     height: '65rem',
     borderBottomWidth: 0.5,
     borderColor: '#CFCFCF',
-    width: '100%',
+    width: '320rem',
+    marginLeft: '10rem',
+  },
+  TouchGroup: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    height: '80rem',
+    borderBottomWidth: 0.5,
+    borderColor: '#CFCFCF',
+    width: '320rem',
     marginLeft: '10rem',
   },
   inputText: {
@@ -251,5 +352,13 @@ const styles = EStyleSheet.create({
   },
   label: {
     fontSize: constants.FontSizes.normal,
+  },
+  textPlace: {
+    fontSize: constants.FontSizes.title,
+    fontFamily: constants.Fonts.regular,
+  },
+  textTime: {
+    fontSize: constants.FontSizes.regular,
+    fontFamily: constants.Fonts.light,
   },
 });

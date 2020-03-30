@@ -21,7 +21,8 @@ import NewsFeed from '../screens/SharingTab/NewsFeedScreen';
 import PostDetail from '../screens/SharingTab/PostDetailScreen';
 import TravelTimelineDetail from '../screens/SharingTab/TravelTimelineDetailScreen';
 import CreateTeam from '../screens/ManageGroupTab/CreateTeamScreen';
-
+import AddTrip from '../screens/ManageGroupTab/AddTripScreen';
+import AddMember from '../screens/ManageGroupTab/AddMemberScreen';
 import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
 
@@ -92,9 +93,15 @@ const ManageGroupStack = createStackNavigator(
     CreateTeam: {
       screen: CreateTeam,
     },
+    AddTrip: {
+      screen: AddTrip,
+    },
+    AddMember: {
+      screen: AddMember,
+    },
   },
   {
-    initialRouteName: 'ManageGroup',
+    initialRouteName: 'CreateTeam',
     defaultNavigationOptions: {
       header: null,
     },

@@ -95,6 +95,13 @@ export default class ManageGroupScreen extends Component {
       isDarg: false,
     });
   };
+  onPressBack = () => {
+    if (this.props.location) {
+      this.props.navigation.navigate(this.props.location);
+    } else {
+      this.props.navigation.goBack();
+    }
+  };
   onPressAddButton = () => {
     this.props.navigation.navigate('CreateTeam');
   };
