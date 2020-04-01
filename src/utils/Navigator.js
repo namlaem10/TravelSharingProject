@@ -15,7 +15,6 @@ import ForgotPassword from '../screens/Authentication/ForgotPasswordScreen';
 import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
 import ManageGroup from '../screens/ManageGroupTab/ManageGroupScreen';
 import Notification from '../screens/NotificationTab/NotificationScreen';
-import Account from '../screens/AcountTab/AccountScreen';
 
 import NewsFeed from '../screens/SharingTab/NewsFeedScreen';
 import PostDetail from '../screens/SharingTab/PostDetailScreen';
@@ -23,6 +22,12 @@ import TravelTimelineDetail from '../screens/SharingTab/TravelTimelineDetailScre
 import CreateTeam from '../screens/ManageGroupTab/CreateTeamScreen';
 import AddTrip from '../screens/ManageGroupTab/AddTripScreen';
 import AddMember from '../screens/ManageGroupTab/AddMemberScreen';
+import Chatting from '../screens/ManageGroupTab/ChattingScreen';
+
+import Account from '../screens/AcountTab/AccountScreen';
+import InfoUser from '../screens/AcountTab/InfoUserScreen';
+import EditInfo from '../screens/AcountTab/EditInfoScreen';
+
 import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
 
@@ -99,9 +104,12 @@ const ManageGroupStack = createStackNavigator(
     AddMember: {
       screen: AddMember,
     },
+    Chatting: {
+      screen: Chatting,
+    },
   },
   {
-    initialRouteName: 'CreateTeam',
+    initialRouteName: 'ManageGroup',
     defaultNavigationOptions: {
       header: null,
     },
@@ -114,6 +122,39 @@ ManageGroupStack.navigationOptions = ({navigation}) => {
   let routeName = navigation.state.routes[navigation.state.index].routeName;
 
   if (routeName !== 'ManageGroup') {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+const AccountStack = createStackNavigator(
+  {
+    Account: {
+      screen: Account,
+    },
+    InfoUser: {
+      screen: InfoUser,
+    },
+    EditInfo: {
+      screen: EditInfo,
+    },
+  },
+  {
+    initialRouteName: 'Account',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+//hide Bottom tab navigation
+AccountStack.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+
+  let routeName = navigation.state.routes[navigation.state.index].routeName;
+
+  if (routeName !== 'Account') {
     tabBarVisible = false;
   }
 
@@ -228,7 +269,7 @@ const MainStack = createBottomTabNavigator(
       },
     },
     Account: {
-      screen: Account,
+      screen: AccountStack,
       navigationOptions: {
         title: 'Khác',
         tabBarIcon: ({focused}) =>
@@ -255,7 +296,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'ManageGroup',
+    initialRouteName: 'Account',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,

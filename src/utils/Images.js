@@ -5,6 +5,7 @@ export default {
   IC_MYTRAVEL_DEACTIVE: require('../assets/images/ic-mytravel-deactive.png'),
   IC_MANAGEGROUP_ACTIVE: require('../assets/images/ic-managegroup-active.png'),
   IC_MANAGEGROUP_DEACTIVE: require('../assets/images/ic-managegroup-deactive.png'),
+  IC_MANAGEGROUP_RED: require('../assets/images/ic-managegroup-red.png'),
   IC_NOTIFICATION_ACTIVE: require('../assets/images/ic-notification-active.png'),
   IC_NOTIFICATION_DEACTIVE: require('../assets/images/ic-notification-deactive.png'),
   IC_DIFFERENCE_ACTIVE: require('../assets/images/ic-difference-active.png'),
@@ -14,6 +15,7 @@ export default {
   IC_SHOW_PASSWORD: require('../assets/images/ic-show-password.png'),
   IC_CLEAR: require('../assets/images/ic-clear.png'),
   IC_SEARCH: require('../assets/images/ic-search.png'),
+  IC_SEARCH_BLUE: require('../assets/images/ic-search-blue.png'),
   IC_GOLD_STAR: require('../assets/images/ic-gold-star.png'),
   IC_NORMAL_STAR: require('../assets/images/ic-normal-star.png'),
   IC_COMMENT: require('../assets/images/ic-comment.png'),
@@ -35,4 +37,6 @@ export default {
   IC_CREATE: require('../assets/images/ic-create.png'),
   IC_EARTH: require('../assets/images/ic-earth.png'),
   IC_EARTH_GREEN: require('../assets/images/ic-earth-green.png'),
+  IC_SEND: require('../assets/images/ic-send.png'),
+  IC_SETTING: require('../assets/images/ic-setting-gray.png'),
 };
