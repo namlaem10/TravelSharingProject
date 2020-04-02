@@ -12,7 +12,6 @@ import Onboarding from '../screens/Authentication/OnboardingScreen';
 import SignIn from '../screens/Authentication/SignInScreen';
 import SignUp from '../screens/Authentication/SignUpScreen';
 import ForgotPassword from '../screens/Authentication/ForgotPasswordScreen';
-import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
 import ManageGroup from '../screens/ManageGroupTab/ManageGroupScreen';
 import Notification from '../screens/NotificationTab/NotificationScreen';
 
@@ -27,6 +26,10 @@ import Chatting from '../screens/ManageGroupTab/ChattingScreen';
 import Account from '../screens/AcountTab/AccountScreen';
 import InfoUser from '../screens/AcountTab/InfoUserScreen';
 import EditInfo from '../screens/AcountTab/EditInfoScreen';
+
+import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
+import ShareTimeLineDetail from '../screens/MyTravelTab/ShareTimeLineDetailScreen';
+import CreatePost from '../screens/MyTravelTab/CreatePostScreen';
 
 import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
@@ -162,6 +165,39 @@ AccountStack.navigationOptions = ({navigation}) => {
     tabBarVisible,
   };
 };
+const MyTravelStack = createStackNavigator(
+  {
+    MyTravel: {
+      screen: MyTravel,
+    },
+    ShareTimeLineDetail: {
+      screen: ShareTimeLineDetail,
+    },
+    CreatePost: {
+      screen: CreatePost,
+    },
+  },
+  {
+    initialRouteName: 'MyTravel',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+//hide Bottom tab navigation
+MyTravelStack.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+
+  let routeName = navigation.state.routes[navigation.state.index].routeName;
+
+  if (routeName !== 'MyTravel') {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 const MainStack = createBottomTabNavigator(
   {
     Sharing: {
@@ -191,7 +227,7 @@ const MainStack = createBottomTabNavigator(
       },
     },
     MyTravel: {
-      screen: MyTravel,
+      screen: MyTravelStack,
       navigationOptions: {
         title: 'Lịch trình của tôi',
         tabBarIcon: ({focused}) =>
@@ -296,7 +332,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Account',
+    initialRouteName: 'MyTravel',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,

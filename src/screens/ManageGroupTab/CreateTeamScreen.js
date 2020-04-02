@@ -22,11 +22,14 @@ import {
   types as typesMem,
 } from '../../redux/reducers/managerGroupMemberReducer';
 
+import HeaderBar from '../../components/HeaderBar';
+
 class CreateTeamScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       nameText: '',
+      title: 'Tạo nhóm du lịch',
     };
   }
   UNSAFE_componentWillMount = () => {
@@ -53,12 +56,13 @@ class CreateTeamScreen extends Component {
     console.log('confirm');
   };
   render() {
-    const {nameText} = this.state;
+    const {nameText, title} = this.state;
     const haveTrip = this.props.trip.data;
     const MemberGroup = this.props.memsId.data.length;
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <HeaderBar title={title} />
+        {/* <View style={styles.header}>
           <View
             style={{
               justifyContent: 'flex-start',
@@ -87,7 +91,7 @@ class CreateTeamScreen extends Component {
               Tạo nhóm du lịch
             </Text>
           </View>
-        </View>
+        </View> */}
         <View style={styles.content}>
           <View style={styles.inputGroup}>
             <Image
@@ -272,19 +276,6 @@ const styles = EStyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: 'white',
-  },
-  header: {
-    width: '100%',
-    height: '60rem',
-    borderBottomWidth: 0.3,
-    borderBottomColor: '#CDCDCD',
-    paddingHorizontal: '13rem',
-    marginTop: '10rem',
-    justifyContent: 'center',
-  },
-  title: {
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   footer: {
     backgroundColor: 'white',

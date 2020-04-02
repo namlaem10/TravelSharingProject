@@ -39,4 +39,8 @@ export default {
   IC_EARTH_GREEN: require('../assets/images/ic-earth-green.png'),
   IC_SEND: require('../assets/images/ic-send.png'),
   IC_SETTING: require('../assets/images/ic-setting-gray.png'),
+  IMAGE_EMPTY_TAB: require('../assets/images/EmptyImage.png'),
+  IC_CLOSE: require('../assets/images/ic-close.png'),
+  IC_DELETE: require('../assets/images/ic-delete.png'),
+  IC_ADD: require('../assets/images/ic-add.png'),
 };

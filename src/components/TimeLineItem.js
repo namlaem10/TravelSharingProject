@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -49,7 +49,7 @@ export default class TimeLineItem extends Component {
     }
   };
   render() {
-    const {data} = this.props;
+    const {data, isDelete} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.Col1}>
@@ -97,6 +97,17 @@ export default class TimeLineItem extends Component {
                 borderRadius: EStyleSheet.value('20rem'),
               }}
             />
+            {/* <View style={styles.deleteButton}>
+              <TouchableOpacity>
+                <Image
+                  style={{
+                    width: EStyleSheet.value('30rem'),
+                    height: EStyleSheet.value('30rem'),
+                  }}
+                  source={constants.Images.IC_CLOSE}
+                />
+              </TouchableOpacity>
+            </View> */}
           </View>
           <View
             style={{
@@ -113,7 +124,32 @@ export default class TimeLineItem extends Component {
               }}>
               Tên của địa danh
             </Text>
-            <Text style={{...styles.detailText}}>Địa chỉ của địa danh đó</Text>
+            {isDelete ? (
+              <View style={styles.deleteButton}>
+                <TouchableOpacity>
+                  <Image
+                    style={{
+                      width: EStyleSheet.value('25rem'),
+                      height: EStyleSheet.value('25rem'),
+                    }}
+                    source={constants.Images.IC_LEADER}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image
+                    style={{
+                      width: EStyleSheet.value('30rem'),
+                      height: EStyleSheet.value('30rem'),
+                    }}
+                    source={constants.Images.IC_DELETE}
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Text style={{...styles.detailText}}>
+                Địa chỉ của địa danh đó
+              </Text>
+            )}
           </View>
         </View>
       </View>
@@ -172,5 +208,10 @@ const styles = EStyleSheet.create({
     shadowRadius: 16,
 
     elevation: 6,
+  },
+  deleteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 });
