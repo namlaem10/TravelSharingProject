@@ -1,13 +1,6 @@
+/* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  Platform,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
+import {View, Platform, StatusBar, Image} from 'react-native';
 import {connect} from 'react-redux';
 import {GiftedChat, Send} from 'react-native-gifted-chat';
 
@@ -82,8 +75,16 @@ export default class ChattingScreen extends Component {
       </Send>
     );
   }
+  onPressBack = () => {
+    const location = this.props.navigation.getParam('location', '');
+    if (location !== '') {
+      this.props.navigation.navigate(location);
+    } else {
+      this.props.navigation.goBack();
+    }
+  };
   onSend(messages = []) {
-    this.setState(previousState => ({
+    this.setState((previousState) => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }));
   }
@@ -91,11 +92,11 @@ export default class ChattingScreen extends Component {
     const {messages, title} = this.state;
     return (
       <View style={styles.container}>
-        <HeaderBar title={title} />
+        <HeaderBar title={title} onPressBack={this.onPressBack} />
         <View style={styles.content}>
           <GiftedChat
             messages={messages}
-            onSend={messages => this.onSend(messages)}
+            onSend={(messages) => this.onSend(messages)}
             user={{
               _id: 'user1',
             }}

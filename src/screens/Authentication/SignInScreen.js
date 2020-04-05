@@ -21,7 +21,7 @@ export default class SignInScreen extends Component {
   }
 
   onPressSignIn = () => {
-    this.props.navigation.navigate('Main');
+    this.props.navigation.navigate('Sharing');
   };
 
   render() {
@@ -63,7 +63,7 @@ export default class SignInScreen extends Component {
               <TextInput
                 placeholder={placeholderEmail}
                 selectionColor="white"
-                onChangeText={text => this.setState({email: text})}
+                onChangeText={(text) => this.setState({email: text})}
                 autoCapitalize="none"
                 keyboardType="email-address"
                 placeholderTextColor={Colors.deactive}
@@ -100,11 +100,11 @@ export default class SignInScreen extends Component {
               <TextInput
                 placeholder={placeholderPassword}
                 selectionColor="white"
-                onChangeText={text => this.setState({password: text})}
+                onChangeText={(text) => this.setState({password: text})}
                 autoCapitalize="none"
                 secureTextEntry={show ? false : true}
                 placeholderTextColor={Colors.deactive}
-                ref={ref => (this.passRef = ref)}
+                ref={(ref) => (this.passRef = ref)}
                 value={password}
                 onSubmitEditing={() => this.onPressSignIn()}
                 style={styles.textPassword}

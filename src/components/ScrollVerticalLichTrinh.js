@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -33,8 +33,14 @@ export default class ScrollVerticalLichTrinh extends Component {
     }
     return Items;
   };
+  onPressAddMember = () => {
+    console.log('member');
+  };
+  onPressChat = () => {
+    console.log('chat');
+  };
   render() {
-    const {onPressDetailButton} = this.props;
+    const {onPressDetailButton, onPressChat, onPressAddMember} = this.props;
     return (
       <View style={styles.container}>
         <View
@@ -68,21 +74,34 @@ export default class ScrollVerticalLichTrinh extends Component {
           </View>
         </ScrollView>
         <View style={styles.members}>
-          <Text
-            style={{
-              fontFamily: constants.Fonts.medium,
-              fontSize: EStyleSheet.value('15rem'),
-            }}>
-            Thành viên
-          </Text>
+          <View style={styles.memberTitleGroup}>
+            <Text
+              style={{
+                fontFamily: constants.Fonts.medium,
+                fontSize: EStyleSheet.value('15rem'),
+              }}>
+              Thành viên
+            </Text>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity onPress={() => onPressAddMember()}>
+                <Image
+                  source={constants.Images.IC_ADD_MEMBER}
+                  style={styles.iconVector}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => onPressChat()}>
+                <Image
+                  source={constants.Images.IC_COMMENT_RED}
+                  style={styles.iconVector}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <View style={styles.memberScrollView}>
               {this._RenderScrollMemberItem()}
             </View>
           </ScrollView>
-        </View>
-        <View style={styles.blog}>
-          <BlogDetail key={'1'} />
         </View>
       </View>
     );
@@ -100,7 +119,15 @@ const styles = EStyleSheet.create({
   },
   memberScrollView: {
     flexDirection: 'row',
-    borderBottomWidth: '0.5rem',
-    borderBottomColor: '#CFCFCF',
+  },
+  memberTitleGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  iconVector: {
+    height: '25rem',
+    width: '25rem',
+    marginLeft: '15rem',
   },
 });

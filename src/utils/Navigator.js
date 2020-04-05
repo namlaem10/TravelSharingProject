@@ -30,6 +30,10 @@ import EditInfo from '../screens/AcountTab/EditInfoScreen';
 import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
 import ShareTimeLineDetail from '../screens/MyTravelTab/ShareTimeLineDetailScreen';
 import CreatePost from '../screens/MyTravelTab/CreatePostScreen';
+import CreateTrip from '../screens/MyTravelTab/CreateTripScreen';
+import AddPlace from '../screens/MyTravelTab/AddPlaceScreen';
+import TripDetail from '../screens/MyTravelTab/TripDetailScreen';
+import AddPlaceDetail from '../screens/MyTravelTab/AddPlaceDetailScreen';
 
 import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
@@ -175,6 +179,18 @@ const MyTravelStack = createStackNavigator(
     },
     CreatePost: {
       screen: CreatePost,
+    },
+    CreateTrip: {
+      screen: CreateTrip,
+    },
+    AddPlace: {
+      screen: AddPlace,
+    },
+    TripDetail: {
+      screen: TripDetail,
+    },
+    AddPlaceDetail: {
+      screen: AddPlaceDetail,
     },
   },
   {
@@ -332,7 +348,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'MyTravel',
+    initialRouteName: 'Sharing',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,
@@ -355,9 +371,9 @@ const MainStack = createBottomTabNavigator(
 );
 
 const AppStack = createSwitchNavigator({
-  // Auth: {
-  //   screen: AuthStack,
-  // },
+  Auth: {
+    screen: AuthStack,
+  },
   Main: {
     screen: MainStack,
   },

@@ -26,8 +26,9 @@ export default class ShareTimeLineDetailScreen extends Component {
   }
 
   onPressBack = () => {
-    if (this.props.location) {
-      this.props.navigation.navigate(this.props.location);
+    const location = this.props.navigation.getParam('location', '');
+    if (location !== '') {
+      this.props.navigation.navigate(location);
     } else {
       this.props.navigation.goBack();
     }
@@ -35,7 +36,14 @@ export default class ShareTimeLineDetailScreen extends Component {
   onPressNext = () => {
     this.props.navigation.navigate('CreatePost');
   };
+  onPressComleted = () => {
+    this.props.navigation.navigate('TripDetail');
+  };
+  onPressAddPlace = () => {
+    this.props.navigation.navigate('AddPlaceDetail');
+  };
   render() {
+    const action = this.props.navigation.getParam('action', 'sharing');
     //trừ 1 vì Tính từ 0, nhưng page lấy từ 1
     let countDay = 0;
     return (
@@ -51,13 +59,13 @@ export default class ShareTimeLineDetailScreen extends Component {
           initialPage={0}
           renderTabBar={() => (
             <CustomTabBar
-              activeTextColor={'black'}
+              activeTextColor={'#34D374'}
               inactiveTextColor={'#B7B7B7'}
               tabStyle={tabStyle}
               backgroundColor={'white'}
             />
           )}>
-          {Dates.map(item => {
+          {Dates.map((item) => {
             let SplitDate = item.date.split('/');
             let day = SplitDate[0];
             let month = SplitDate[1];
@@ -69,23 +77,39 @@ export default class ShareTimeLineDetailScreen extends Component {
                 data={item}
                 tabLabel={lable}
                 day={countDay}
+                onPressAddPlace={this.onPressAddPlace}
               />
             );
           })}
         </ScrollableTabView>
         <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.confirmButton}
-            onPress={() => this.onPressNext()}>
-            <Text
-              style={{
-                fontSize: EStyleSheet.value('15rem'),
-                fontFamily: constants.Fonts.medium,
-                color: 'white',
-              }}>
-              Tiếp tục
-            </Text>
-          </TouchableOpacity>
+          {action === 'sharing' ? (
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={() => this.onPressNext()}>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('15rem'),
+                  fontFamily: constants.Fonts.medium,
+                  color: 'white',
+                }}>
+                Tiếp tục
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={() => this.onPressComleted()}>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('15rem'),
+                  fontFamily: constants.Fonts.medium,
+                  color: 'white',
+                }}>
+                Hoàn thành
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );
@@ -98,7 +122,7 @@ const styles = EStyleSheet.create({
     backgroundColor: '#F9F9F9',
   },
   backgroundHeader: {
-    height: '195rem',
+    height: '120rem',
   },
   confirmButton: {
     width: '300rem',

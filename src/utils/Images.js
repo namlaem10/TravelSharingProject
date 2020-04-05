@@ -43,4 +43,10 @@ export default {
   IC_CLOSE: require('../assets/images/ic-close.png'),
   IC_DELETE: require('../assets/images/ic-delete.png'),
   IC_ADD: require('../assets/images/ic-add.png'),
+  IC_LOCATION_ACTIVE: require('../assets/images/ic-location-active.png'),
+  IC_CALENDAR: require('../assets/images/ic-calendar.png'),
+  IC_MY_LOCATION: require('../assets/images/ic-my-location.png'),
+  IC_ADD_MEMBER: require('../assets/images/ic-add-member.png'),
+  IC_COMMENT_RED: require('../assets/images/ic-comment-red.png'),
+  IC_KEY: require('../assets/images/ic-key.png'),
 };

@@ -14,12 +14,11 @@ export default class TravelItem extends Component {
   }
 
   render() {
-    const {data, onPressConfirm} = this.props;
+    const {data, onPressConfirm, onPressItem} = this.props;
     return (
       <TouchableOpacity
         style={styles.container}
-        // onPress={() => onPressItem(data.id)}
-      >
+        onPress={() => onPressItem(data.id)}>
         <View style={styles.header}>
           <Image
             source={require('../../assets/images/dalat2.jpg')}

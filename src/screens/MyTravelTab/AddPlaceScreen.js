@@ -12,96 +12,25 @@ import {
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-
 import {connect} from 'react-redux';
-import {actions, types} from '../../redux/reducers/managerGroupTripReducer';
-
+import {actions, types} from '../../redux/reducers/myTravelPlaceReducer';
 import SearchBar from '../../components/SearchBar';
 
 //fake data
-const data = [
-  {
-    id: 'trip1',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'going',
-  },
-  {
-    id: 'trip2',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'going',
-  },
-  {
-    id: 'trip3',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'going',
-  },
-  {
-    id: 'trip4',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'going',
-  },
-  {
-    id: 'trip5',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'going',
-  },
-  {
-    id: 'trip6',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'going',
-  },
-  {
-    id: 'trip7',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'will go',
-  },
-  {
-    id: 'trip8',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'will go',
-  },
-  {
-    id: 'trip9',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'will go',
-  },
-  {
-    id: 'trip10',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'will go',
-  },
-  {
-    id: 'trip11',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'will go',
-  },
-  {
-    id: 'trip12',
-    place: 'TP. Hồ Chí Minh - Đà Lạt',
-    time: '29/03/2020 - 02/04/2020',
-    status: 'will go',
-  },
-];
+import {Places} from '../../utils/fakedata';
 
-class AddTripScreen extends Component {
+class AddPlaceScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: 'Chọn lịch trình',
+      title: 'Chọn Điểm xuất phát',
       searchText: '',
+      isStart: this.props.navigation.getParam('isStart', false),
     };
   }
+  UNSAFE_componentWillMount = () => {
+    console.log(this.props.navigation.getParam('isStart'));
+  };
   onSearchChangeText = text => {
     this.setState({searchText: text});
   };
@@ -113,28 +42,37 @@ class AddTripScreen extends Component {
       this.props.navigation.goBack();
     }
   };
-  onPressTrip = item => {
-    this.props.update_trip(item);
+  onPressPlace = item => {
+    if (this.state.isStart) {
+      this.props.pickStartPlace(item);
+    } else {
+      this.props.pickEndPlace(item);
+    }
     this.props.navigation.goBack();
   };
-
   _renderGoingItem = item => {
     return (
       <TouchableOpacity
         style={styles.flatListItem}
-        onPress={() => this.onPressTrip(item)}>
+        onPress={() => this.onPressPlace(item)}>
         <View style={{marginRight: EStyleSheet.value('10rem')}}>
           <Image
-            source={constants.Images.IC_EARTH_GREEN}
+            source={constants.Images.IC_LOCATION_ACTIVE}
             style={{
               width: EStyleSheet.value('30rem'),
               height: EStyleSheet.value('30rem'),
             }}
           />
         </View>
-        <View style={{flexDirection: 'column'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: EStyleSheet.value('290rem'),
+          }}>
           <Text style={styles.textPlace}>{item.place}</Text>
-          <Text style={styles.textTime}>{item.time}</Text>
+          <Text style={styles.textFar}> {item.far} km</Text>
         </View>
       </TouchableOpacity>
     );
@@ -160,39 +98,15 @@ class AddTripScreen extends Component {
                 fontSize: EStyleSheet.value('18rem'),
                 marginBottom: EStyleSheet.value('10rem'),
               }}>
-              Lịch trình sắp bắt đầu
+              Địa điểm phổ biến
             </Text>
             <View style={styles.flatList}>
               <FlatList
                 contentContainerStyle={{
                   paddingBottom: EStyleSheet.value('0rem'),
                 }}
-                data={data}
-                renderItem={({item}) =>
-                  item.status === 'going' ? this._renderGoingItem(item) : null
-                }
-                keyExtractor={item => item.id}
-              />
-            </View>
-          </View>
-          <View style={styles.listTripGroup}>
-            <Text
-              style={{
-                fontFamily: constants.Fonts.medium,
-                fontSize: EStyleSheet.value('18rem'),
-                marginBottom: EStyleSheet.value('10rem'),
-              }}>
-              Lịch trình đang đi
-            </Text>
-            <View style={styles.flatList}>
-              <FlatList
-                contentContainerStyle={{
-                  paddingBottom: EStyleSheet.value('0rem'),
-                }}
-                data={data}
-                renderItem={({item}) =>
-                  item.status === 'will go' ? this._renderGoingItem(item) : null
-                }
+                data={Places}
+                renderItem={({item}) => this._renderGoingItem(item)}
                 keyExtractor={item => item.id}
               />
             </View>
@@ -205,13 +119,13 @@ class AddTripScreen extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    update_trip: params => dispatch(actions.update_trip(params)),
+    pickStartPlace: params => dispatch(actions.pickStartPlace(params)),
+    pickEndPlace: params => dispatch(actions.pickEndPlace(params)),
   };
 };
 
 // eslint-disable-next-line prettier/prettier
-export default connect(null, mapDispatchToProps)(AddTripScreen);
-
+export default connect(null, mapDispatchToProps)(AddPlaceScreen);
 const styles = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
@@ -228,21 +142,21 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
   },
   content: {paddingTop: '10rem', paddingHorizontal: '23rem'},
-  flatList: {height: '230rem'},
+  flatList: {height: '495rem'},
   flatListItem: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginVertical: '10rem',
     borderBottomWidth: 0.5,
     borderColor: '#CFCFCF',
-    height: '60rem',
+    height: '40rem',
   },
   textPlace: {
     fontSize: constants.FontSizes.title,
     fontFamily: constants.Fonts.regular,
   },
-  textTime: {
+  textFar: {
     fontSize: constants.FontSizes.regular,
     fontFamily: constants.Fonts.light,
   },

@@ -11,7 +11,7 @@ import {
 import SearchBar from '../../components/SearchBar';
 import * as constants from '../../utils/Constants';
 import NewsFeedItem from './SharingTapComponents/NewsFeedItem';
-import {FeedNews} from './SharingTapComponents/fakedata';
+import {FeedNews} from '../../utils/fakedata';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});

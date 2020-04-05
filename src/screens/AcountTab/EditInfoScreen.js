@@ -25,8 +25,9 @@ export default class EditInfoScreen extends Component {
     };
   }
   onPressBack = () => {
-    if (this.props.location) {
-      this.props.navigation.navigate(this.props.location);
+    const location = this.props.navigation.getParam('location', '');
+    if (location !== '') {
+      this.props.navigation.navigate(location);
     } else {
       this.props.navigation.goBack();
     }

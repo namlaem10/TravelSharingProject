@@ -61,37 +61,7 @@ class CreateTeamScreen extends Component {
     const MemberGroup = this.props.memsId.data.length;
     return (
       <View style={styles.container}>
-        <HeaderBar title={title} />
-        {/* <View style={styles.header}>
-          <View
-            style={{
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              position: 'absolute',
-              flexDirection: 'row',
-              left: EStyleSheet.value('15rem'),
-            }}>
-            <TouchableOpacity onPress={this.onPressBack}>
-              <Image
-                style={{
-                  width: EStyleSheet.value('25rem'),
-                  height: EStyleSheet.value('25rem'),
-                }}
-                source={constants.Images.IC_ARROW_BACK_GREEN}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.title}>
-            <Text
-              style={{
-                fontSize: EStyleSheet.value('20rem'),
-                fontFamily: constants.Fonts.regular,
-                letterSpacing: 2,
-              }}>
-              Tạo nhóm du lịch
-            </Text>
-          </View>
-        </View> */}
+        <HeaderBar title={title} onPressBack={this.onPressBack} />
         <View style={styles.content}>
           <View style={styles.inputGroup}>
             <Image

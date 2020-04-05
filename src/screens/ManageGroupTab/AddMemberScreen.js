@@ -97,16 +97,18 @@ class AddMemberScreen extends Component {
     this.setState({searchText: text});
   };
   onPressBack = () => {
-    if (this.props.location) {
-      this.props.navigation.navigate(this.props.location);
+    const location = this.props.navigation.getParam('location', '');
+    if (location !== '') {
+      this.props.navigation.navigate(location);
     } else {
       this.props.navigation.goBack();
     }
   };
   onPressDone = () => {
     this.props.update_mem(this.state.idUserPick);
-    if (this.props.location) {
-      this.props.navigation.navigate(this.props.location);
+    const location = this.props.navigation.getParam('location', '');
+    if (location !== '') {
+      this.props.navigation.navigate(location);
     } else {
       this.props.navigation.goBack();
     }

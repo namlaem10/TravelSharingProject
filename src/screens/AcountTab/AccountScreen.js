@@ -65,7 +65,7 @@ export default class NotificationScreen extends Component {
   seeMore = () => {
     this.props.navigation.navigate('InfoUser');
   };
-  _renderItem = item => {
+  _renderItem = (item) => {
     return (
       <TouchableOpacity style={styles.itemView}>
         <Image
@@ -202,6 +202,17 @@ export default class NotificationScreen extends Component {
                 ...styles.paddingText,
               }}>
               Cài đặt
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.settingItem}>
+            <Image source={constants.Images.IC_KEY} style={styles.iconVector} />
+            <Text
+              style={{
+                ...styles.textTitle,
+                ...styles.paddingText,
+                color: '#1161D8',
+              }}>
+              Đăng Xuất
             </Text>
           </TouchableOpacity>
         </View>

@@ -17,7 +17,7 @@ import SearchBar from '../../components/SearchBar';
 import {ScrollableTabView} from '@valdio/react-native-scrollable-tabview';
 import CustomTabBarNoScroll from '../../components/CustomTabBarNoScroll';
 const tabStyle = {};
-import {FeedNews} from '../SharingTab/SharingTapComponents/fakedata';
+import {FeedNews} from '../../utils/fakedata';
 import TravelItem from './TravelItem';
 import TravelItemGone from './TravelItemGone';
 import EmptyTab from './EmptyTab';
@@ -32,13 +32,13 @@ export default class MyTravelScreen extends Component {
       isDarg: false,
     };
   }
-  onSearchChangeText = text => {
+  onSearchChangeText = (text) => {
     this.setState({
       searchText: text,
     });
   };
-  onPressItem = id => {
-    console.log(id);
+  onPressItem = (id) => {
+    this.props.navigation.navigate('TripDetail', {itemId: id});
   };
   _handleStartDrag = () => {
     this.setState({
@@ -50,9 +50,11 @@ export default class MyTravelScreen extends Component {
       isDarg: false,
     });
   };
-  onPressConfirm = item => {
-    console.log(item);
-    this.props.navigation.navigate('ShareTimeLineDetail');
+  onPressConfirm = (item) => {
+    this.props.navigation.navigate('ShareTimeLineDetail', {
+      action: 'sharing',
+      item: item,
+    });
   };
   onPressAddButton = () => {
     console.log('Add');
@@ -63,8 +65,10 @@ export default class MyTravelScreen extends Component {
         <FlatList
           showsVerticalScrollIndicator={false}
           data={FeedNews}
-          renderItem={({item}) => <TravelItem data={item} />}
-          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <TravelItem data={item} onPressItem={this.onPressItem} />
+          )}
+          keyExtractor={(item) => item.id}
           onScrollEndDrag={() => this._handleEndDrag()}
           onScrollBeginDrag={() => this._handleStartDrag()}
         />
@@ -90,8 +94,10 @@ export default class MyTravelScreen extends Component {
         tabLabel="Đang đi"
         showsVerticalScrollIndicator={false}
         data={FeedNews}
-        renderItem={({item}) => <TravelItem data={item} />}
-        keyExtractor={item => item.id}
+        renderItem={({item}) => (
+          <TravelItem data={item} onPressItem={this.onPressItem} />
+        )}
+        keyExtractor={(item) => item.id}
       />
     );
   };
@@ -102,9 +108,13 @@ export default class MyTravelScreen extends Component {
         showsVerticalScrollIndicator={false}
         data={FeedNews}
         renderItem={({item}) => (
-          <TravelItemGone data={item} onPressConfirm={this.onPressConfirm} />
+          <TravelItemGone
+            data={item}
+            onPressConfirm={this.onPressConfirm}
+            onPressItem={this.onPressItem}
+          />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
       />
     );
   };

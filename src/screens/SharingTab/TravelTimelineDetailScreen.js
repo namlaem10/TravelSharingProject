@@ -26,7 +26,12 @@ export default class TravelTimelineDetailScreen extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.goBack();
+    const location = this.props.navigation.getParam('location', '');
+    if (location !== '') {
+      this.props.navigation.navigate(location);
+    } else {
+      this.props.navigation.goBack();
+    }
   };
   render() {
     //trừ 1 vì Tính từ 0, nhưng page lấy từ 1
