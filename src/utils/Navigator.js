@@ -22,6 +22,7 @@ import CreateTeam from '../screens/ManageGroupTab/CreateTeamScreen';
 import AddTrip from '../screens/ManageGroupTab/AddTripScreen';
 import AddMember from '../screens/ManageGroupTab/AddMemberScreen';
 import Chatting from '../screens/ManageGroupTab/ChattingScreen';
+import TrackingMap from '../screens/ManageGroupTab/TrackingMapScreen';
 
 import Account from '../screens/AcountTab/AccountScreen';
 import InfoUser from '../screens/AcountTab/InfoUserScreen';
@@ -114,9 +115,12 @@ const ManageGroupStack = createStackNavigator(
     Chatting: {
       screen: Chatting,
     },
+    TrackingMap: {
+      screen: TrackingMap,
+    },
   },
   {
-    initialRouteName: 'ManageGroup',
+    initialRouteName: 'TrackingMap',
     defaultNavigationOptions: {
       header: null,
     },
@@ -348,7 +352,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Sharing',
+    initialRouteName: 'ManageGroup',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,
