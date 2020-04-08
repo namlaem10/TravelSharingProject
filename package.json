@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.7",
     "@valdio/react-native-scrollable-tabview": "^0.8.12",
+    "axios": "^0.19.2",
     "moment": "^2.24.0",
     "react": "16.9.0",
     "react-native": "0.61.5",

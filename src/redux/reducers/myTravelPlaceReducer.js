@@ -47,6 +47,7 @@ const initialState = {
   status: null,
   error: null,
 };
+
 export const startPlaceReducer = (state = initialState, action) => {
   const {type, payload} = action;
   switch (type) {

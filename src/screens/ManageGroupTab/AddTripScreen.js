@@ -210,7 +210,10 @@ const mapDispatchToProps = dispatch => {
 };
 
 // eslint-disable-next-line prettier/prettier
-export default connect(null, mapDispatchToProps)(AddTripScreen);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(AddTripScreen);
 
 const styles = EStyleSheet.create({
   container: {

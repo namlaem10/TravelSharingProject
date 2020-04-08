@@ -12,10 +12,11 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
 import {validateEmail, validateEmpty} from '../../utils/Validate';
 import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
-
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/UserReducer';
 EStyleSheet.build({$rem: WIDTH / 380});
 
-export default class SignInScreen extends Component {
+class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,10 +26,14 @@ export default class SignInScreen extends Component {
       placeholderPassword: 'Mật khẩu',
       show: false,
       error: '',
+      isLoading: false,
     };
   }
-
+  UNSAFE_componentWillMount = () => {
+    this.props.reset();
+  };
   onPressSignIn = () => {
+    this.setState({isLoading: true});
     let email = this.state.email;
     let password = this.state.password;
     let checkEmptyEmail = validateEmpty(email);
@@ -39,7 +44,10 @@ export default class SignInScreen extends Component {
       if (!validateEmail(email)) {
         this.setState({error: 'Email không hợp lệ'});
       } else {
-        Alert.alert('Success', 'Đăng nhập thành công');
+        let params = new URLSearchParams();
+        params.append('email', email);
+        params.append('password', password);
+        this.props.login(params);
       }
     }
   };
@@ -195,7 +203,22 @@ export default class SignInScreen extends Component {
     );
   }
 }
-
+const mapStateToProps = ({user}) => {
+  return {
+    user: user,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    login: parrams => dispatch(actions.login(parrams)),
+    reset: () => dispatch(actions.reset()),
+  };
+};
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SignInScreen);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,

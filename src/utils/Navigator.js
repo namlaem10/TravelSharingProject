@@ -58,7 +58,7 @@ const AuthStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'ForgotPassword',
+    initialRouteName: 'SignIn',
     defaultNavigationOptions: {
       header: null,
     },
