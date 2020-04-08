@@ -26,17 +26,40 @@ export default class StartScreen extends Component {
       console.log('get token has error');
     }
   };
+
+  getOldUser = async () => {
+    try {
+      const value = await AsyncStorage.getItem('oldUser');
+      console.log('value1:', value);
+      if (value) {
+        return value;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.log('get token has error');
+    }
+  };
+
   componentDidMount = async () => {
     let token = await this.getToken();
+    let oldUser = await this.getOldUser();
+    console.log('olduser', oldUser);
     console.log(token);
-    if (token !== null) {
-      setTimeout(() => {
-        this.props.navigation.navigate('NewsFeed');
-      }, 1500);
-    } else {
+    if (oldUser === null) {
       setTimeout(() => {
         this.props.navigation.navigate('Onboarding');
       }, 1500);
+    } else {
+      if (token !== null) {
+        setTimeout(() => {
+          this.props.navigation.navigate('NewsFeed');
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          this.props.navigation.navigate('SignIn');
+        }, 1500);
+      }
     }
   };
   render() {

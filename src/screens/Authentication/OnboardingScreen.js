@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Image, AsyncStorage} from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
@@ -40,6 +40,14 @@ export default class OnboardingScreen extends Component {
     };
   }
 
+  storeToken = async () => {
+    try {
+      await AsyncStorage.setItem('oldUser', 'Old user');
+    } catch (e) {
+      // saving error
+    }
+  };
+
   renderItem = ({item}) => {
     return (
       <View style={styles.container}>
@@ -63,6 +71,7 @@ export default class OnboardingScreen extends Component {
   };
 
   skipSlider = () => {
+    this.storeToken();
     this.props.navigation.navigate('SignIn');
   };
 
