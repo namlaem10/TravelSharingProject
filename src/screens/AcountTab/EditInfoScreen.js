@@ -6,7 +6,6 @@ import {
   ImageBackground,
   TouchableOpacity,
   TextInput,
-  KeyboardAvoidingView,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -14,16 +13,27 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import TitleBarCustom from '../../components/TitleBarCustom';
-
-export default class EditInfoScreen extends Component {
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/UserReducer';
+import {BASE_URL} from '../../services/URL';
+class EditInfoScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
-      email: '',
       phone: '',
+      avatar: '',
     };
   }
+  UNSAFE_componentWillMount = () => {
+    const user = this.props.user.data;
+    const avatar = BASE_URL + '/' + user.avatar;
+    this.setState({
+      name: user.displayName,
+      phone: user.phone,
+      avatar: avatar,
+    });
+  };
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
@@ -39,7 +49,7 @@ export default class EditInfoScreen extends Component {
     console.log('change info');
   };
   render() {
-    const {name, phone, email} = this.state;
+    const {name, phone, avatar} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.backgroundHeader}>
@@ -72,15 +82,6 @@ export default class EditInfoScreen extends Component {
             />
           </View>
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={email === '' ? styles.placeHolder : styles.textInput}
-              value={email}
-              placeholder="Nhấn để nhập"
-              onChangeText={text => this.setState({email: text})}
-            />
-          </View>
-          <View style={styles.inputGroup}>
             <Text style={styles.label}>Số điện thoại</Text>
             <TextInput
               style={phone === '' ? styles.placeHolder : styles.textInput}
@@ -108,13 +109,25 @@ export default class EditInfoScreen extends Component {
             left: '39%',
             top: EStyleSheet.value('150rem'),
           }}>
-          <Image style={styles.avatar} source={constants.Images.IC_AVATAR1} />
+          <Image style={styles.avatar} source={{uri: avatar}} />
         </View>
       </View>
     );
   }
 }
-
+const mapStateToProps = ({user}) => {
+  return {
+    user: user,
+  };
+};
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     login: parrams => dispatch(actions.login(parrams)),
+//     reset: () => dispatch(actions.reset()),
+//   };
+// };
+// eslint-disable-next-line prettier/prettier
+export default connect(mapStateToProps)(EditInfoScreen);
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: '#F9F9F9',

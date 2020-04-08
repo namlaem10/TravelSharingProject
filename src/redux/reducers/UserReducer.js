@@ -12,7 +12,7 @@ export const actions = {
         const contentType = 'application/x-www-form-urlencoded';
         const data = user;
         const result = await api.post(url, data, null, contentType);
-        if (result) {
+        if (result.status === 200) {
           dispatch({
             type: types.LOGIN,
             payload: {
@@ -24,12 +24,18 @@ export const actions = {
           dispatch({
             type: types.LOGIN_FAIL,
             payload: {
-              data: result.data,
+              data: result.data.data,
             },
           });
         }
       } catch (error) {
-        console.log(error);
+        dispatch({
+          type: types.LOGIN_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
       }
     };
   },
@@ -59,12 +65,21 @@ export const userReducer = (state = initialState, action) => {
       return {
         type: types.LOGIN,
         data: payload.data,
+        status: payload.status,
+      };
+    }
+    case types.LOGIN_FAIL: {
+      return {
+        type: types.LOGIN_FAIL,
+        data: payload.data,
+        status: payload.status,
       };
     }
     case types.RESET: {
       return {
         type: types.RESET,
         data: null,
+        status: null,
       };
     }
     default: {

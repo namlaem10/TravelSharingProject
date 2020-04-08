@@ -12,8 +12,9 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import TitleBarCustom from '../../components/TitleBarCustom';
-
-export default class InfoUserScreen extends Component {
+import {connect} from 'react-redux';
+import {BASE_URL} from '../../services/URL';
+class InfoUserScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -30,6 +31,8 @@ export default class InfoUserScreen extends Component {
     this.props.navigation.navigate('EditInfo');
   };
   render() {
+    const user = this.props.user.data;
+    let avatar = BASE_URL + '/' + user.avatar;
     return (
       <View style={styles.container}>
         <View style={styles.backgroundHeader}>
@@ -47,7 +50,7 @@ export default class InfoUserScreen extends Component {
             alignItems: 'center',
             backgroundColor: 'white',
           }}>
-          <Text style={styles.textTitle}>Nam ngu si</Text>
+          <Text style={styles.textTitle}>{user.displayName}</Text>
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => this.editInfo()}>
@@ -61,8 +64,8 @@ export default class InfoUserScreen extends Component {
             </Text>
           </TouchableOpacity>
           <View style={styles.subInfo}>
-            <Text style={styles.subText}>Email: Namngusi1008@gmail.com</Text>
-            <Text style={styles.subText}>Điện thoại: 0356775770</Text>
+            <Text style={styles.subText}>Email: {user.email}</Text>
+            <Text style={styles.subText}>Điện thoại: {user.phone}</Text>
           </View>
         </View>
         <View style={styles.lastInfoGroup}>
@@ -91,13 +94,25 @@ export default class InfoUserScreen extends Component {
             left: '39%',
             top: EStyleSheet.value('150rem'),
           }}>
-          <Image style={styles.avatar} source={constants.Images.IC_AVATAR1} />
+          <Image style={styles.avatar} source={{uri: avatar}} />
         </View>
       </View>
     );
   }
 }
-
+const mapStateToProps = ({user}) => {
+  return {
+    user: user,
+  };
+};
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     login: parrams => dispatch(actions.login(parrams)),
+//     reset: () => dispatch(actions.reset()),
+//   };
+// };
+// eslint-disable-next-line prettier/prettier
+export default connect(mapStateToProps)(InfoUserScreen);
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: '#F9F9F9',

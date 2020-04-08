@@ -5,23 +5,27 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  Alert,
+  ActivityIndicator,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import * as constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
 import {validateEmail, validateEmpty} from '../../utils/Validate';
 import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/UserReducer';
-EStyleSheet.build({$rem: WIDTH / 380});
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
 
+EStyleSheet.build({$rem: WIDTH / 380});
+// let token = null;
 class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',
+      email: 'test1@gmail.com',
+      password: '123456',
       placeholderEmail: 'Email',
       placeholderPassword: 'Mật khẩu',
       show: false,
@@ -29,10 +33,9 @@ class SignInScreen extends Component {
       isLoading: false,
     };
   }
-  UNSAFE_componentWillMount = () => {
-    this.props.reset();
-  };
-  onPressSignIn = () => {
+  //check if user not login
+
+  onPressSignIn = async () => {
     this.setState({isLoading: true});
     let email = this.state.email;
     let password = this.state.password;
@@ -47,11 +50,28 @@ class SignInScreen extends Component {
         let params = new URLSearchParams();
         params.append('email', email);
         params.append('password', password);
-        this.props.login(params);
+        await this.props.login(params);
+        if (this.props.user.status === 200) {
+          this.setState({isLoading: false});
+          this.storeToken();
+          this.props.navigation.navigate('Sharing');
+        } else {
+          this.setState({
+            error: this.props.user.data.message,
+            isLoading: false,
+          });
+        }
       }
     }
   };
 
+  storeToken = async () => {
+    try {
+      await AsyncStorage.setItem('token', this.props.user.data.token);
+    } catch (e) {
+      // saving error
+    }
+  };
   render() {
     const {
       email,
@@ -71,6 +91,25 @@ class SignInScreen extends Component {
           backgroundColor: Colors.backgroundColor,
         }}>
         <View style={styles.container}>
+          <Dialog visible={this.state.isLoading}>
+            <DialogContent>
+              <View style={styles.loadingCompleted}>
+                <ActivityIndicator
+                  size={EStyleSheet.value('60rem')}
+                  color="#34D374"
+                />
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                    letterSpacing: 1,
+                    marginLeft: EStyleSheet.value('5rem'),
+                  }}>
+                  Đang đăng nhập
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
           <View style={styles.viewLogo}>
             <Image
               source={Images.IC_LOGO}
@@ -306,5 +345,13 @@ const styles = EStyleSheet.create({
     color: Colors.deactive,
     fontFamily: Fonts.light,
     marginRight: 5,
+  },
+  loadingDialog: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('95rem'),
+    width: EStyleSheet.value('250rem'),
+    backgroundColor: 'white',
   },
 });

@@ -13,9 +13,12 @@ import * as constants from '../../utils/Constants';
 import NewsFeedItem from './SharingTapComponents/NewsFeedItem';
 import {FeedNews} from '../../utils/fakedata';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import {BASE_URL} from '../../services/URL';
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/UserReducer';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-export default class NewsFeedScreen extends Component {
+class NewsFeedScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,6 +39,8 @@ export default class NewsFeedScreen extends Component {
   };
   render() {
     const {searchText} = this.state;
+    const user = this.props.user.data;
+    let avatar = BASE_URL + '/' + user.avatar;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -54,13 +59,16 @@ export default class NewsFeedScreen extends Component {
                   width: EStyleSheet.value('80rem'),
                   height: EStyleSheet.value('80rem'),
                 }}
-                source={require('../../assets/images/avatar.png')}
+                source={{uri: avatar}}
               />
             </View>
             <View style={styles.infoText}>
               <Text
-                style={{...styles.Text, fontFamily: constants.Fonts.medium}}>
-                Nam ngu si
+                style={{
+                  ...styles.Text,
+                  fontFamily: constants.Fonts.medium,
+                }}>
+                {user.displayName}
               </Text>
               <Text style={styles.Text}>
                 Số bài viết:{' '}
@@ -93,20 +101,28 @@ export default class NewsFeedScreen extends Component {
             showsVerticalScrollIndicator={false}
             data={FeedNews}
             renderItem={({item}) => (
-              <NewsFeedItem
-                data={item}
-                onPressItem={this.onPressItem}
-                key={item.id}
-              />
+              <NewsFeedItem data={item} onPressItem={this.onPressItem} />
             )}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={item => item.id}
           />
         </View>
       </View>
     );
   }
 }
-
+const mapStateToProps = ({user}) => {
+  return {
+    user: user,
+  };
+};
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     login: parrams => dispatch(actions.login(parrams)),
+//     reset: () => dispatch(actions.reset()),
+//   };
+// };
+// eslint-disable-next-line prettier/prettier
+export default connect(mapStateToProps)(NewsFeedScreen);
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: 'white',

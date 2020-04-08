@@ -70,7 +70,7 @@ class APIService {
       axios(config)
         .then(response => {
           console.log('login success');
-          resolve(response.data);
+          resolve(response);
         })
         .catch(error => {
           if (error.response) {

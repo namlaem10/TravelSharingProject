@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, StatusBar, Image} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
 
@@ -12,10 +13,31 @@ export default class StartScreen extends Component {
     super(props);
     this.state = {};
   }
-  componentDidMount = () => {
-    setTimeout(() => {
-      this.props.navigation.navigate('Onboarding');
-    }, 1500);
+  getToken = async () => {
+    try {
+      const value = await AsyncStorage.getItem('token');
+      console.log('value:', value);
+      if (value) {
+        return value;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.log('get token has error');
+    }
+  };
+  componentDidMount = async () => {
+    let token = await this.getToken();
+    console.log(token);
+    if (token !== null) {
+      setTimeout(() => {
+        this.props.navigation.navigate('NewsFeed');
+      }, 1500);
+    } else {
+      setTimeout(() => {
+        this.props.navigation.navigate('Onboarding');
+      }, 1500);
+    }
   };
   render() {
     return (

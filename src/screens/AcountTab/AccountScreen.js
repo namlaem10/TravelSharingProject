@@ -2,70 +2,49 @@ import React, {Component} from 'react';
 import {
   View,
   Text,
-  Platform,
-  StatusBar,
   Image,
   TouchableOpacity,
-  FlatList,
+  ActivityIndicator,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-//fake data
-const data = [
-  {
-    id: 'noti1',
-    title: 'Hoàn đã gửi 1 tin nhắn trong nhóm du lịch',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti2',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti3',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti4',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti5',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti6',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti7',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-];
-export default class NotificationScreen extends Component {
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/UserReducer';
+import {BASE_URL} from '../../services/URL';
+import AsyncStorage from '@react-native-community/async-storage';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
+
+class AccountScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isLoading: false,
+    };
   }
   seeMore = () => {
-    this.props.navigation.navigate('InfoUser');
+    this.props.navigation.navigate('InfoUser', {user: this.props.user.data});
   };
-  _renderItem = (item) => {
+  async removeToken() {
+    try {
+      await AsyncStorage.removeItem('token');
+      return true;
+    } catch (exception) {
+      return false;
+    }
+  }
+  logOut = () => {
+    this.setState({isLoading: true});
+    let remove = this.removeToken();
+    if ((remove = true)) {
+      setTimeout(() => {
+        this.setState({isLoading: false});
+        this.props.navigation.navigate('SignIn');
+      }, 2000);
+    }
+  };
+  _renderItem = item => {
     return (
       <TouchableOpacity style={styles.itemView}>
         <Image
@@ -110,8 +89,29 @@ export default class NotificationScreen extends Component {
     );
   };
   render() {
+    const user = this.props.user.data;
+    let avatar = BASE_URL + '/' + user.avatar;
     return (
       <View style={styles.container}>
+        <Dialog visible={this.state.isLoading}>
+          <DialogContent>
+            <View style={styles.loadingCompleted}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('15rem'),
+                  letterSpacing: 1,
+                  marginLeft: EStyleSheet.value('5rem'),
+                }}>
+                Đang đăng xuất...
+              </Text>
+            </View>
+          </DialogContent>
+        </Dialog>
         <View style={styles.header}>
           <View style={styles.title}>
             <Text
@@ -126,7 +126,7 @@ export default class NotificationScreen extends Component {
         </View>
         <View style={styles.userGroup}>
           <Image
-            source={constants.Images.IC_AVATAR1}
+            source={{uri: avatar}}
             style={{
               width: EStyleSheet.value('60rem'),
               height: EStyleSheet.value('60rem'),
@@ -140,7 +140,7 @@ export default class NotificationScreen extends Component {
               width: EStyleSheet.value('280rem'),
               marginLeft: EStyleSheet.value('15rem'),
             }}>
-            <Text style={styles.textTitle}>Nam ngu si</Text>
+            <Text style={styles.textTitle}>{user.displayName}</Text>
             <TouchableOpacity onPress={() => this.seeMore()}>
               <Text style={{...styles.textTitle, color: '#1161D8'}}>
                 Xem thêm
@@ -204,7 +204,9 @@ export default class NotificationScreen extends Component {
               Cài đặt
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.settingItem}>
+          <TouchableOpacity
+            onPress={() => this.logOut()}
+            style={styles.settingItem}>
             <Image source={constants.Images.IC_KEY} style={styles.iconVector} />
             <Text
               style={{
@@ -220,7 +222,19 @@ export default class NotificationScreen extends Component {
     );
   }
 }
-
+const mapStateToProps = ({user}) => {
+  return {
+    user: user,
+  };
+};
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     login: parrams => dispatch(actions.login(parrams)),
+//     reset: () => dispatch(actions.reset()),
+//   };
+// };
+// eslint-disable-next-line prettier/prettier
+export default connect(mapStateToProps)(AccountScreen);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,

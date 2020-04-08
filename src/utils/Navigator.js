@@ -58,7 +58,7 @@ const AuthStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'SignIn',
+    initialRouteName: 'Start',
     defaultNavigationOptions: {
       header: null,
     },
@@ -67,7 +67,7 @@ const AuthStack = createStackNavigator(
 
 const SharingStack = createStackNavigator(
   {
-    NewFeed: {
+    NewsFeed: {
       screen: NewsFeed,
     },
     PostDetail: {
@@ -78,7 +78,7 @@ const SharingStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'NewFeed',
+    initialRouteName: 'NewsFeed',
     defaultNavigationOptions: {
       header: null,
     },
@@ -90,7 +90,7 @@ SharingStack.navigationOptions = ({navigation}) => {
 
   let routeName = navigation.state.routes[navigation.state.index].routeName;
 
-  if (routeName !== 'NewFeed') {
+  if (routeName !== 'NewsFeed') {
     tabBarVisible = false;
   }
 
@@ -352,7 +352,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'ManageGroup',
+    initialRouteName: 'Sharing',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,
