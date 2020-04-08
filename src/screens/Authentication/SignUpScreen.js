@@ -1,8 +1,20 @@
 import React, {Component} from 'react';
-import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
+import {
+  validateEmail,
+  validateEmpty,
+  validateReTypePassword,
+} from '../../utils/Validate';
 
 import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
 
@@ -20,11 +32,29 @@ export default class SignUpScreen extends Component {
       placeholderConfirm: 'Nhập lại mật khẩu',
       showPassword: false,
       showConfirm: false,
+      error: '',
     };
   }
 
   onPressSignUp = () => {
-    this.props.navigation.navigate('SignIn');
+    let email = this.state.email;
+    let password = this.state.password;
+    let confirmPass = this.state.confirm;
+    let checkEmptyEmail = validateEmpty(email);
+    let checkEmptyPass = validateEmpty(password);
+    if (!checkEmptyEmail || !checkEmptyPass) {
+      this.setState({
+        error: 'Tài khoản hoặc mật khẩu không được bỏ trống!',
+      });
+    } else {
+      if (!validateEmail(email)) {
+        this.setState({error: 'Email không hợp lệ'});
+      } else if (!validateReTypePassword(password, confirmPass)) {
+        this.setState({error: 'Nhập lại mật khẩu không khớp'});
+      } else {
+        Alert.alert('Success', 'Đăng ký thành công');
+      }
+    }
   };
 
   render() {
@@ -37,6 +67,7 @@ export default class SignUpScreen extends Component {
       placeholderConfirm,
       showPassword,
       showConfirm,
+      error,
     } = this.state;
     return (
       <KeyboardAwareScrollView
@@ -54,6 +85,15 @@ export default class SignUpScreen extends Component {
               resizeMode="contain"
               style={styles.image}
             />
+            {error === '' ? null : (
+              <View
+                style={[
+                  styles.ErrorInput,
+                  {marginBottom: EStyleSheet.value('10rem')},
+                ]}>
+                <Text style={[styles.textEmail, {color: 'red'}]}>{error}</Text>
+              </View>
+            )}
           </View>
           <View style={styles.viewTextInput}>
             <View
@@ -250,6 +290,12 @@ const styles = EStyleSheet.create({
     width: '315rem',
     borderBottomWidth: 0.5,
     borderColor: Colors.primary,
+  },
+  ErrorInput: {
+    width: '285rem',
+    position: 'absolute',
+    left: '32rem',
+    bottom: '-20rem',
   },
   textEmail: {
     color: Colors.deactive,

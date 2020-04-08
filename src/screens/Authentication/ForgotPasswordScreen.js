@@ -1,17 +1,237 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import LinearGradient from 'react-native-linear-gradient';
+import {validateEmail, validateEmpty} from '../../utils/Validate';
+import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
 
-export default class ForgotPasswordScreen extends Component {
+EStyleSheet.build({$rem: WIDTH / 380});
+
+export default class SignInScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      email: '',
+      password: '',
+      placeholderEmail: 'Email',
+      placeholderPassword: 'Mật khẩu',
+      error: '',
+    };
   }
 
+  onPressSignIn = () => {
+    let email = this.state.email;
+    let checkEmptyEmail = validateEmpty(email);
+    if (!checkEmptyEmail) {
+      this.setState({error: 'Tài khoản hoặc mật khẩu không được bỏ trống!'});
+    } else {
+      if (!validateEmail(email)) {
+        this.setState({error: 'Email không hợp lệ'});
+      } else {
+        Alert.alert('Success', 'Chuyển kênh');
+      }
+    }
+  };
+
   render() {
+    const {email, placeholderEmail, error} = this.state;
     return (
-      <View>
-        <Text> ForgotPasswordScreen </Text>
-      </View>
+      <KeyboardAwareScrollView
+        // enableOnAndroid={false}
+        keyboardShouldPersistTaps="handled"
+        scrollEnabled={false}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: Colors.backgroundColor,
+        }}>
+        <View style={styles.container}>
+          <View style={styles.viewLogo}>
+            <Image
+              source={Images.IC_LOGO}
+              resizeMode="contain"
+              style={styles.image}
+            />
+            {error === '' ? null : (
+              <View
+                style={[
+                  styles.ErrorInput,
+                  {marginBottom: EStyleSheet.value('10rem')},
+                ]}>
+                <Text style={[styles.textEmail, {color: 'red'}]}>{error}</Text>
+              </View>
+            )}
+          </View>
+          <View style={styles.viewTextInput}>
+            <View
+              style={[
+                styles.viewInput,
+                {marginBottom: EStyleSheet.value('10rem')},
+              ]}>
+              {placeholderEmail === '' && (
+                <Text style={[styles.textEmail, {color: Colors.primary}]}>
+                  Email
+                </Text>
+              )}
+              <TextInput
+                placeholder={placeholderEmail}
+                selectionColor="white"
+                onChangeText={text => this.setState({email: text})}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                placeholderTextColor={Colors.deactive}
+                blurOnSubmit={false}
+                value={email}
+                style={styles.textEmail}
+                onFocus={() => this.setState({placeholderEmail: ''})}
+                onEndEditing={() =>
+                  email === ''
+                    ? this.setState({placeholderEmail: 'Email'})
+                    : null
+                }
+              />
+              <TouchableOpacity
+                style={styles.buttonClear}
+                onPress={() => this.setState({email: ''})}>
+                <Image
+                  source={Images.IC_CLEAR}
+                  resizeMode="contain"
+                  style={{
+                    width: EStyleSheet.value('18rem'),
+                    height: EStyleSheet.value('18rem'),
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.viewButton}>
+            <TouchableOpacity onPress={this.onPressSignIn}>
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                colors={Colors.gradient.background}
+                style={styles.buttonSignIn}>
+                <Text style={styles.textSignIn}>Tiêp tục</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('ForgotPassword')}>
+              <Text style={styles.textForgotPass}>Đăng nhập</Text>
+            </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: EStyleSheet.value('10rem'),
+              }}>
+              <Text style={styles.textSignUp}>Chưa có tài khoản?</Text>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('SignUp')}>
+                <Text
+                  style={[styles.textSignUp, {color: Colors.gradient.blue[7]}]}>
+                  Đăng kí ngay
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </KeyboardAwareScrollView>
     );
   }
 }
+
+const styles = EStyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
+  viewLogo: {
+    flex: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'red',
+  },
+  image: {
+    width: '130rem',
+    height: '130rem',
+    backgroundColor: 'transparent',
+  },
+  buttonClear: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: '30rem',
+    height: '30rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  viewTextInput: {
+    flex: 0.5,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    margin: '5rem',
+  },
+  viewInput: {
+    width: '315rem',
+    borderBottomWidth: 0.5,
+    borderColor: Colors.primary,
+  },
+  ErrorInput: {
+    width: '285rem',
+    position: 'absolute',
+    left: '32rem',
+    bottom: '-20rem',
+  },
+  textEmail: {
+    color: Colors.deactive,
+    fontSize: FontSizes.smalltext,
+    paddingBottom: 3,
+    width: '285rem',
+    paddingLeft: 0,
+    fontFamily: Fonts.light,
+  },
+  textPassword: {
+    color: Colors.deactive,
+    fontSize: FontSizes.smalltext,
+    paddingBottom: 3,
+    width: '285rem',
+    paddingLeft: 0,
+    fontFamily: Fonts.light,
+  },
+  viewButton: {
+    flex: 3,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  buttonSignIn: {
+    width: '315rem',
+    height: '40rem',
+    backgroundColor: Colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: '15rem',
+    borderRadius: 10,
+  },
+  textSignIn: {
+    color: Colors.white,
+    fontSize: FontSizes.title,
+    fontFamily: Fonts.medium,
+  },
+  textForgotPass: {
+    fontSize: FontSizes.smalltext,
+    color: Colors.gradient.blue[7],
+    fontFamily: Fonts.light,
+  },
+  textSignUp: {
+    fontSize: FontSizes.smalltext,
+    color: Colors.deactive,
+    fontFamily: Fonts.light,
+    marginRight: 5,
+  },
+});

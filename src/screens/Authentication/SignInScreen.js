@@ -1,9 +1,16 @@
 import React, {Component} from 'react';
-import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
-
+import {validateEmail, validateEmpty} from '../../utils/Validate';
 import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
 
 EStyleSheet.build({$rem: WIDTH / 380});
@@ -17,11 +24,24 @@ export default class SignInScreen extends Component {
       placeholderEmail: 'Email',
       placeholderPassword: 'Mật khẩu',
       show: false,
+      error: '',
     };
   }
 
   onPressSignIn = () => {
-    this.props.navigation.navigate('Sharing');
+    let email = this.state.email;
+    let password = this.state.password;
+    let checkEmptyEmail = validateEmpty(email);
+    let checkEmptyPass = validateEmpty(password);
+    if (!checkEmptyEmail || !checkEmptyPass) {
+      this.setState({error: 'Tài khoản hoặc mật khẩu không được bỏ trống!'});
+    } else {
+      if (!validateEmail(email)) {
+        this.setState({error: 'Email không hợp lệ'});
+      } else {
+        Alert.alert('Success', 'Đăng nhập thành công');
+      }
+    }
   };
 
   render() {
@@ -31,6 +51,7 @@ export default class SignInScreen extends Component {
       placeholderEmail,
       placeholderPassword,
       show,
+      error,
     } = this.state;
     return (
       <KeyboardAwareScrollView
@@ -48,6 +69,15 @@ export default class SignInScreen extends Component {
               resizeMode="contain"
               style={styles.image}
             />
+            {error === '' ? null : (
+              <View
+                style={[
+                  styles.ErrorInput,
+                  {marginBottom: EStyleSheet.value('10rem')},
+                ]}>
+                <Text style={[styles.textEmail, {color: 'red'}]}>{error}</Text>
+              </View>
+            )}
           </View>
           <View style={styles.viewTextInput}>
             <View
@@ -63,7 +93,7 @@ export default class SignInScreen extends Component {
               <TextInput
                 placeholder={placeholderEmail}
                 selectionColor="white"
-                onChangeText={(text) => this.setState({email: text})}
+                onChangeText={text => this.setState({email: text})}
                 autoCapitalize="none"
                 keyboardType="email-address"
                 placeholderTextColor={Colors.deactive}
@@ -100,11 +130,11 @@ export default class SignInScreen extends Component {
               <TextInput
                 placeholder={placeholderPassword}
                 selectionColor="white"
-                onChangeText={(text) => this.setState({password: text})}
+                onChangeText={text => this.setState({password: text})}
                 autoCapitalize="none"
                 secureTextEntry={show ? false : true}
                 placeholderTextColor={Colors.deactive}
-                ref={(ref) => (this.passRef = ref)}
+                ref={ref => (this.passRef = ref)}
                 value={password}
                 onSubmitEditing={() => this.onPressSignIn()}
                 style={styles.textPassword}
@@ -201,6 +231,12 @@ const styles = EStyleSheet.create({
     width: '315rem',
     borderBottomWidth: 0.5,
     borderColor: Colors.primary,
+  },
+  ErrorInput: {
+    width: '285rem',
+    position: 'absolute',
+    left: '32rem',
+    bottom: '-20rem',
   },
   textEmail: {
     color: Colors.deactive,
