@@ -1,20 +1,49 @@
 import React, {Component} from 'react';
-import {View, Text, Platform, StatusBar} from 'react-native';
-
+import {
+  View,
+  Text,
+  Platform,
+  StatusBar,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+const idGroup = 'group3';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-
+import database from '../../utils/fireBaseConfig';
 export default class TrackingMapScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      array: [],
+      isLoading: true,
+    };
   }
+  UNSAFE_componentWillMount = async () => {
+    const GroupRef = database.ref('groups/' + idGroup);
+    const snapshot = await GroupRef.once('value');
+    this.setState({
+      array: snapshot.val(),
+      isLoading: false,
+    });
+
+    // GroupRef.on('child_changed', function(data) {
+    //   console.log('hello', data.val());
+    // });
+  };
 
   render() {
-    return (
+    const {array, isLoading} = this.state;
+    return isLoading ? (
+      <ActivityIndicator size={EStyleSheet.value('60rem')} color="#34D374" />
+    ) : (
       <View style={styles.container}>
-        <Text> TrackingMapScreen </Text>
+        <TouchableOpacity
+          style={{position: 'absolute', top: 20}}
+          onPress={() => this.pushItem()}
+        />
+        <View style={{justifyContent: 'center', alignItems: 'center'}} />
       </View>
     );
   }

@@ -93,7 +93,7 @@ class SignInScreen extends Component {
         <View style={styles.container}>
           <Dialog visible={this.state.isLoading}>
             <DialogContent>
-              <View style={styles.loadingCompleted}>
+              <View style={styles.loadingDialog}>
                 <ActivityIndicator
                   size={EStyleSheet.value('60rem')}
                   color="#34D374"

@@ -6,6 +6,7 @@ import {
   TextInput,
   Alert,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -14,13 +15,16 @@ import {
   validateEmail,
   validateEmpty,
   validateReTypePassword,
+  validatePassword,
 } from '../../utils/Validate';
 
 import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
-
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/UserReducer';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
 EStyleSheet.build({$rem: WIDTH / 380});
 
-export default class SignUpScreen extends Component {
+class SignUpScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,10 +37,12 @@ export default class SignUpScreen extends Component {
       showPassword: false,
       showConfirm: false,
       error: '',
+      isLoading: false,
+      isSuccess: false,
     };
   }
 
-  onPressSignUp = () => {
+  onPressSignUp = async () => {
     let email = this.state.email;
     let password = this.state.password;
     let confirmPass = this.state.confirm;
@@ -49,10 +55,29 @@ export default class SignUpScreen extends Component {
     } else {
       if (!validateEmail(email)) {
         this.setState({error: 'Email không hợp lệ'});
+      } else if (!validatePassword(password)) {
+        this.setState({error: 'Mật khẩu phải từ 6 ký tự'});
       } else if (!validateReTypePassword(password, confirmPass)) {
         this.setState({error: 'Nhập lại mật khẩu không khớp'});
       } else {
-        Alert.alert('Success', 'Đăng ký thành công');
+        this.setState({error: '', isLoading: true});
+        let params = new URLSearchParams();
+        params.append('email', email);
+        params.append('password', password);
+        params.append('displayName', 'Test Name');
+        await this.props.sign_up(params);
+        if (this.props.user.status) {
+          this.setState({
+            error: this.props.user.data.message,
+            isLoading: false,
+          });
+        } else {
+          this.setState({isLoading: false, isSuccess: true});
+          setTimeout(() => {
+            this.setState({isSuccess: false});
+            this.props.navigation.navigate('SignIn');
+          }, 2000);
+        }
       }
     }
   };
@@ -79,6 +104,53 @@ export default class SignUpScreen extends Component {
           backgroundColor: Colors.backgroundColor,
         }}>
         <View style={styles.container}>
+          <Dialog visible={this.state.isLoading}>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <ActivityIndicator
+                  size={EStyleSheet.value('60rem')}
+                  color="#34D374"
+                />
+                <Text
+                  style={{
+                    fontFamily: Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                    letterSpacing: 1,
+                    marginLeft: EStyleSheet.value('5rem'),
+                  }}>
+                  Đang xử lý...
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
+          <Dialog visible={this.state.isSuccess}>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.light,
+                    fontSize: EStyleSheet.value('18rem'),
+                    letterSpacing: 1,
+                    marginLeft: EStyleSheet.value('5rem'),
+                    color: '#34D374',
+                    textAlignVertical: 'center',
+                  }}>
+                  Đăng ký thành công!
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Fonts.light,
+                    fontSize: EStyleSheet.value('18rem'),
+                    letterSpacing: 1,
+                    marginLeft: EStyleSheet.value('5rem'),
+                    color: 'black',
+                    textAlignVertical: 'center',
+                  }}>
+                  Đang chuyển về trang đăng nhập...
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
           <View style={styles.viewLogo}>
             <Image
               source={Images.IC_LOGO}
@@ -254,7 +326,22 @@ export default class SignUpScreen extends Component {
     );
   }
 }
-
+const mapStateToProps = ({user}) => {
+  return {
+    user: user,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    sign_up: parrams => dispatch(actions.sign_up(parrams)),
+    reset: () => dispatch(actions.reset()),
+  };
+};
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SignUpScreen);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -342,5 +429,13 @@ const styles = EStyleSheet.create({
     color: Colors.deactive,
     fontFamily: Fonts.light,
     marginRight: 5,
+  },
+  loadingDialog: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    height: EStyleSheet.value('95rem'),
+    width: EStyleSheet.value('250rem'),
+    backgroundColor: 'white',
   },
 });

@@ -90,7 +90,10 @@ class AccountScreen extends Component {
   };
   render() {
     const user = this.props.user.data;
-    let avatar = BASE_URL + '/' + user.avatar;
+    let avatar = null;
+    if (user.avatar) {
+      avatar = BASE_URL + '/' + user.avatar;
+    }
     return (
       <View style={styles.container}>
         <Dialog visible={this.state.isLoading}>
@@ -126,10 +129,13 @@ class AccountScreen extends Component {
         </View>
         <View style={styles.userGroup}>
           <Image
-            source={{uri: avatar}}
+            source={
+              avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+            }
             style={{
               width: EStyleSheet.value('60rem'),
               height: EStyleSheet.value('60rem'),
+              borderRadius: EStyleSheet.value('30rem'),
             }}
           />
           <View
@@ -297,5 +303,10 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 0.3,
     borderBottomColor: '#CDCDCD',
+  },
+  loadingCompleted: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
 });

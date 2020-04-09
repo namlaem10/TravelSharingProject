@@ -40,7 +40,10 @@ class NewsFeedScreen extends Component {
   render() {
     const {searchText} = this.state;
     const user = this.props.user.data;
-    let avatar = BASE_URL + '/' + user.avatar;
+    let avatar = null;
+    if (user.avatar) {
+      avatar = BASE_URL + '/' + user.avatar;
+    }
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -58,8 +61,11 @@ class NewsFeedScreen extends Component {
                 style={{
                   width: EStyleSheet.value('80rem'),
                   height: EStyleSheet.value('80rem'),
+                  borderRadius: EStyleSheet.value('40rem'),
                 }}
-                source={{uri: avatar}}
+                source={
+                  avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+                }
               />
             </View>
             <View style={styles.infoText}>

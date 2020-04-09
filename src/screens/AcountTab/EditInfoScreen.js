@@ -6,6 +6,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -16,6 +17,9 @@ import TitleBarCustom from '../../components/TitleBarCustom';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/UserReducer';
 import {BASE_URL} from '../../services/URL';
+import ImagePicker from 'react-native-image-picker';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
+
 class EditInfoScreen extends Component {
   constructor(props) {
     super(props);
@@ -23,15 +27,22 @@ class EditInfoScreen extends Component {
       name: '',
       phone: '',
       avatar: '',
+      error: '',
+      isLoading: false,
+      isSuccess: false,
     };
   }
   UNSAFE_componentWillMount = () => {
     const user = this.props.user.data;
-    const avatar = BASE_URL + '/' + user.avatar;
+    let avatar = null;
+    if (user.avatar) {
+      avatar = BASE_URL + '/' + user.avatar;
+    }
     this.setState({
       name: user.displayName,
       phone: user.phone,
       avatar: avatar,
+      avatarFile: null,
     });
   };
   onPressBack = () => {
@@ -43,15 +54,99 @@ class EditInfoScreen extends Component {
     }
   };
   ChangeAvatar = () => {
-    console.log('change avatar');
+    const options = {
+      title: 'Select Avatar',
+    };
+
+    /**
+     * The first arg is the options object for customization (it can also be null or omitted for default options),
+     * The second arg is the callback which sends object: response (more info in the API Reference)
+     */
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+        if (response.uri) {
+          this.setState({
+            avatar: response.uri,
+            avatarFile: response,
+          });
+        }
+      }
+    });
   };
-  SaveChange = () => {
-    console.log('change info');
+  SaveChange = async () => {
+    this.setState({isLoading: true});
+    const {name, phone, avatarFile} = this.state;
+    var bodyFormData = new FormData();
+    bodyFormData.append('displayName', name);
+    bodyFormData.append('phone', phone);
+    if (avatarFile !== null) {
+      bodyFormData.append('avatar', {
+        uri: avatarFile.uri,
+        type: avatarFile.type,
+        name: avatarFile.fileName,
+      });
+    }
+    await this.props.update_info(bodyFormData);
+    if (!this.props.user.status) {
+      this.setState({isLoading: false, isSuccess: true});
+      setTimeout(() => {
+        this.setState({isSuccess: false});
+        this.props.navigation.navigate('InfoUser');
+      }, 1000);
+    }
   };
+
   render() {
     const {name, phone, avatar} = this.state;
     return (
       <View style={styles.container}>
+        <Dialog visible={this.state.isLoading}>
+          <DialogContent>
+            <View style={styles.loadingCompleted}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('15rem'),
+                  letterSpacing: 1,
+                  marginLeft: EStyleSheet.value('5rem'),
+                  textAlignVertical: 'center',
+                }}>
+                Đang cập nhật
+              </Text>
+            </View>
+          </DialogContent>
+        </Dialog>
+        <Dialog visible={this.state.isSuccess}>
+          <DialogContent>
+            <View style={styles.loadingCompleted}>
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('18rem'),
+                  letterSpacing: 1,
+                  marginLeft: EStyleSheet.value('5rem'),
+                  color: '#34D374',
+                  textAlignVertical: 'center',
+                }}>
+                Đã lưu!
+              </Text>
+            </View>
+          </DialogContent>
+        </Dialog>
         <View style={styles.backgroundHeader}>
           <ImageBackground
             source={require('../../assets/images/vinhhalong.jpeg')}
@@ -109,7 +204,12 @@ class EditInfoScreen extends Component {
             left: '39%',
             top: EStyleSheet.value('150rem'),
           }}>
-          <Image style={styles.avatar} source={{uri: avatar}} />
+          <Image
+            style={styles.avatar}
+            source={
+              avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+            }
+          />
         </View>
       </View>
     );
@@ -120,14 +220,17 @@ const mapStateToProps = ({user}) => {
     user: user,
   };
 };
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     login: parrams => dispatch(actions.login(parrams)),
-//     reset: () => dispatch(actions.reset()),
-//   };
-// };
+const mapDispatchToProps = dispatch => {
+  return {
+    update_info: parrams => dispatch(actions.update_info(parrams)),
+    reset: () => dispatch(actions.reset()),
+  };
+};
 // eslint-disable-next-line prettier/prettier
-export default connect(mapStateToProps)(EditInfoScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(EditInfoScreen);
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: '#F9F9F9',
@@ -184,5 +287,10 @@ const styles = EStyleSheet.create({
     borderColor: 'black',
     fontSize: constants.FontSizes.title,
     fontFamily: constants.Fonts.medium,
+  },
+  loadingCompleted: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
 });

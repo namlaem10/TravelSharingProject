@@ -32,7 +32,10 @@ class InfoUserScreen extends Component {
   };
   render() {
     const user = this.props.user.data;
-    let avatar = BASE_URL + '/' + user.avatar;
+    let avatar = null;
+    if (user.avatar) {
+      avatar = BASE_URL + '/' + user.avatar;
+    }
     return (
       <View style={styles.container}>
         <View style={styles.backgroundHeader}>
@@ -94,7 +97,12 @@ class InfoUserScreen extends Component {
             left: '39%',
             top: EStyleSheet.value('150rem'),
           }}>
-          <Image style={styles.avatar} source={{uri: avatar}} />
+          <Image
+            style={styles.avatar}
+            source={
+              avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+            }
+          />
         </View>
       </View>
     );

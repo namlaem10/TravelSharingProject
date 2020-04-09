@@ -352,7 +352,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Sharing',
+    initialRouteName: 'ManageGroup',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,
@@ -375,9 +375,9 @@ const MainStack = createBottomTabNavigator(
 );
 
 const AppStack = createSwitchNavigator({
-  Auth: {
-    screen: AuthStack,
-  },
+  // Auth: {
+  //   screen: AuthStack,
+  // },
   Main: {
     screen: MainStack,
   },

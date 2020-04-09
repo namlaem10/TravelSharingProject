@@ -37,7 +37,7 @@ export const validateCode = code => {
 };
 
 export const validatePassword = password => {
-  const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+  const re = /^\w{6,}$/;
   return re.test(password);
 };
 export const validateReTypePassword = (password, retype) => {
