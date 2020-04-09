@@ -35,6 +35,7 @@ export default class TrackingMapScreen extends Component {
 
   render() {
     const {array, isLoading} = this.state;
+    console.log(array);
     return isLoading ? (
       <ActivityIndicator size={EStyleSheet.value('60rem')} color="#34D374" />
     ) : (
