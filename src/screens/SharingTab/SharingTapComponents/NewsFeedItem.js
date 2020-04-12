@@ -67,7 +67,11 @@ export default class NewsFeedItem extends Component {
           <View style={styles.headerInfo}>
             <View style={styles.headerCol1}>
               <Image
-                source={{uri: avatar}}
+                source={
+                  data.create_by.avatar !== null
+                    ? {uri: avatar}
+                    : constants.Images.IC_AVATAR1
+                }
                 style={{
                   width: EStyleSheet.value('30rem'),
                   height: EStyleSheet.value('30rem'),

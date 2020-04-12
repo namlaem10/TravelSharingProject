@@ -4,7 +4,6 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-
 export default class TravelScrollItem extends Component {
   constructor(props) {
     super(props);
@@ -12,10 +11,10 @@ export default class TravelScrollItem extends Component {
   }
 
   render() {
-    const {page, onPressTravelDay} = this.props;
+    const {page, onPressTravelDay, data} = this.props;
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => onPressTravelDay(page)}>
+        <TouchableOpacity onPress={() => onPressTravelDay(data)}>
           <View style={styles.pictureView}>
             <Image
               style={{
@@ -23,7 +22,7 @@ export default class TravelScrollItem extends Component {
                 height: EStyleSheet.value('150rem'),
                 borderRadius: EStyleSheet.value('12rem'),
               }}
-              source={require('../assets/images/vinhhalong.jpeg')}
+              source={{uri: data[0].place_visit_image}}
             />
           </View>
           <View style={styles.dayNum}>
@@ -42,7 +41,7 @@ export default class TravelScrollItem extends Component {
         <View style={styles.infoTravelItem}>
           <View style={styles.infoText}>
             <Image source={constants.Images.IC_LOCATION} style={styles.icon} />
-            <Text>4 địa điểm</Text>
+            <Text>{data.length} địa điểm</Text>
           </View>
           <View style={styles.infoText}>
             <Image

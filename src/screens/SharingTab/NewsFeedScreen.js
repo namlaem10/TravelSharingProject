@@ -50,9 +50,7 @@ class NewsFeedScreen extends Component {
     });
   };
   onPressItem = item => {
-    this.props.navigation.navigate('PostDetail', {
-      data: item,
-    });
+    this.props.navigation.navigate('PostDetail', {data: item});
   };
   render() {
     const {searchText, isLoading, message} = this.state;
@@ -82,7 +80,9 @@ class NewsFeedScreen extends Component {
                   borderRadius: EStyleSheet.value('40rem'),
                 }}
                 source={
-                  avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+                  User.avatar !== null
+                    ? {uri: avatar}
+                    : constants.Images.IC_AVATAR1
                 }
               />
             </View>

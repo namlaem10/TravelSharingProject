@@ -9,13 +9,13 @@ import {
   Animated,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
-
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 const HEADER_MAX_HEIGHT = EStyleSheet.value('290rem');
@@ -26,9 +26,23 @@ export default class PostDetailScreen extends Component {
     super(props);
     this.state = {
       scrollY: new Animated.Value(0), // animation
+      data: null,
+      isLoading: true,
+      linkImage: null,
     };
   }
-
+  componentDidMount = async () => {
+    const data = await this.props.navigation.getParam('data', null);
+    const {longitude, latitude} = data.destination;
+    const linkImage = `https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=${
+      constants.API_KEY
+    }&c=${latitude},${longitude}&z=12`;
+    this.setState({
+      isLoading: false,
+      data,
+      linkImage,
+    });
+  };
   onPressBack = () => {
     this.props.navigation.goBack();
   };
@@ -43,7 +57,8 @@ export default class PostDetailScreen extends Component {
     });
   };
   render() {
-    const {data} = this.props;
+    const {data, isLoading, linkImage} = this.state;
+    console.log(isLoading);
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
       outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
@@ -59,7 +74,7 @@ export default class PostDetailScreen extends Component {
       outputRange: [0, -50],
       extrapolate: 'clamp',
     });
-    return (
+    return !isLoading ? (
       <View style={styles.container}>
         <ScrollView
           scrollEventThrottle={16}
@@ -69,6 +84,7 @@ export default class PostDetailScreen extends Component {
           ])}>
           <View style={styles.scrollViewContent}>
             <ScrollVerticalLichTrinh
+              data={data}
               onPressDetailButton={this.onPressDetailButton}
               onPressTravelDay={this.onPressTravelDay}
               isBlog={true}
@@ -104,15 +120,6 @@ export default class PostDetailScreen extends Component {
                 </View>
                 <View style={{...styles.infoBoxText}}>
                   <Image
-                    source={constants.Images.IC_LOCATION}
-                    style={styles.infoBoxIcon}
-                  />
-                  <Text style={{...styles.text}}>
-                    Hà Phong, Tp. Hạ Long, Quảng Ninh, Việt Nam
-                  </Text>
-                </View>
-                <View style={{...styles.infoBoxText}}>
-                  <Image
                     source={constants.Images.IC_TIME}
                     style={styles.infoBoxIcon}
                   />
@@ -138,7 +145,9 @@ export default class PostDetailScreen extends Component {
               </View>
               <View style={styles.miniMap}>
                 <Image
-                  source={require('../../assets/images/minimap.png')}
+                  source={{
+                    uri: linkImage,
+                  }}
                   style={{width: '100%', height: '100%'}}
                 />
               </View>
@@ -165,6 +174,10 @@ export default class PostDetailScreen extends Component {
           </View>
         </Animated.View>
       </View>
+    ) : (
+      <View style={styles.container}>
+        <ActivityIndicator size={EStyleSheet.value('60rem')} color="#34D374" />
+      </View>
     );
   }
 }
@@ -174,6 +187,7 @@ const styles = EStyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: 'white',
+    justifyContent: 'center',
   },
   header: {
     height: '287rem',
@@ -248,6 +262,7 @@ const styles = EStyleSheet.create({
   },
   infoBoxText: {
     marginHorizontal: '12rem',
+    marginBottom: '8rem',
     flexDirection: 'row',
     alignItems: 'center',
   },

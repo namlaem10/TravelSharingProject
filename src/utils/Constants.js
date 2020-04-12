@@ -31,3 +31,5 @@ export const FontSizes = {
   smalltext: '12rem',
   tabTitle: '10rem',
 };
+
+export const API_KEY = 'Hkbvju0uKF1GS4Ex45IGlrxvZC7c2Vx0So2B8yPnRnU';

@@ -13,12 +13,14 @@ export default class ScrollVerticalLichTrinh extends Component {
     super(props);
     this.state = {};
   }
-  _RenderScrollTravelItem = () => {
+  _RenderScrollTravelItem = schedule => {
     let Items = [];
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= schedule.number_of_days; i++) {
+      let key = 'day_' + i;
       Items.push(
         <TravelScrollItem
-          key={i}
+          data={schedule.schedule_detail[key]}
+          key={key}
           page={i}
           onPressTravelDay={this.props.onPressTravelDay}
         />,
@@ -45,6 +47,7 @@ export default class ScrollVerticalLichTrinh extends Component {
       onPressChat,
       onPressAddMember,
       isBlog,
+      data,
     } = this.props;
     return (
       <View style={styles.container}>
@@ -75,7 +78,7 @@ export default class ScrollVerticalLichTrinh extends Component {
         </View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View style={styles.scrollViewContent}>
-            {this._RenderScrollTravelItem()}
+            {this._RenderScrollTravelItem(data.schedule)}
           </View>
         </ScrollView>
         <View style={styles.members}>
@@ -110,7 +113,7 @@ export default class ScrollVerticalLichTrinh extends Component {
         </View>
         {isBlog ? (
           <View style={styles.blog}>
-            <BlogDetail key={'1'} />
+            <BlogDetail key={data._id} data={data} />
           </View>
         ) : null}
       </View>

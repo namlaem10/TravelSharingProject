@@ -4,8 +4,9 @@ import {View, Text, Image} from 'react-native';
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-
+import BASE_URL from '../services/URL';
 import Comment from './Comment';
+import moment from 'moment';
 
 export default class BlogDetail extends Component {
   constructor(props) {
@@ -14,7 +15,8 @@ export default class BlogDetail extends Component {
   }
   //tạo rating hình ngôi sao theo điểm (point/5)
   createStars = () => {
-    let count = 4;
+    const {data} = this.props;
+    let count = data.rating;
     let leftstar = 5 - count;
     let starts = [];
     for (let i = 1; i <= count; i++) {
@@ -55,12 +57,22 @@ export default class BlogDetail extends Component {
     return comments;
   };
   render() {
+    const {data} = this.props;
+    const User = data.create_by;
+    let avatar = null;
+    if (User) {
+      avatar = BASE_URL + '/' + User.avatar;
+    }
     return (
       <View style={styles.content}>
         <View style={styles.headerInfo}>
           <View style={styles.headerCol1}>
             <Image
-              source={constants.Images.IC_AVATAR3}
+              source={
+                User.avatar !== null
+                  ? {uri: avatar}
+                  : constants.Images.IC_AVATAR3
+              }
               style={{width: 35, height: 35}}
             />
             <View
@@ -75,7 +87,7 @@ export default class BlogDetail extends Component {
                   fontSize: EStyleSheet.value('12rem'),
                   fontFamily: constants.Fonts.regular,
                 }}>
-                Hoàn
+                {User.display_name}
               </Text>
               <Text
                 style={{
@@ -83,7 +95,8 @@ export default class BlogDetail extends Component {
                   fontSize: EStyleSheet.value('12rem'),
                   fontFamily: constants.Fonts.light,
                 }}>
-                TP.Hồ Chí Minh - Vịnh Hạ Long
+                {data.departure.destination_name}&nbsp;-&nbsp;
+                {data.destination.destination_name}
               </Text>
             </View>
           </View>
@@ -94,7 +107,7 @@ export default class BlogDetail extends Component {
                 fontFamily: constants.Fonts.light,
                 color: '#8E8E8E',
               }}>
-              20/03/2020
+              {moment(data.end_day).format('DD/MM/YYYY')}
             </Text>
             <View style={{flexDirection: 'row'}}>{this.createStars()}</View>
           </View>
@@ -106,7 +119,7 @@ export default class BlogDetail extends Component {
               fontFamily: constants.Fonts.medium,
               fontSize: EStyleSheet.value('14rem'),
             }}>
-            Trải nghiệm đáng nhớ
+            {data.title}
           </Text>
           <Text
             style={{
@@ -124,13 +137,7 @@ export default class BlogDetail extends Component {
               fontFamily: constants.Fonts.light,
               fontSize: EStyleSheet.value('12rem'),
             }}>
-            Đây là hành trình 3 ngày 2 đêm thăm thú vịnh Hạ Long với Paradise
-            Cruise Ship. Đây là một chuyến đi nhiều kỷ niệm vì đã rất lâu bản
-            thân hai đứa mới có cơ hội trở lại nơi này.{'\n'}
-            {'\n'}
-            {'\n'}Cảnh đẹp thiên nhiên say đắm lòng người, và bao nhiêu điều học
-            hỏi được từ người dân địa phương. Một chuyến đi với bao nhiêu đều
-            thật đáng nhớ.
+            {data.description}
           </Text>
         </View>
         <View style={styles.commentGroup}>
