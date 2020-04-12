@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import * as constants from '../../utils/Constants';
@@ -15,7 +16,7 @@ import {FeedNews} from '../../utils/fakedata';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {BASE_URL} from '../../services/URL';
 import {connect} from 'react-redux';
-import {actions, types} from '../../redux/reducers/UserReducer';
+import {actions, types} from '../../redux/reducers/allLichTrinhReducer';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 class NewsFeedScreen extends Component {
@@ -23,26 +24,43 @@ class NewsFeedScreen extends Component {
     super(props);
     this.state = {
       searchText: '',
+      isLoading: true,
+      message: '',
     };
   }
-
+  componentDidMount = async () => {
+    await this.props.get_all();
+    const {allLichTrinh} = this.props;
+    if (allLichTrinh.status) {
+      this.setState({
+        isLoading: false,
+        message: allLichTrinh.data.message
+          ? allLichTrinh.data.message
+          : 'Lỗi tải thông tin :(',
+      });
+    } else {
+      this.setState({
+        isLoading: false,
+      });
+    }
+  };
   onSearchChangeText = text => {
     this.setState({
       searchText: text,
     });
   };
-  onPressItem = id => {
-    console.log(id);
+  onPressItem = item => {
     this.props.navigation.navigate('PostDetail', {
-      id: id,
+      data: item,
     });
   };
   render() {
-    const {searchText} = this.state;
-    const user = this.props.user.data;
+    const {searchText, isLoading, message} = this.state;
+    const {allLichTrinh, user} = this.props;
+    const User = user.data;
     let avatar = null;
-    if (user.avatar) {
-      avatar = BASE_URL + '/' + user.avatar;
+    if (User) {
+      avatar = BASE_URL + '/' + User.avatar;
     }
     return (
       <View style={styles.container}>
@@ -74,7 +92,7 @@ class NewsFeedScreen extends Component {
                   ...styles.Text,
                   fontFamily: constants.Fonts.medium,
                 }}>
-                {user.displayName}
+                {User.display_name}
               </Text>
               <Text style={styles.Text}>
                 Số bài viết:{' '}
@@ -103,32 +121,49 @@ class NewsFeedScreen extends Component {
           </View>
         </View>
         <View style={styles.content}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={FeedNews}
-            renderItem={({item}) => (
-              <NewsFeedItem data={item} onPressItem={this.onPressItem} />
-            )}
-            keyExtractor={item => item.id}
-          />
+          {isLoading ? (
+            <ActivityIndicator
+              size={EStyleSheet.value('60rem')}
+              color="#34D374"
+            />
+          ) : allLichTrinh.data !== null ? (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={allLichTrinh.data}
+              renderItem={({item}) => (
+                <NewsFeedItem
+                  data={item}
+                  key={item.id}
+                  onPressItem={this.onPressItem}
+                />
+              )}
+              keyExtractor={item => item._id}
+            />
+          ) : (
+            <Text>{message}</Text>
+          )}
         </View>
       </View>
     );
   }
 }
-const mapStateToProps = ({user}) => {
+const mapStateToProps = ({user, allLichTrinh}) => {
   return {
     user: user,
+    allLichTrinh: allLichTrinh,
   };
 };
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     login: parrams => dispatch(actions.login(parrams)),
-//     reset: () => dispatch(actions.reset()),
-//   };
-// };
+const mapDispatchToProps = dispatch => {
+  return {
+    get_all: () => dispatch(actions.get_all()),
+    reset: () => dispatch(actions.reset()),
+  };
+};
 // eslint-disable-next-line prettier/prettier
-export default connect(mapStateToProps)(NewsFeedScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(NewsFeedScreen);
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: 'white',
@@ -147,6 +182,7 @@ const styles = EStyleSheet.create({
   },
   content: {
     flex: 3,
+    justifyContent: 'center',
   },
   titleGroup: {
     paddingHorizontal: '15rem',

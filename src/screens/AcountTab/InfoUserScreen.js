@@ -53,7 +53,7 @@ class InfoUserScreen extends Component {
             alignItems: 'center',
             backgroundColor: 'white',
           }}>
-          <Text style={styles.textTitle}>{user.displayName}</Text>
+          <Text style={styles.textTitle}>{user.display_name}</Text>
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => this.editInfo()}>

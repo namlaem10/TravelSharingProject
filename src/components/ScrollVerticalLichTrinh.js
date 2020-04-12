@@ -40,7 +40,12 @@ export default class ScrollVerticalLichTrinh extends Component {
     console.log('chat');
   };
   render() {
-    const {onPressDetailButton, onPressChat, onPressAddMember} = this.props;
+    const {
+      onPressDetailButton,
+      onPressChat,
+      onPressAddMember,
+      isBlog,
+    } = this.props;
     return (
       <View style={styles.container}>
         <View
@@ -103,6 +108,11 @@ export default class ScrollVerticalLichTrinh extends Component {
             </View>
           </ScrollView>
         </View>
+        {isBlog ? (
+          <View style={styles.blog}>
+            <BlogDetail key={'1'} />
+          </View>
+        ) : null}
       </View>
     );
   }

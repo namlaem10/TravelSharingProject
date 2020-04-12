@@ -58,7 +58,7 @@ const AuthStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'Start',
+    initialRouteName: 'SignIn',
     defaultNavigationOptions: {
       header: null,
     },
@@ -120,7 +120,7 @@ const ManageGroupStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'TrackingMap',
+    initialRouteName: 'ManageGroup',
     defaultNavigationOptions: {
       header: null,
     },
@@ -352,7 +352,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'ManageGroup',
+    initialRouteName: 'Sharing',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,

@@ -31,7 +31,7 @@ export default class TripDetailScreen extends Component {
       page: 1,
     });
   };
-  onPressTravelDay = (page) => {
+  onPressTravelDay = page => {
     // this.props.updateTab(page);
     this.props.navigation.navigate('ShareTimeLineDetail', {
       page: page,
@@ -116,6 +116,7 @@ export default class TripDetailScreen extends Component {
               onPressTravelDay={this.onPressTravelDay}
               onPressAddMember={this.onPressAddMember}
               onPressChat={this.onPressChat}
+              isBlog={false}
             />
           </View>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>

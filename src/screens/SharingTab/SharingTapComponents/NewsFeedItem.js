@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import * as constants from '../../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
+import moment from 'moment';
+import {BASE_URL} from '../../../services/URL';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 export default class NewsFeedItem extends Component {
@@ -20,8 +21,8 @@ export default class NewsFeedItem extends Component {
         <Image
           source={constants.Images.IC_GOLD_STAR}
           style={{
-            width: EStyleSheet.value('16rem'),
-            height: EStyleSheet.value('16rem'),
+            width: EStyleSheet.value('14rem'),
+            height: EStyleSheet.value('14rem'),
           }}
         />,
       );
@@ -31,8 +32,8 @@ export default class NewsFeedItem extends Component {
         <Image
           source={constants.Images.IC_NORMAL_STAR}
           style={{
-            width: EStyleSheet.value('16rem'),
-            height: EStyleSheet.value('16rem'),
+            width: EStyleSheet.value('14rem'),
+            height: EStyleSheet.value('14rem'),
           }}
         />,
       );
@@ -42,13 +43,19 @@ export default class NewsFeedItem extends Component {
 
   render() {
     const {data, onPressItem} = this.props;
+    moment.locale('vi');
+    var avatar = BASE_URL + '/' + data.create_by.avatar;
     return (
       <TouchableOpacity
         style={styles.container}
-        onPress={() => onPressItem(data.id)}>
+        onPress={() => onPressItem(data)}>
         <View style={styles.header}>
           <Image
-            source={data.image}
+            source={
+              data.image
+                ? {uri: BASE_URL + '/' + data.image}
+                : require('../../../assets/images/dalat2.jpg')
+            }
             style={{
               flex: 1,
               width: '100%',
@@ -59,7 +66,14 @@ export default class NewsFeedItem extends Component {
         <View style={styles.content}>
           <View style={styles.headerInfo}>
             <View style={styles.headerCol1}>
-              <Image source={data.avatar} style={{width: 35, height: 35}} />
+              <Image
+                source={{uri: avatar}}
+                style={{
+                  width: EStyleSheet.value('30rem'),
+                  height: EStyleSheet.value('30rem'),
+                  borderRadius: EStyleSheet.value('15rem'),
+                }}
+              />
               <View
                 style={{
                   flexDirection: 'column',
@@ -72,7 +86,7 @@ export default class NewsFeedItem extends Component {
                     fontSize: EStyleSheet.value('12rem'),
                     fontFamily: constants.Fonts.regular,
                   }}>
-                  {data.username}
+                  {data.create_by.display_name}
                 </Text>
                 <Text
                   style={{
@@ -80,7 +94,8 @@ export default class NewsFeedItem extends Component {
                     fontSize: EStyleSheet.value('12rem'),
                     fontFamily: constants.Fonts.light,
                   }}>
-                  {data.places}
+                  {data.departure.destination_name}&nbsp;-&nbsp;
+                  {data.destination.destination_name}
                 </Text>
               </View>
             </View>
@@ -89,9 +104,11 @@ export default class NewsFeedItem extends Component {
                 style={{
                   ...styles.text,
                   fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('11rem'),
                   color: '#8E8E8E',
                 }}>
-                {data.date}
+                {moment(data.start_day).format('DD/MM/YYYY')}&nbsp;-&nbsp;
+                {moment(data.end_day).format('DD/MM/YYYY')}
               </Text>
               <View style={{flexDirection: 'row'}}>{this.createStars()}</View>
             </View>
@@ -113,7 +130,7 @@ export default class NewsFeedItem extends Component {
                 color: '#41A96B',
                 marginBottom: EStyleSheet.value('5rem'),
               }}>
-              {data.hastag}
+              #test,#bosungsau
             </Text>
             <Text
               style={{
@@ -121,7 +138,7 @@ export default class NewsFeedItem extends Component {
                 fontFamily: constants.Fonts.light,
                 fontSize: EStyleSheet.value('9rem'),
               }}>
-              {data.content}
+              {data.description}...
             </Text>
           </View>
           <View style={styles.lastInfo}>
@@ -138,14 +155,14 @@ export default class NewsFeedItem extends Component {
                   style={styles.iconVector}
                   source={constants.Images.IC_HEART}
                 />
-                <Text style={{...styles.text}}>{data.love}</Text>
+                <Text style={{...styles.text}}>1234</Text>
               </View>
               <View style={styles.heartComment}>
                 <Image
                   style={styles.iconVector}
                   source={constants.Images.IC_COMMENT}
                 />
-                <Text style={{...styles.text}}>{data.comment}</Text>
+                <Text style={{...styles.text}}>1234</Text>
               </View>
             </View>
           </View>

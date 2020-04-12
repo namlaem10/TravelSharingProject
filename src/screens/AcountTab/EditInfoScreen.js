@@ -39,7 +39,7 @@ class EditInfoScreen extends Component {
       avatar = BASE_URL + '/' + user.avatar;
     }
     this.setState({
-      name: user.displayName,
+      name: user.display_name,
       phone: user.phone,
       avatar: avatar,
       avatarFile: null,
@@ -63,8 +63,6 @@ class EditInfoScreen extends Component {
      * The second arg is the callback which sends object: response (more info in the API Reference)
      */
     ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -87,7 +85,7 @@ class EditInfoScreen extends Component {
     this.setState({isLoading: true});
     const {name, phone, avatarFile} = this.state;
     var bodyFormData = new FormData();
-    bodyFormData.append('displayName', name);
+    bodyFormData.append('display_name', name);
     bodyFormData.append('phone', phone);
     if (avatarFile !== null) {
       bodyFormData.append('avatar', {

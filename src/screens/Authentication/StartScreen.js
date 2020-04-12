@@ -16,7 +16,6 @@ export default class StartScreen extends Component {
   getToken = async () => {
     try {
       const value = await AsyncStorage.getItem('token');
-      console.log('value:', value);
       if (value) {
         return value;
       } else {
@@ -30,7 +29,6 @@ export default class StartScreen extends Component {
   getOldUser = async () => {
     try {
       const value = await AsyncStorage.getItem('oldUser');
-      console.log('value1:', value);
       if (value) {
         return value;
       } else {
@@ -44,8 +42,6 @@ export default class StartScreen extends Component {
   componentDidMount = async () => {
     let token = await this.getToken();
     let oldUser = await this.getOldUser();
-    console.log('olduser', oldUser);
-    console.log(token);
     if (oldUser === null) {
       setTimeout(() => {
         this.props.navigation.navigate('Onboarding');

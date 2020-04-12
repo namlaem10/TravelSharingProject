@@ -146,7 +146,7 @@ class AccountScreen extends Component {
               width: EStyleSheet.value('280rem'),
               marginLeft: EStyleSheet.value('15rem'),
             }}>
-            <Text style={styles.textTitle}>{user.displayName}</Text>
+            <Text style={styles.textTitle}>{user.display_name}</Text>
             <TouchableOpacity onPress={() => this.seeMore()}>
               <Text style={{...styles.textTitle, color: '#1161D8'}}>
                 Xem thêm

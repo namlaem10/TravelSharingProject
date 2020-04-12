@@ -43,6 +43,7 @@ export default class PostDetailScreen extends Component {
     });
   };
   render() {
+    const {data} = this.props;
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
       outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
@@ -70,6 +71,7 @@ export default class PostDetailScreen extends Component {
             <ScrollVerticalLichTrinh
               onPressDetailButton={this.onPressDetailButton}
               onPressTravelDay={this.onPressTravelDay}
+              isBlog={true}
             />
           </View>
         </ScrollView>
@@ -97,7 +99,7 @@ export default class PostDetailScreen extends Component {
                       fontSize: EStyleSheet.value('18rem'),
                       fontFamily: constants.Fonts.regular,
                     }}>
-                    Vịnh Hạ Long
+                    {data.destination.destination_name}
                   </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>

@@ -64,7 +64,7 @@ class SignUpScreen extends Component {
         let params = new URLSearchParams();
         params.append('email', email);
         params.append('password', password);
-        params.append('displayName', 'Test Name');
+        params.append('display_name', 'Test Name');
         await this.props.sign_up(params);
         if (this.props.user.status) {
           this.setState({
