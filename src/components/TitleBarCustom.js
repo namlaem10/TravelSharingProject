@@ -11,7 +11,7 @@ export default class TitleBarCustom extends Component {
   }
 
   render() {
-    const {title, onPress} = this.props;
+    const {title, onPress, onPressMore} = this.props;
     if (!title) {
       return (
         <View style={styles.container}>
@@ -21,7 +21,7 @@ export default class TitleBarCustom extends Component {
               source={constants.Images.IC_ARROW_BACK}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => onPressMore()}>
             <Image style={styles.icon} source={constants.Images.IC_3DOT} />
           </TouchableOpacity>
         </View>

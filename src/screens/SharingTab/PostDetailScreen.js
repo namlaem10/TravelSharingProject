@@ -13,15 +13,17 @@ import {
 } from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
+import moment from 'moment';
 import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/caculatedLichTrinhReducer';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 const HEADER_MAX_HEIGHT = EStyleSheet.value('290rem');
 const HEADER_MIN_HEIGHT = EStyleSheet.value('120rem');
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-export default class PostDetailScreen extends Component {
+class PostDetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,23 +44,51 @@ export default class PostDetailScreen extends Component {
       data,
       linkImage,
     });
+    this.props.get_location_info(
+      data.schedule.schedule_detail,
+      data.schedule.number_of_days,
+    );
   };
+  // onPressMore = () => {
+  //   var array = [
+  //     {
+  //       latitude: 10.334698,
+  //       longitude: 107.077025,
+  //     },
+  //     {
+  //       latitude: 10.333013,
+  //       longitude: 107.075891,
+  //     },
+  //     {
+  //       latitude: 10.329577,
+  //       longitude: 107.081519,
+  //     },
+  //   ];
+  //   this.props.get_location_info(array);
+  // };
   onPressBack = () => {
     this.props.navigation.goBack();
   };
   onPressDetailButton = () => {
-    // this.props.updateTab(1);
-    this.props.navigation.navigate('TravelTimelineDetail', {page: 1});
+    const {data} = this.state;
+    this.props.navigation.navigate('TravelTimelineDetail', {
+      data: data.schedule.schedule_detail,
+      page: 1,
+      totalDay: data.schedule.number_of_days,
+      start: data.start_day,
+    });
   };
   onPressTravelDay = page => {
-    // this.props.updateTab(page);
+    const {data} = this.state;
     this.props.navigation.navigate('TravelTimelineDetail', {
+      data: data.schedule.schedule_detail,
       page: page,
+      totalDay: data.schedule.number_of_days,
+      start: data.start_day,
     });
   };
   render() {
     const {data, isLoading, linkImage} = this.state;
-    console.log(isLoading);
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
       outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
@@ -88,6 +118,7 @@ export default class PostDetailScreen extends Component {
               onPressDetailButton={this.onPressDetailButton}
               onPressTravelDay={this.onPressTravelDay}
               isBlog={true}
+              isButton={false}
             />
           </View>
         </ScrollView>
@@ -104,7 +135,10 @@ export default class PostDetailScreen extends Component {
             <ImageBackground
               source={require('../../assets/images/vinhhalong.jpeg')}
               style={{width: '100%', height: '100%'}}>
-              <TitleBarCustom onPress={this.onPressBack} />
+              <TitleBarCustom
+                onPress={this.onPressBack}
+                onPressMore={this.onPressMore}
+              />
             </ImageBackground>
             <View style={styles.infoBoxGroup}>
               <View style={styles.infoPlace}>
@@ -123,14 +157,18 @@ export default class PostDetailScreen extends Component {
                     source={constants.Images.IC_TIME}
                     style={styles.infoBoxIcon}
                   />
-                  <Text style={{...styles.text}}>20/03/2020 - 22/03/2020</Text>
+                  <Text style={{...styles.text}}>
+                    {moment(data.start_day).format('DD/MM/YYYY')}
+                    &nbsp;-&nbsp;
+                    {moment(data.end_day).format('DD/MM/YYYY')}
+                  </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
                   <Image
                     source={constants.Images.IC_MONEY_GRAY}
                     style={styles.infoBoxIcon}
                   />
-                  <Text style={{...styles.text}}>3.000.000đ</Text>
+                  <Text style={{...styles.text}}>{data.price}đ</Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
                   <Text style={{...styles.text}}>Tạo bởi: &nbsp;&nbsp;</Text>
@@ -139,7 +177,7 @@ export default class PostDetailScreen extends Component {
                       ...styles.text,
                       fontFamily: constants.Fonts.regular,
                     }}>
-                    Nam ngu si
+                    {data.create_by.display_name}
                   </Text>
                 </View>
               </View>
@@ -181,7 +219,18 @@ export default class PostDetailScreen extends Component {
     );
   }
 }
+const mapDispatchToProps = dispatch => {
+  return {
+    get_location_info: (params, number) =>
+      dispatch(actions.get_location_info(params, number)),
+  };
+};
 
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  null,
+  mapDispatchToProps,
+)(PostDetailScreen);
 const styles = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,

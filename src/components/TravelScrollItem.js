@@ -14,7 +14,7 @@ export default class TravelScrollItem extends Component {
     const {page, onPressTravelDay, data} = this.props;
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => onPressTravelDay(data)}>
+        <TouchableOpacity onPress={() => onPressTravelDay(page)}>
           <View style={styles.pictureView}>
             <Image
               style={{

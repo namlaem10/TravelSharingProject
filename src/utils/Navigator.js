@@ -375,9 +375,9 @@ const MainStack = createBottomTabNavigator(
 );
 
 const AppStack = createSwitchNavigator({
-  // Auth: {
-  //   screen: AuthStack,
-  // },
+  Auth: {
+    screen: AuthStack,
+  },
   Main: {
     screen: MainStack,
   },

@@ -10,15 +10,8 @@ import TitleBarCustom from '../../components/TitleBarCustom';
 
 import TimeLineDetail from '../../components/TimelineDetail';
 import CustomTabBar from '../../components/CustomTabBar';
+import moment from 'moment';
 
-const Dates = [
-  {id: 'date1', date: '20/02/2020'},
-  {id: 'date2', date: '21/02/2020'},
-  {id: 'date3', date: '22/02/2020'},
-  {id: 'date4', date: '23/02/2020'},
-  {id: 'date5', date: '24/02/2020'},
-  {id: 'date6', date: '25/02/2020'},
-];
 const tabStyle = {};
 export default class TravelTimelineDetailScreen extends Component {
   constructor(props) {
@@ -33,16 +26,42 @@ export default class TravelTimelineDetailScreen extends Component {
       this.props.navigation.goBack();
     }
   };
+  _renderItem = () => {
+    let array = [];
+    let countday = 0;
+    const data = this.props.navigation.getParam('data');
+    const totalDay = this.props.navigation.getParam('totalDay');
+    let startDate = this.props.navigation.getParam('start');
+    for (let i = 1; i <= totalDay; i++) {
+      let item = data['day_' + i];
+      let date = moment(startDate).format('DD/MM/YYYY');
+      let day = date.split('/')[0];
+      let month = date.split('/')[1];
+      let lable = day + '.' + month;
+      startDate = moment(startDate).add(1, 'day');
+      countday++;
+      array.push(
+        <TimeLineDetail
+          key={'day_' + i}
+          data={item}
+          tabLabel={lable}
+          day={countday}
+        />,
+      );
+    }
+    return array;
+  };
   render() {
-    //trừ 1 vì Tính từ 0, nhưng page lấy từ 1
     const page = this.props.navigation.getParam('page', 1) - 1;
-    let countDay = 0;
     return (
       <View style={styles.container}>
         <View style={styles.backgroundHeader}>
           <ImageBackground
             source={require('../../assets/images/vinhhalong.jpeg')}
-            style={{width: '100%', height: '100%'}}>
+            style={{
+              width: '100%',
+              height: '100%',
+            }}>
             <TitleBarCustom onPress={this.onPressBack} />
           </ImageBackground>
         </View>
@@ -56,7 +75,8 @@ export default class TravelTimelineDetailScreen extends Component {
               backgroundColor={'white'}
             />
           )}>
-          {Dates.map(item => {
+          {this._renderItem()}
+          {/* {Dates.map(item => {
             let SplitDate = item.date.split('/');
             let day = SplitDate[0];
             let month = SplitDate[1];
@@ -70,7 +90,7 @@ export default class TravelTimelineDetailScreen extends Component {
                 day={countDay}
               />
             );
-          })}
+          })} */}
         </ScrollableTabView>
       </View>
     );

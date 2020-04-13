@@ -30,6 +30,7 @@ export default class ScrollVerticalLichTrinh extends Component {
   };
   _RenderScrollMemberItem = () => {
     let Items = [];
+
     for (let i = 1; i <= 4; i++) {
       Items.push(<MemberScrollItem key={i} data={i} />);
     }
@@ -48,7 +49,12 @@ export default class ScrollVerticalLichTrinh extends Component {
       onPressAddMember,
       isBlog,
       data,
+      isButton,
     } = this.props;
+    let Button = true;
+    if (isButton === false) {
+      Button = isButton;
+    }
     return (
       <View style={styles.container}>
         <View
@@ -90,20 +96,22 @@ export default class ScrollVerticalLichTrinh extends Component {
               }}>
               Thành viên
             </Text>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity onPress={() => onPressAddMember()}>
-                <Image
-                  source={constants.Images.IC_ADD_MEMBER}
-                  style={styles.iconVector}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => onPressChat()}>
-                <Image
-                  source={constants.Images.IC_COMMENT_RED}
-                  style={styles.iconVector}
-                />
-              </TouchableOpacity>
-            </View>
+            {Button ? (
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => onPressAddMember()}>
+                  <Image
+                    source={constants.Images.IC_ADD_MEMBER}
+                    style={styles.iconVector}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => onPressChat()}>
+                  <Image
+                    source={constants.Images.IC_COMMENT_RED}
+                    style={styles.iconVector}
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <View style={styles.memberScrollView}>

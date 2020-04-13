@@ -13,7 +13,7 @@ export default class TimeLineItem extends Component {
     this.state = {};
   }
   renderInfo = () => {
-    if (!this.props.lastDay) {
+    if (!this.props.lastPlace) {
       return (
         <View
           style={{
@@ -60,7 +60,7 @@ export default class TimeLineItem extends Component {
                 fontSize: EStyleSheet.value('16rem'),
                 color: '#127138',
               }}>
-              {data.time}
+              Chưa có
             </Text>
           </View>
           {this.renderInfo()}
@@ -73,7 +73,7 @@ export default class TimeLineItem extends Component {
               width: EStyleSheet.value('30rem'),
             }}
           />
-          {this.props.lastDay ? null : (
+          {this.props.lastPlace ? null : (
             <Dash
               style={{
                 width: EStyleSheet.value('1rem'),
@@ -90,7 +90,7 @@ export default class TimeLineItem extends Component {
         <View style={styles.Col3}>
           <View style={styles.pictureView}>
             <Image
-              source={require('../assets/images/vinhbaitulong.jpg')}
+              source={{uri: data.place_visit_image}}
               style={{
                 width: '100%',
                 height: '100%',
@@ -122,7 +122,7 @@ export default class TimeLineItem extends Component {
                 color: '#127138',
                 marginBottom: EStyleSheet.value('3rem'),
               }}>
-              Tên của địa danh
+              {data.place_visit_name}
             </Text>
             {isDelete ? (
               <View style={styles.deleteButton}>
@@ -147,7 +147,7 @@ export default class TimeLineItem extends Component {
               </View>
             ) : (
               <Text style={{...styles.detailText}}>
-                Địa chỉ của địa danh đó
+                {data.place_visit_address}
               </Text>
             )}
           </View>

@@ -3,6 +3,7 @@ import {View, Text, ScrollView} from 'react-native';
 
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import {connect} from 'react-redux';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
@@ -28,16 +29,20 @@ const TimeLineItems = [
   },
 ];
 
-export default class TimelineDetail extends Component {
+class TimelineDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-
+  // _renderItem(data, calData) {
+  //   for (let i = 0; i < calData.length; i++) {
+  //     console.log(calData[i].route['0'].summary);
+  //   }
+  // }
   render() {
-    const {day} = this.props;
-    const lastday = TimeLineItems.length;
-    let checkLastday = 1;
+    const {day, data} = this.props;
+    const lastPlaceNum = data.length;
+    let checkLastPlace = 1;
     return (
       <View style={styles.container}>
         <View style={styles.title}>
@@ -46,14 +51,19 @@ export default class TimelineDetail extends Component {
         </View>
         <ScrollView>
           <View style={styles.content}>
-            {TimeLineItems.map(item => {
-              let lastDay = false;
-              if (checkLastday === lastday) {
-                lastDay = true;
+            {/* {this._renderItem(data, this.props.calLichTrinh.data[day - 1])} */}
+            {data.map(item => {
+              let lastPlace = false;
+              if (checkLastPlace === lastPlaceNum) {
+                lastPlace = true;
               }
-              checkLastday++;
+              checkLastPlace++;
               return (
-                <TimeLineItem data={item} key={item.id} lastDay={lastDay} />
+                <TimeLineItem
+                  data={item}
+                  key={checkLastPlace}
+                  lastPlace={lastPlace}
+                />
               );
             })}
           </View>
@@ -62,6 +72,13 @@ export default class TimelineDetail extends Component {
     );
   }
 }
+const mapStateToProps = ({calLichTrinh}) => {
+  return {
+    calLichTrinh: calLichTrinh,
+  };
+};
+export default connect(mapStateToProps)(TimelineDetail);
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
