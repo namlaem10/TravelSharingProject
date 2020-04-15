@@ -13,7 +13,24 @@ export default class TimeLineItem extends Component {
     this.state = {};
   }
   renderInfo = () => {
-    if (!this.props.lastPlace) {
+    const {route, lastPlace} = this.props;
+    var hours = 0;
+    var minutes = 0;
+    var textTime = '';
+    var distance = 0;
+    if (route !== null) {
+      hours = 0;
+      var secs = route.travelTime;
+      minutes = Math.floor(secs / 60);
+      if (minutes > 60) {
+        hours = Math.floor(minutes / 60);
+      }
+      minutes = minutes - hours * 60;
+      textTime = hours > 0 ? `${hours}h ${minutes}p` : `${minutes}p`;
+
+      distance = Math.round((route.length / 1000) * 10 + Number.EPSILON) / 10;
+    }
+    if (!lastPlace) {
       return (
         <View
           style={{
@@ -21,35 +38,86 @@ export default class TimeLineItem extends Component {
             marginBottom: EStyleSheet.value('10rem'),
           }}>
           <View style={styles.detailTextView}>
-            <Text style={{...styles.detailText, ...styles.text}}>
+            <Text
+              style={{
+                ...styles.detailText,
+                ...styles.text,
+              }}>
               T/g tham quan:
             </Text>
-            <Text style={{...styles.timeDetailText, ...styles.text}}>
-              2h 15p
+            <Text
+              style={{
+                ...styles.timeDetailText,
+                ...styles.text,
+              }}>
+              1h 30p
             </Text>
           </View>
           <View style={styles.detailTextView}>
-            <Text style={{...styles.detailText, ...styles.text}}>
+            <Text
+              style={{
+                ...styles.detailText,
+                ...styles.text,
+              }}>
               T/g di chuyển:
             </Text>
-            <Text style={{...styles.timeDetailText, ...styles.text}}>30p</Text>
+            <Text
+              style={{
+                ...styles.timeDetailText,
+                ...styles.text,
+              }}>
+              {textTime}
+            </Text>
           </View>
           <View style={styles.detailTextView}>
-            <Text style={{...styles.detailText, ...styles.text}}>
+            <Text
+              style={{
+                ...styles.detailText,
+                ...styles.text,
+              }}>
               Khoảng cách:
             </Text>
-            <Text style={{...styles.timeDetailText, ...styles.text}}>
-              30 km
+            <Text
+              style={{
+                ...styles.timeDetailText,
+                ...styles.text,
+              }}>
+              {distance} km
             </Text>
           </View>
         </View>
       );
     } else {
-      return null;
+      return (
+        <View
+          style={{
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            position: 'absolute',
+            top: EStyleSheet.value('28rem'),
+          }}>
+          <View style={styles.detailTextView}>
+            <Text
+              style={{
+                ...styles.detailText,
+                ...styles.text,
+              }}>
+              T/g tham quan:
+            </Text>
+            <Text
+              style={{
+                ...styles.timeDetailText,
+                ...styles.text,
+              }}>
+              1h 30p
+            </Text>
+          </View>
+        </View>
+      );
     }
   };
   render() {
-    const {data, isDelete} = this.props;
+    const {data, isDelete, timeText} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.Col1}>
@@ -60,7 +128,7 @@ export default class TimeLineItem extends Component {
                 fontSize: EStyleSheet.value('16rem'),
                 color: '#127138',
               }}>
-              Chưa có
+              {timeText}
             </Text>
           </View>
           {this.renderInfo()}
@@ -90,7 +158,9 @@ export default class TimeLineItem extends Component {
         <View style={styles.Col3}>
           <View style={styles.pictureView}>
             <Image
-              source={{uri: data.place_visit_image}}
+              source={{
+                uri: data.place_visit_image,
+              }}
               style={{
                 width: '100%',
                 height: '100%',

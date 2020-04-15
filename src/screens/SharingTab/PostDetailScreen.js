@@ -17,7 +17,7 @@ import moment from 'moment';
 import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
 import {connect} from 'react-redux';
-import {actions, types} from '../../redux/reducers/caculatedLichTrinhReducer';
+import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 const HEADER_MAX_HEIGHT = EStyleSheet.value('290rem');
@@ -31,6 +31,8 @@ class PostDetailScreen extends Component {
       data: null,
       isLoading: true,
       linkImage: null,
+      routeData: [],
+      isDetailLichTrinhReady: false,
     };
   }
   componentDidMount = async () => {
@@ -49,46 +51,43 @@ class PostDetailScreen extends Component {
       data.schedule.number_of_days,
     );
   };
-  // onPressMore = () => {
-  //   var array = [
-  //     {
-  //       latitude: 10.334698,
-  //       longitude: 107.077025,
-  //     },
-  //     {
-  //       latitude: 10.333013,
-  //       longitude: 107.075891,
-  //     },
-  //     {
-  //       latitude: 10.329577,
-  //       longitude: 107.081519,
-  //     },
-  //   ];
-  //   this.props.get_location_info(array);
-  // };
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.setState({
+      routeData: nextProps.detailLichTrinh.data,
+      isDetailLichTrinhReady: true,
+    });
+  }
   onPressBack = () => {
     this.props.navigation.goBack();
   };
   onPressDetailButton = () => {
-    const {data} = this.state;
+    const {data, routeData} = this.state;
     this.props.navigation.navigate('TravelTimelineDetail', {
       data: data.schedule.schedule_detail,
       page: 1,
       totalDay: data.schedule.number_of_days,
       start: data.start_day,
+      routeData: routeData,
     });
   };
   onPressTravelDay = page => {
-    const {data} = this.state;
+    const {data, routeData} = this.state;
     this.props.navigation.navigate('TravelTimelineDetail', {
       data: data.schedule.schedule_detail,
       page: page,
       totalDay: data.schedule.number_of_days,
       start: data.start_day,
+      routeData: routeData,
     });
   };
   render() {
-    const {data, isLoading, linkImage} = this.state;
+    const {
+      data,
+      isLoading,
+      linkImage,
+      routeData,
+      isDetailLichTrinhReady,
+    } = this.state;
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
       outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
@@ -114,6 +113,8 @@ class PostDetailScreen extends Component {
           ])}>
           <View style={styles.scrollViewContent}>
             <ScrollVerticalLichTrinh
+              routeInfo={routeData}
+              isDetailLichTrinhReady={isDetailLichTrinhReady}
               data={data}
               onPressDetailButton={this.onPressDetailButton}
               onPressTravelDay={this.onPressTravelDay}
@@ -219,16 +220,23 @@ class PostDetailScreen extends Component {
     );
   }
 }
+
+const mapStateToProps = ({detailLichTrinh}) => {
+  return {
+    detailLichTrinh: detailLichTrinh,
+  };
+};
 const mapDispatchToProps = dispatch => {
   return {
     get_location_info: (params, number) =>
       dispatch(actions.get_location_info(params, number)),
+    reset: () => dispatch(actions.reset()),
   };
 };
 
 // eslint-disable-next-line prettier/prettier
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(PostDetailScreen);
 const styles = EStyleSheet.create({

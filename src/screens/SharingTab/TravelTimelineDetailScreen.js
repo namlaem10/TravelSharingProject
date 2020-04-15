@@ -32,8 +32,10 @@ export default class TravelTimelineDetailScreen extends Component {
     const data = this.props.navigation.getParam('data');
     const totalDay = this.props.navigation.getParam('totalDay');
     let startDate = this.props.navigation.getParam('start');
+    const routeData = this.props.navigation.getParam('routeData');
     for (let i = 1; i <= totalDay; i++) {
-      let item = data['day_' + i];
+      let dataItem = data['day_' + i];
+      let routeDataItem = routeData[i - 1];
       let date = moment(startDate).format('DD/MM/YYYY');
       let day = date.split('/')[0];
       let month = date.split('/')[1];
@@ -43,7 +45,8 @@ export default class TravelTimelineDetailScreen extends Component {
       array.push(
         <TimeLineDetail
           key={'day_' + i}
-          data={item}
+          data={dataItem}
+          routeData={routeDataItem}
           tabLabel={lable}
           day={countday}
         />,
@@ -76,21 +79,6 @@ export default class TravelTimelineDetailScreen extends Component {
             />
           )}>
           {this._renderItem()}
-          {/* {Dates.map(item => {
-            let SplitDate = item.date.split('/');
-            let day = SplitDate[0];
-            let month = SplitDate[1];
-            let lable = day + '.' + month;
-            countDay++;
-            return (
-              <TimeLineDetail
-                key={item.id}
-                data={item}
-                tabLabel={lable}
-                day={countDay}
-              />
-            );
-          })} */}
         </ScrollableTabView>
       </View>
     );

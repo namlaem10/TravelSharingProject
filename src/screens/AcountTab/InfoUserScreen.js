@@ -17,7 +17,15 @@ import {BASE_URL} from '../../services/URL';
 class InfoUserScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      user: null,
+    };
+  }
+  UNSAFE_componentWillMount() {
+    this.setState({user: this.props.user.data});
+  }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.setState({user: this.props.user.data});
   }
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
@@ -31,7 +39,7 @@ class InfoUserScreen extends Component {
     this.props.navigation.navigate('EditInfo');
   };
   render() {
-    const user = this.props.user.data;
+    const {user} = this.state;
     let avatar = null;
     if (user.avatar) {
       avatar = BASE_URL + '/' + user.avatar;

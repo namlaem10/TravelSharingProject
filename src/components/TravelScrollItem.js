@@ -11,7 +11,13 @@ export default class TravelScrollItem extends Component {
   }
 
   render() {
-    const {page, onPressTravelDay, data} = this.props;
+    const {page, onPressTravelDay, data, routeInfo} = this.props;
+    var totalDistance = 0;
+    if (routeInfo) {
+      totalDistance =
+        Math.round((routeInfo.summary.distance / 1000) * 10 + Number.EPSILON) /
+        10;
+    }
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => onPressTravelDay(page)}>
@@ -48,7 +54,11 @@ export default class TravelScrollItem extends Component {
               source={constants.Images.IC_VEHICLE_GRAY}
               style={styles.icon}
             />
-            <Text>Xe máy, 30km</Text>
+            {totalDistance !== 0 ? (
+              <Text>Xe máy, {totalDistance}km</Text>
+            ) : (
+              <Text>Chưa có thông tin</Text>
+            )}
           </View>
         </View>
       </View>

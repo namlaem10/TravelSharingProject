@@ -85,7 +85,7 @@ class EditInfoScreen extends Component {
     this.setState({isLoading: true});
     const {name, phone, avatarFile} = this.state;
     var bodyFormData = new FormData();
-    bodyFormData.append('display_name', name);
+    bodyFormData.append('displayName', name);
     bodyFormData.append('phone', phone);
     if (avatarFile !== null) {
       bodyFormData.append('avatar', {

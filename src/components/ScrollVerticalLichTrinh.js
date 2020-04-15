@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -13,12 +20,13 @@ export default class ScrollVerticalLichTrinh extends Component {
     super(props);
     this.state = {};
   }
-  _RenderScrollTravelItem = schedule => {
+  _RenderScrollTravelItem = (schedule, routeInfo) => {
     let Items = [];
     for (let i = 1; i <= schedule.number_of_days; i++) {
       let key = 'day_' + i;
       Items.push(
         <TravelScrollItem
+          routeInfo={routeInfo[i - 1]}
           data={schedule.schedule_detail[key]}
           key={key}
           page={i}
@@ -50,7 +58,10 @@ export default class ScrollVerticalLichTrinh extends Component {
       isBlog,
       data,
       isButton,
+      routeInfo,
+      isDetailLichTrinhReady,
     } = this.props;
+    const {isLoading} = this.state;
     let Button = true;
     if (isButton === false) {
       Button = isButton;
@@ -71,20 +82,29 @@ export default class ScrollVerticalLichTrinh extends Component {
             }}>
             Lịch trình
           </Text>
-          <TouchableOpacity onPress={() => onPressDetailButton()}>
-            <Text
-              style={{
-                fontFamily: constants.Fonts.regular,
-                fontSize: EStyleSheet.value('15rem'),
-                color: '#6C88CE',
-              }}>
-              Chi tiết
-            </Text>
-          </TouchableOpacity>
+          {isLoading ? null : (
+            <TouchableOpacity onPress={() => onPressDetailButton()}>
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.regular,
+                  fontSize: EStyleSheet.value('15rem'),
+                  color: '#6C88CE',
+                }}>
+                Chi tiết
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View style={styles.scrollViewContent}>
-            {this._RenderScrollTravelItem(data.schedule)}
+            {!isDetailLichTrinhReady ? (
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+            ) : (
+              this._RenderScrollTravelItem(data.schedule, routeInfo)
+            )}
           </View>
         </ScrollView>
         <View style={styles.members}>
@@ -133,6 +153,8 @@ const styles = EStyleSheet.create({
   container: {},
   scrollViewContent: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   members: {
     marginVertical: '10rem',

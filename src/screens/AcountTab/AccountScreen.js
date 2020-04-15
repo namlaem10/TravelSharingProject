@@ -34,10 +34,10 @@ class AccountScreen extends Component {
       return false;
     }
   }
-  logOut = () => {
+  logOut = async () => {
     this.setState({isLoading: true});
-    let remove = this.removeToken();
-    if ((remove = true)) {
+    let remove = await this.removeToken();
+    if (remove === true) {
       setTimeout(() => {
         this.setState({isLoading: false});
         this.props.navigation.navigate('SignIn');

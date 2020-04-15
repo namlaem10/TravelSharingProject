@@ -44,7 +44,11 @@ export default class NewsFeedItem extends Component {
   render() {
     const {data, onPressItem} = this.props;
     moment.locale('vi');
-    var avatar = BASE_URL + '/' + data.create_by.avatar;
+    const User = data.create_by;
+    let avatar = null;
+    if (User) {
+      avatar = BASE_URL + '/' + User.avatar;
+    }
     return (
       <TouchableOpacity
         style={styles.container}
@@ -68,7 +72,7 @@ export default class NewsFeedItem extends Component {
             <View style={styles.headerCol1}>
               <Image
                 source={
-                  data.create_by.avatar !== null
+                  User.avatar !== null
                     ? {uri: avatar}
                     : constants.Images.IC_AVATAR1
                 }
