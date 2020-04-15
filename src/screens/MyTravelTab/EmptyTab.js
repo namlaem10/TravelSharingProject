@@ -8,10 +8,28 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 export default class EmptyTab extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      statusText: null,
+    };
+  }
+  UNSAFE_componentWillMount() {
+    const {status} = this.props;
+    let statusText = '';
+    if (status === 1) {
+      statusText = 'sắp';
+    } else if (status === 2) {
+      statusText = 'đang';
+    } else {
+      statusText = 'đã';
+    }
+    this.setState({statusText});
   }
 
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   console.log('WillReceive', nextProps);
+  // }
   render() {
+    const {statusText} = this.state;
     return (
       <View style={styles.container}>
         <Image
@@ -21,7 +39,7 @@ export default class EmptyTab extends Component {
             height: EStyleSheet.value('250rem'),
           }}
         />
-        <Text>Bạn không có lịch trình nào đang diễn ra</Text>
+        <Text>Bạn không có lịch trình nào {statusText} diễn ra</Text>
         <TouchableOpacity
           style={styles.confirmButton}
           // onPress={() => this.onPressConfirm()}

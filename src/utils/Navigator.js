@@ -29,6 +29,7 @@ import InfoUser from '../screens/AcountTab/InfoUserScreen';
 import EditInfo from '../screens/AcountTab/EditInfoScreen';
 
 import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
+import TimeLineDetail from '../screens/MyTravelTab/TimeLineDetailScreen';
 import ShareTimeLineDetail from '../screens/MyTravelTab/ShareTimeLineDetailScreen';
 import CreatePost from '../screens/MyTravelTab/CreatePostScreen';
 import CreateTrip from '../screens/MyTravelTab/CreateTripScreen';
@@ -178,11 +179,14 @@ const MyTravelStack = createStackNavigator(
     MyTravel: {
       screen: MyTravel,
     },
-    ShareTimeLineDetail: {
-      screen: ShareTimeLineDetail,
+    TimeLineDetail: {
+      screen: TimeLineDetail,
     },
     CreatePost: {
       screen: CreatePost,
+    },
+    ShareTimeLineDetail: {
+      screen: ShareTimeLineDetail,
     },
     CreateTrip: {
       screen: CreateTrip,
@@ -352,7 +356,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Sharing',
+    initialRouteName: 'MyTravel',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,

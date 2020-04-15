@@ -1,9 +1,13 @@
-import {Dimensions} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import fonts from './Fonts';
 import colors from './Colors';
 import images from './Images';
-
+if (Platform.OS === 'android') {
+  //only android needs polyfill
+  require('intl'); // import intl object
+  require('intl/locale-data/jsonp/vi'); // load the required locale details
+}
 export const Fonts = fonts;
 
 export const Colors = colors;
@@ -61,3 +65,5 @@ export async function GetRoutes(schedule_detail, numberOfDay) {
     console.log(error);
   }
 }
+const options2 = {style: 'currency', currency: 'VND'};
+export const currencyFormatter = new Intl.NumberFormat('vi-VI', options2);

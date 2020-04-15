@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -16,29 +17,56 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 import SearchBar from '../../components/SearchBar';
 import {ScrollableTabView} from '@valdio/react-native-scrollable-tabview';
 import CustomTabBarNoScroll from '../../components/CustomTabBarNoScroll';
-const tabStyle = {};
 import {FeedNews} from '../../utils/fakedata';
 import TravelItem from './TravelItem';
 import TravelItemGone from './TravelItemGone';
 import EmptyTab from './EmptyTab';
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/ownLichTrinhReducer';
+const tabStyle = {};
 
-const fakeData = [];
-export default class MyTravelScreen extends Component {
+class MyTravelScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: 'Lịch trình của tôi',
       searchText: '',
       isDarg: false,
+      ownLichTrinh: null,
+      isLoading: true,
     };
   }
-  onSearchChangeText = (text) => {
+  async UNSAFE_componentWillMount() {
+    await this.props.get_own();
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const {ownLichTrinh} = nextProps;
+    if (ownLichTrinh.status) {
+      this.setState({
+        isLoading: false,
+        message: ownLichTrinh.data.message
+          ? ownLichTrinh.data.message
+          : 'Lỗi tải thông tin :(',
+      });
+    } else {
+      this.setState({
+        isLoading: false,
+        ownLichTrinh: ownLichTrinh.data,
+      });
+    }
+  }
+
+  onSearchChangeText = text => {
     this.setState({
       searchText: text,
     });
   };
-  onPressItem = (id) => {
-    this.props.navigation.navigate('TripDetail', {itemId: id});
+  onPressItem = item => {
+    this.props.navigation.navigate('TripDetail', {data: item});
+  };
+  onPressItemGone = item => {
+    this.props.navigation.navigate('TripDetail', {data: item, isGone: true});
   };
   _handleStartDrag = () => {
     this.setState({
@@ -50,25 +78,35 @@ export default class MyTravelScreen extends Component {
       isDarg: false,
     });
   };
-  onPressConfirm = (item) => {
+  onPressConfirm = item => {
     this.props.navigation.navigate('ShareTimeLineDetail', {
       action: 'sharing',
-      item: item,
+      data: item.schedule.schedule_detail,
+      page: 1,
+      totalDay: item.schedule.number_of_days,
+      start: item.start_day,
+      isGone: true,
     });
   };
   onPressAddButton = () => {
     console.log('Add');
   };
   _renderWillGo = () => {
+    const {ownLichTrinh} = this.state;
     return (
-      <View tabLabel="Sắp đi">
+      <View style={styles.scontentTabView} tabLabel="Sắp đi">
         <FlatList
+          style={{height: '100%'}}
           showsVerticalScrollIndicator={false}
-          data={FeedNews}
-          renderItem={({item}) => (
-            <TravelItem data={item} onPressItem={this.onPressItem} />
-          )}
-          keyExtractor={(item) => item.id}
+          data={ownLichTrinh}
+          renderItem={({item}) => {
+            var currentDate = new Date();
+            var startDate = new Date(item.start_day);
+            if (startDate > currentDate) {
+              return <TravelItem data={item} onPressItem={this.onPressItem} />;
+            }
+          }}
+          keyExtractor={item => item.id}
           onScrollEndDrag={() => this._handleEndDrag()}
           onScrollBeginDrag={() => this._handleStartDrag()}
         />
@@ -89,37 +127,50 @@ export default class MyTravelScreen extends Component {
     );
   };
   _renderGoin = () => {
+    const {ownLichTrinh} = this.state;
     return (
       <FlatList
         tabLabel="Đang đi"
         showsVerticalScrollIndicator={false}
-        data={FeedNews}
-        renderItem={({item}) => (
-          <TravelItem data={item} onPressItem={this.onPressItem} />
-        )}
-        keyExtractor={(item) => item.id}
+        data={ownLichTrinh}
+        renderItem={({item}) => {
+          var currentDate = new Date();
+          var startDate = new Date(item.start_day);
+          var endDate = new Date(item.end_day);
+          if (currentDate >= startDate && currentDate <= endDate) {
+            return <TravelItem data={item} onPressItem={this.onPressItem} />;
+          }
+        }}
+        keyExtractor={item => item.id}
       />
     );
   };
   _renderGone = () => {
+    const {ownLichTrinh} = this.state;
     return (
       <FlatList
         tabLabel="Đã đi"
         showsVerticalScrollIndicator={false}
-        data={FeedNews}
-        renderItem={({item}) => (
-          <TravelItemGone
-            data={item}
-            onPressConfirm={this.onPressConfirm}
-            onPressItem={this.onPressItem}
-          />
-        )}
-        keyExtractor={(item) => item.id}
+        data={ownLichTrinh}
+        renderItem={({item}) => {
+          var currentDate = new Date();
+          var endDate = new Date(item.end_day);
+          if (endDate < currentDate) {
+            return (
+              <TravelItemGone
+                data={item}
+                onPressItem={this.onPressItemGone}
+                onPressConfirm={this.onPressConfirm}
+              />
+            );
+          }
+        }}
+        keyExtractor={item => item.id}
       />
     );
   };
   render() {
-    const {title, searchText} = this.state;
+    const {title, searchText, ownLichTrinh, isLoading} = this.state;
 
     return (
       <View style={styles.container}>
@@ -139,25 +190,85 @@ export default class MyTravelScreen extends Component {
               backgroundColor={'white'}
             />
           )}>
-          {fakeData.length > 1 ? (
+          {isLoading ? (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1,
+              }}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+            </View>
+          ) : ownLichTrinh !== null ? (
             this._renderWillGo()
           ) : (
-            <EmptyTab tabLabel="Đã đi" />
+            <EmptyTab tabLabel="Sắp đi" status={1} />
           )}
-          {this._renderGoin()}
-          {this._renderGone()}
+          {isLoading ? (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1,
+              }}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+            </View>
+          ) : ownLichTrinh !== null ? (
+            this._renderGoin()
+          ) : (
+            <EmptyTab tabLabel="Đang đi" status={2} />
+          )}
+          {isLoading ? (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1,
+              }}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+            </View>
+          ) : ownLichTrinh !== null ? (
+            this._renderGone()
+          ) : (
+            <EmptyTab tabLabel="Đã đi" status={3} />
+          )}
         </ScrollableTabView>
       </View>
     );
   }
 }
-
+const mapStateToProps = ({user, ownLichTrinh}) => {
+  return {
+    user: user,
+    ownLichTrinh: ownLichTrinh,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    get_own: () => dispatch(actions.get_own()),
+    reset: () => dispatch(actions.reset()),
+  };
+};
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MyTravelScreen);
 const styles = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: 'white',
-    paddingBottom: '30rem',
+    paddingBottom: '0rem',
   },
   header: {
     width: '100%',
@@ -172,4 +283,5 @@ const styles = EStyleSheet.create({
     right: '10rem',
     bottom: '0rem',
   },
+  scontentTabView: {},
 });

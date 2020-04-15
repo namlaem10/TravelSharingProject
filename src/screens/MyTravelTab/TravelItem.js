@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
+import moment from 'moment';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 export default class TravelItem extends Component {
@@ -13,10 +13,14 @@ export default class TravelItem extends Component {
 
   render() {
     const {data, onPressItem} = this.props;
+    moment.locale('vi');
+    var currentDate = new Date();
+    var startDate = new Date(data.start_day);
+    var leftDay = startDate.getDate() - currentDate.getDate();
     return (
       <TouchableOpacity
         style={styles.container}
-        onPress={() => onPressItem(data.id)}>
+        onPress={() => onPressItem(data)}>
         <View style={styles.header}>
           <Image
             source={require('../../assets/images/dalat2.jpg')}
@@ -29,22 +33,32 @@ export default class TravelItem extends Component {
         </View>
         <View style={styles.content}>
           <View style={styles.title}>
-            <Text style={styles.textPlace}>TP. Hồ Chí Minh - Đà Lạt</Text>
-            <Text style={styles.textDayLeft}>3 ngày nữa</Text>
+            <Text style={styles.textPlace}>
+              {data.departure.destination_name} -{' '}
+              {data.destination.destination_name}
+            </Text>
+            <Text style={styles.textDayLeft}>
+              {leftDay > 0 ? leftDay + ' ngày nữa' : null}
+            </Text>
           </View>
           <View style={styles.textItem}>
             <Image
               source={constants.Images.IC_MONEY}
               style={styles.iconVector}
             />
-            <Text style={styles.subText}>3.000.000đ̲</Text>
+            <Text style={styles.subText}>
+              {constants.currencyFormatter.format(data.price)}
+            </Text>
           </View>
           <View style={styles.textItem}>
             <Image
               source={constants.Images.IC_TIME}
               style={styles.iconVector}
             />
-            <Text style={styles.subText}>20/03/2020 - 22/03/2020</Text>
+            <Text style={styles.subText}>
+              {moment(data.start_day).format('DD/MM/YYYY')}&nbsp;-&nbsp;
+              {moment(data.end_day).format('DD/MM/YYYY')}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>

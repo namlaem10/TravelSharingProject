@@ -60,7 +60,7 @@ class CreateTripScreen extends Component {
       this.props.navigation.goBack();
     }
   };
-  onPressPlace = (item) => {
+  onPressPlace = item => {
     console.log('press', item.id);
   };
   onPressStartPlace = () => {
@@ -73,7 +73,7 @@ class CreateTripScreen extends Component {
       isStart: false,
     });
   };
-  onPressDate = (isStart) => {
+  onPressDate = isStart => {
     //check bấm start hay end dat, hiện popup tương ứng
     this.setState({isStartDate: isStart, visible: true});
   };
@@ -138,7 +138,7 @@ class CreateTripScreen extends Component {
               locale={'vi'}
               date={startDate}
               mode="date"
-              onDateChange={(value) => {
+              onDateChange={value => {
                 isStartDate
                   ? this.setState({startDate: value})
                   : this.setState({endDate: value});
@@ -370,7 +370,7 @@ class CreateTripScreen extends Component {
           </View>
           <View style={styles.TouchGroup1}>
             <TextInput
-              onChangeText={(text) => this.setState({nameText: text})}
+              onChangeText={text => this.setState({nameText: text})}
               style={nameText !== '' ? styles.inputText : styles.placeholder}
               placeholder={'Nhấp để nhập tên nhóm'}
               value={nameText}
@@ -402,7 +402,7 @@ const mapStateToProps = ({startPlace, endPlace, membersId}) => {
     memsId: membersId,
   };
 };
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     resetStart: () => dispatch(actions.resetStart()),
     resetEnd: () => dispatch(actions.resetEnd()),
@@ -410,7 +410,10 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 // eslint-disable-next-line prettier/prettier
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTripScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CreateTripScreen);
 const styles = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,

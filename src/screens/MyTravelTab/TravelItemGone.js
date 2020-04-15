@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-
+import moment from 'moment';
 export default class TravelItem extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +17,7 @@ export default class TravelItem extends Component {
     return (
       <TouchableOpacity
         style={styles.container}
-        onPress={() => onPressItem(data.id)}>
+        onPress={() => onPressItem(data)}>
         <View style={styles.header}>
           <Image
             source={require('../../assets/images/dalat2.jpg')}
@@ -31,29 +30,33 @@ export default class TravelItem extends Component {
         </View>
         <View style={styles.content}>
           <View style={styles.title}>
-            <Text style={styles.textPlace}>TP. Hồ Chí Minh - Đà Lạt</Text>
-            <Text style={styles.textDayLeft}>3 ngày nữa</Text>
+            <Text style={styles.textPlace}>
+              {data.departure.destination_name} -{' '}
+              {data.destination.destination_name}
+            </Text>
           </View>
           <View style={styles.textItem}>
             <Image
               source={constants.Images.IC_MONEY}
               style={styles.iconVector}
             />
-            <Text style={styles.subText}>3.000.000đ̲</Text>
+            <Text style={styles.subText}>
+              {constants.currencyFormatter.format(data.price)}
+            </Text>
           </View>
           <View style={styles.textItem}>
             <Image
               source={constants.Images.IC_TIME}
               style={styles.iconVector}
             />
-            <Text style={styles.subText}>20/03/2020 - 22/03/2020</Text>
+            <Text style={styles.subText}>
+              {moment(data.start_day).format('DD/MM/YYYY')}&nbsp;-&nbsp;
+              {moment(data.end_day).format('DD/MM/YYYY')}
+            </Text>
           </View>
         </View>
         {this.state.isShare ? (
-          <View
-            style={styles.confirmButton}
-            // onPress={() => this.onPressConfirm()}
-          >
+          <View style={styles.confirmButton}>
             <Text
               style={{
                 fontSize: EStyleSheet.value('15rem'),
@@ -66,7 +69,7 @@ export default class TravelItem extends Component {
         ) : (
           <TouchableOpacity
             style={styles.confirmButton}
-            onPress={() => onPressConfirm('data.id')}>
+            onPress={() => onPressConfirm(data)}>
             <Text
               style={{
                 fontSize: EStyleSheet.value('15rem'),
@@ -132,7 +135,7 @@ const styles = EStyleSheet.create({
     width: '30rem',
   },
   subText: {
-    fontSize: constants.FontSizes.regular,
+    fontSize: constants.FontSizes.title,
     fontFamily: constants.Fonts.light,
     color: '#686868',
     marginLeft: '10rem',
@@ -145,7 +148,7 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    bottom: '12rem',
+    bottom: '75rem',
     right: '10rem',
   },
 });

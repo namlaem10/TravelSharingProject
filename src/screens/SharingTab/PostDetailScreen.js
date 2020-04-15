@@ -169,7 +169,9 @@ class PostDetailScreen extends Component {
                     source={constants.Images.IC_MONEY_GRAY}
                     style={styles.infoBoxIcon}
                   />
-                  <Text style={{...styles.text}}>{data.price}đ</Text>
+                  <Text style={{...styles.text}}>
+                    {constants.currencyFormatter.format(data.price)}
+                  </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
                   <Text style={{...styles.text}}>Tạo bởi: &nbsp;&nbsp;</Text>

@@ -1,11 +1,5 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, ImageBackground, TouchableOpacity} from 'react-native';
 
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -17,29 +11,12 @@ import TitleBarCustom from '../../components/TitleBarCustom';
 import TimeLineDetailPersonal from '../../components/TimeLineDetailPersonal';
 import CustomTabBar from '../../components/CustomTabBar';
 import moment from 'moment';
-import {connect} from 'react-redux';
-import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
 const tabStyle = {};
-class ShareTimeLineDetailScreen extends Component {
+export default class TimeLineDetailScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      routeData: [],
-      isLoading: true,
-    };
   }
 
-  async componentWillMount() {
-    const data = await this.props.navigation.getParam('data');
-    const totalDay = await this.props.navigation.getParam('totalDay');
-    this.props.get_location_info(data, totalDay);
-  }
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({
-      routeData: nextProps.detailLichTrinh.data,
-      isLoading: false,
-    });
-  }
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
@@ -48,13 +25,16 @@ class ShareTimeLineDetailScreen extends Component {
       this.props.navigation.goBack();
     }
   };
+  onPressDeleteItem = data => {
+    console.log(data);
+  };
   _renderItem = () => {
     let array = [];
     let countday = 0;
     const data = this.props.navigation.getParam('data');
     const totalDay = this.props.navigation.getParam('totalDay');
     let startDate = this.props.navigation.getParam('start');
-    const {routeData} = this.state;
+    const routeData = this.props.navigation.getParam('routeData');
     const isGone = this.props.navigation.getParam('isGone', false);
     for (let i = 1; i <= totalDay; i++) {
       let dataItem = data['day_' + i];
@@ -73,6 +53,7 @@ class ShareTimeLineDetailScreen extends Component {
           tabLabel={lable}
           day={countday}
           isGone={isGone}
+          onPressDeleteItem={this.onPressDeleteItem}
         />,
       );
     }
@@ -81,6 +62,9 @@ class ShareTimeLineDetailScreen extends Component {
   onPressNext = () => {
     this.props.navigation.navigate('CreatePost');
   };
+  onPressShare = () => {
+    console.log('Shared');
+  };
   onPressCompleted = () => {
     this.props.navigation.navigate('TripDetail');
   };
@@ -88,9 +72,8 @@ class ShareTimeLineDetailScreen extends Component {
     this.props.navigation.navigate('AddPlaceDetail');
   };
   render() {
-    const action = this.props.navigation.getParam('action', 'default');
     const page = this.props.navigation.getParam('page', 1) - 1;
-    const {isLoading} = this.state;
+    const isGone = this.props.navigation.getParam('isGone', false);
     //trừ 1 vì Tính từ 0, nhưng page lấy từ 1
     return (
       <View style={styles.container}>
@@ -114,30 +97,25 @@ class ShareTimeLineDetailScreen extends Component {
               backgroundColor={'white'}
             />
           )}>
-          {isLoading ? (
-            <ActivityIndicator
-              size={EStyleSheet.value('60rem')}
-              color="#34D374"
-            />
-          ) : (
-            this._renderItem()
-          )}
+          {this._renderItem()}
         </ScrollableTabView>
-        <View style={styles.footer}>
-          {action === 'sharing' ? (
+        {isGone ? (
+          <View style={styles.footer}>
             <TouchableOpacity
               style={styles.confirmButton}
-              onPress={() => this.onPressNext()}>
+              onPress={() => this.onPressShare()}>
               <Text
                 style={{
                   fontSize: EStyleSheet.value('15rem'),
                   fontFamily: constants.Fonts.medium,
                   color: 'white',
                 }}>
-                Tiếp tục
+                Chia sẻ
               </Text>
             </TouchableOpacity>
-          ) : action === 'creating' ? (
+          </View>
+        ) : (
+          <View style={styles.footer}>
             <TouchableOpacity
               style={styles.confirmButton}
               onPress={() => this.onPressCompleted()}>
@@ -147,33 +125,16 @@ class ShareTimeLineDetailScreen extends Component {
                   fontFamily: constants.Fonts.medium,
                   color: 'white',
                 }}>
-                Hoàn thành
+                Lưu
               </Text>
             </TouchableOpacity>
-          ) : null}
-        </View>
+          </View>
+        )}
       </View>
     );
   }
 }
-const mapStateToProps = ({detailLichTrinh}) => {
-  return {
-    detailLichTrinh: detailLichTrinh,
-  };
-};
-const mapDispatchToProps = dispatch => {
-  return {
-    get_location_info: (params, number) =>
-      dispatch(actions.get_location_info(params, number)),
-    reset: () => dispatch(actions.reset()),
-  };
-};
 
-// eslint-disable-next-line prettier/prettier
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ShareTimeLineDetailScreen);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,

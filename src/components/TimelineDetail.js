@@ -9,8 +9,6 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import TimeLineItem from './TimeLineItem';
 
-//fakedata
-
 export default class TimelineDetail extends Component {
   constructor(props) {
     super(props);

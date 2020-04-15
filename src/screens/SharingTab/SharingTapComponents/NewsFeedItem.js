@@ -155,7 +155,9 @@ export default class NewsFeedItem extends Component {
                 style={styles.iconVector}
                 source={constants.Images.IC_MONEY}
               />
-              <Text style={{...styles.text}}>{data.price}đ</Text>
+              <Text style={{...styles.text}}>
+                {constants.currencyFormatter.format(data.price)}
+              </Text>
             </View>
             <View style={styles.iconGroup}>
               <View style={styles.heartComment}>

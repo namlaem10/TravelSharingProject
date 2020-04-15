@@ -117,7 +117,7 @@ export default class TimeLineItem extends Component {
     }
   };
   render() {
-    const {data, isDelete, timeText} = this.props;
+    const {data, isDelete, timeText, onPressDeleteItem} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.Col1}>
@@ -167,17 +167,15 @@ export default class TimeLineItem extends Component {
                 borderRadius: EStyleSheet.value('20rem'),
               }}
             />
-            {/* <View style={styles.deleteButton}>
-              <TouchableOpacity>
-                <Image
-                  style={{
-                    width: EStyleSheet.value('30rem'),
-                    height: EStyleSheet.value('30rem'),
-                  }}
-                  source={constants.Images.IC_CLOSE}
-                />
-              </TouchableOpacity>
-            </View> */}
+            {isDelete ? (
+              <View style={styles.deleteButtonGroup}>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => onPressDeleteItem(data)}>
+                  <Text style={{color: 'white'}}>Xóa</Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
           <View
             style={{
@@ -194,32 +192,9 @@ export default class TimeLineItem extends Component {
               }}>
               {data.place_visit_name}
             </Text>
-            {isDelete ? (
-              <View style={styles.deleteButton}>
-                <TouchableOpacity>
-                  <Image
-                    style={{
-                      width: EStyleSheet.value('25rem'),
-                      height: EStyleSheet.value('25rem'),
-                    }}
-                    source={constants.Images.IC_LEADER}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <Image
-                    style={{
-                      width: EStyleSheet.value('30rem'),
-                      height: EStyleSheet.value('30rem'),
-                    }}
-                    source={constants.Images.IC_DELETE}
-                  />
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <Text style={{...styles.detailText}}>
-                {data.place_visit_address}
-              </Text>
-            )}
+            <Text style={{...styles.detailText}}>
+              {data.place_visit_address}
+            </Text>
           </View>
         </View>
       </View>
@@ -279,9 +254,21 @@ const styles = EStyleSheet.create({
 
     elevation: 6,
   },
-  deleteButton: {
+  deleteButtonGroup: {
     flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    position: 'absolute',
+    right: '0rem',
+    top: '20rem',
+    borderTopLeftRadius: '15rem',
+    borderBottomLeftRadius: '15rem',
+  },
+  deleteButton: {
+    width: '50rem',
+    height: '25rem',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

@@ -26,11 +26,14 @@ class NewsFeedScreen extends Component {
       searchText: '',
       isLoading: true,
       message: '',
+      data: null,
     };
   }
-  componentDidMount = async () => {
+  UNSAFE_componentWillMount = async () => {
     await this.props.get_all();
-    const {allLichTrinh} = this.props;
+  };
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const {allLichTrinh} = nextProps;
     if (allLichTrinh.status) {
       this.setState({
         isLoading: false,
@@ -41,9 +44,10 @@ class NewsFeedScreen extends Component {
     } else {
       this.setState({
         isLoading: false,
+        data: allLichTrinh.data,
       });
     }
-  };
+  }
   onSearchChangeText = text => {
     this.setState({
       searchText: text,
@@ -53,8 +57,8 @@ class NewsFeedScreen extends Component {
     this.props.navigation.navigate('PostDetail', {data: item});
   };
   render() {
-    const {searchText, isLoading, message} = this.state;
-    const {allLichTrinh, user} = this.props;
+    const {searchText, isLoading, message, data} = this.state;
+    const {user} = this.props;
     const User = user.data;
     let avatar = null;
     if (User) {
@@ -126,10 +130,10 @@ class NewsFeedScreen extends Component {
               size={EStyleSheet.value('60rem')}
               color="#34D374"
             />
-          ) : allLichTrinh.data !== null ? (
+          ) : data !== null ? (
             <FlatList
               showsVerticalScrollIndicator={false}
-              data={allLichTrinh.data}
+              data={data}
               renderItem={({item}) => (
                 <NewsFeedItem
                   data={item}
@@ -140,7 +144,13 @@ class NewsFeedScreen extends Component {
               keyExtractor={item => item._id}
             />
           ) : (
-            <Text>{message}</Text>
+            <Text
+              styles={{
+                fontSize: EStyleSheet.value('20rem'),
+                fontFamily: constants.Fonts.regular,
+              }}>
+              {message}
+            </Text>
           )}
         </View>
       </View>
@@ -183,6 +193,7 @@ const styles = EStyleSheet.create({
   content: {
     flex: 3,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   titleGroup: {
     paddingHorizontal: '15rem',

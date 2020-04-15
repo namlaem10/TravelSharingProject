@@ -4,6 +4,7 @@ import {startPlaceReducer, endPlaceReducer} from './myTravelPlaceReducer';
 import {userReducer} from './UserReducer';
 import {allLichTrinhReducer} from './allLichTrinhReducer';
 import {detailLichTrinhReducer} from './detailLichTrinhReducer';
+import {ownLichTrinhReducer} from './ownLichTrinhReducer';
 export default {
   trip: managerGroupTripReducer,
   membersId: managerGroupMemberReducer,
@@ -12,4 +13,5 @@ export default {
   user: userReducer,
   allLichTrinh: allLichTrinhReducer,
   detailLichTrinh: detailLichTrinhReducer,
+  ownLichTrinh: ownLichTrinhReducer,
 };

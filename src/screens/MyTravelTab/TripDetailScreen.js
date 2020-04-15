@@ -7,44 +7,96 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
+import moment from 'moment';
 import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
-
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
-export default class TripDetailScreen extends Component {
+class TripDetailScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      data: null,
+      isLoading: true,
+      linkImage: null,
+      routeData: [],
+      isDetailLichTrinhReady: false,
+      isGone: false,
+    };
   }
-
+  componentDidMount = async () => {
+    const data = await this.props.navigation.getParam('data', null);
+    const {longitude, latitude} = data.destination;
+    const linkImage = `https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=${
+      constants.API_KEY
+    }&c=${latitude},${longitude}&z=12`;
+    this.setState({
+      isLoading: false,
+      data,
+      linkImage,
+      isGone: this.props.navigation.getParam('isGone', false),
+    });
+    this.props.get_location_info(
+      data.schedule.schedule_detail,
+      data.schedule.number_of_days,
+    );
+  };
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.setState({
+      routeData: nextProps.detailLichTrinh.data,
+      isDetailLichTrinhReady: true,
+    });
+  }
   onPressBack = () => {
     this.props.navigation.navigate('MyTravel');
   };
   onPressDetailButton = () => {
-    // this.props.updateTab(1);
-    this.props.navigation.navigate('ShareTimeLineDetail', {
+    const {data, routeData, isGone} = this.state;
+    this.props.navigation.navigate('TimeLineDetail', {
+      data: data.schedule.schedule_detail,
       page: 1,
+      totalDay: data.schedule.number_of_days,
+      start: data.start_day,
+      routeData: routeData,
+      isGone: isGone,
     });
   };
   onPressTravelDay = page => {
-    // this.props.updateTab(page);
-    this.props.navigation.navigate('ShareTimeLineDetail', {
+    const {data, routeData, isGone} = this.state;
+    this.props.navigation.navigate('TimeLineDetail', {
+      data: data.schedule.schedule_detail,
       page: page,
+      totalDay: data.schedule.number_of_days,
+      start: data.start_day,
+      routeData: routeData,
+      isGone: isGone,
     });
   };
   onPressAddMember = () => {
-    this.props.navigation.navigate('AddMember', {location: 'TripDetail'});
+    this.props.navigation.navigate('AddMember', {
+      location: 'TripDetail',
+    });
   };
   onPressChat = () => {
-    this.props.navigation.navigate('Chatting', {location: 'TripDetail'});
+    this.props.navigation.navigate('Chatting', {
+      location: 'TripDetail',
+    });
   };
   render() {
-    return (
+    const {
+      data,
+      isLoading,
+      linkImage,
+      routeData,
+      isDetailLichTrinhReady,
+    } = this.state;
+    return !isLoading ? (
       <View style={styles.container}>
         <ScrollView
           // eslint-disable-next-line react/no-string-refs
@@ -53,8 +105,16 @@ export default class TripDetailScreen extends Component {
           <View style={styles.backgroundHeader}>
             <ImageBackground
               source={require('../../assets/images/vinhhalong.jpeg')}
-              style={{width: '100%', height: '100%'}}>
-              <TitleBarCustom onPress={this.onPressBack} />
+              style={{
+                width: '100%',
+                height: '100%',
+              }}>
+              <TitleBarCustom
+                onPress={this.onPressBack}
+                onPressMore={() => {
+                  console.log('more');
+                }}
+              />
             </ImageBackground>
             <View style={styles.infoBoxGroup}>
               <View style={styles.infoPlace}>
@@ -65,16 +125,7 @@ export default class TripDetailScreen extends Component {
                       fontSize: EStyleSheet.value('18rem'),
                       fontFamily: constants.Fonts.regular,
                     }}>
-                    Vịnh Hạ Long
-                  </Text>
-                </View>
-                <View style={{...styles.infoBoxText}}>
-                  <Image
-                    source={constants.Images.IC_LOCATION}
-                    style={styles.infoBoxIcon}
-                  />
-                  <Text style={{...styles.text}}>
-                    Hà Phong, Tp. Hạ Long, Quảng Ninh, Việt Nam
+                    {data.destination.destination_name}
                   </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
@@ -82,14 +133,20 @@ export default class TripDetailScreen extends Component {
                     source={constants.Images.IC_TIME}
                     style={styles.infoBoxIcon}
                   />
-                  <Text style={{...styles.text}}>20/03/2020 - 22/03/2020</Text>
+                  <Text style={{...styles.text}}>
+                    {moment(data.start_day).format('DD/MM/YYYY')}
+                    &nbsp;-&nbsp;
+                    {moment(data.end_day).format('DD/MM/YYYY')}
+                  </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
                   <Image
                     source={constants.Images.IC_MONEY_GRAY}
                     style={styles.infoBoxIcon}
                   />
-                  <Text style={{...styles.text}}>3.000.000đ</Text>
+                  <Text style={{...styles.text}}>
+                    {constants.currencyFormatter.format(data.price)}
+                  </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
                   <Text style={{...styles.text}}>Tạo bởi: &nbsp;&nbsp;</Text>
@@ -98,13 +155,15 @@ export default class TripDetailScreen extends Component {
                       ...styles.text,
                       fontFamily: constants.Fonts.regular,
                     }}>
-                    Nam ngu si
+                    {data.create_by.display_name}
                   </Text>
                 </View>
               </View>
               <View style={styles.miniMap}>
                 <Image
-                  source={require('../../assets/images/minimap.png')}
+                  source={{
+                    uri: linkImage,
+                  }}
                   style={{width: '100%', height: '100%'}}
                 />
               </View>
@@ -112,14 +171,22 @@ export default class TripDetailScreen extends Component {
           </View>
           <View style={styles.scrollViewContent}>
             <ScrollVerticalLichTrinh
+              routeInfo={routeData}
+              isDetailLichTrinhReady={isDetailLichTrinhReady}
+              data={data}
               onPressDetailButton={this.onPressDetailButton}
               onPressTravelDay={this.onPressTravelDay}
+              isButton={true}
               onPressAddMember={this.onPressAddMember}
               onPressChat={this.onPressChat}
               isBlog={false}
             />
           </View>
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <TouchableOpacity style={styles.trackingButton}>
               <Text
                 style={{
@@ -134,10 +201,31 @@ export default class TripDetailScreen extends Component {
           </View>
         </ScrollView>
       </View>
+    ) : (
+      <View style={styles.container}>
+        <ActivityIndicator size={EStyleSheet.value('60rem')} color="#34D374" />
+      </View>
     );
   }
 }
+const mapStateToProps = ({detailLichTrinh}) => {
+  return {
+    detailLichTrinh: detailLichTrinh,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    get_location_info: (params, number) =>
+      dispatch(actions.get_location_info(params, number)),
+    reset: () => dispatch(actions.reset()),
+  };
+};
 
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TripDetailScreen);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
