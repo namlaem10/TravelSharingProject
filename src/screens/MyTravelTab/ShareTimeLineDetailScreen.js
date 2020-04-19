@@ -7,11 +7,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import Dialog, {
-  DialogFooter,
-  DialogButton,
-  DialogContent,
-} from 'react-native-popup-dialog';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
@@ -36,6 +32,7 @@ class ShareTimeLineDetailScreen extends Component {
       schedule_detail: null,
       loadingCompleted: false,
       message: '',
+      totalDay: 0,
     };
   }
 
@@ -44,6 +41,7 @@ class ShareTimeLineDetailScreen extends Component {
     const totalDay = await this.props.navigation.getParam('totalDay');
     this.setState({
       schedule_detail: data,
+      totalDay: totalDay,
     });
     this.props.get_location_info(data, totalDay); // de lay info cua cai ngày đó. ví dụ từ điểm này qua điểm kia bao xa, bao lâu
   }
@@ -78,10 +76,22 @@ class ShareTimeLineDetailScreen extends Component {
       this.setState({
         schedule_detail: nextProps.detailLichTrinh.data,
       });
-    } else {
+      this.props.get_location_info(
+        nextProps.detailLichTrinh.data,
+        this.state.totalDay,
+      );
+    } else if (
+      nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO ||
+      nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO_FAIL
+    ) {
       this.setState({
         routeData: nextProps.detailLichTrinh.data,
         isLoading: false,
+      });
+    } else if (nextProps.detailLichTrinh.type === types.ADD_LANDSCAPES) {
+      this.setState({
+        schedule_detail: nextProps.detailLichTrinh.data.schedule_detail,
+        routeData: nextProps.detailLichTrinh.data.routes,
       });
     }
   }
@@ -143,6 +153,7 @@ class ShareTimeLineDetailScreen extends Component {
           tabLabel={lable}
           day={countday}
           isGone={isGone}
+          onPressAddPlace={this.onPressAddPlace}
           onPressDeleteItem={this.onPressDeleteItem}
         />,
       );
@@ -178,8 +189,15 @@ class ShareTimeLineDetailScreen extends Component {
     };
     await this.props.post_hanhtrinh(data);
   };
-  onPressAddPlace = () => {
-    this.props.navigation.navigate('AddPlaceDetail');
+  onPressAddPlace = keyDay => {
+    let endPlace = this.props.navigation.getParam('endPlace');
+    const {schedule_detail} = this.state;
+    this.props.navigation.navigate('AddPlaceDetail', {
+      destinationId: endPlace._id,
+      keyDay: keyDay,
+      schedule_detail: schedule_detail,
+      totalDay: this.state.totalDay,
+    });
   };
   render() {
     const action = this.props.navigation.getParam('action', 'default');

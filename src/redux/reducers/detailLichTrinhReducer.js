@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../services/APIservice';
 
 import {GetRoutes} from '../../utils/Constants';
+import {DiemThamQuan} from '../../utils/fakedata';
 
 export const types = {
   GET_LOCATION_INFO: 'GET_LOCATION_INFO',
@@ -10,6 +11,9 @@ export const types = {
   POST_HANHTRINH_FAIL: 'POST_HANHTRINH_FAIL',
   DELETE_SCHEDULE_DETAIL_ITEM: 'DELETE_SCHEDULE_DETAIL_ITEM',
   DELETE_SCHEDULE_DETAIL_ITEM_FAIL: 'DELETE_SCHEDULE_DETAIL_ITEM_FAIL',
+  GET_LANDSCAPES: 'GET_LANDSCAPES',
+  GET_LANDSCAPES_FAIL: 'GET_LANDSCAPES_FAIL',
+  ADD_LANDSCAPES: 'ADD_LANDSCAPES',
   RESET: 'RESET',
 };
 async function getToken() {
@@ -25,6 +29,32 @@ async function getToken() {
   }
 }
 export const actions = {
+  add_landscapes: (arrayItems, keyDay, schedule_detail, number_of_days) => {
+    return async dispatch => {
+      arrayItems.map(item => {
+        schedule_detail[keyDay].push(item);
+      });
+      let routes = await GetRoutes(schedule_detail, number_of_days);
+      dispatch({
+        type: types.ADD_LANDSCAPES,
+        payload: {
+          data: {schedule_detail, routes},
+        },
+      });
+    };
+  },
+  get_landscapes: destinationId => {
+    return async dispatch => {
+      // gọi api kèm destinationId để lấy array địa điểm
+      let landscapes = DiemThamQuan;
+      dispatch({
+        type: types.GET_LANDSCAPES,
+        payload: {
+          data: landscapes,
+        },
+      });
+    };
+  },
   delete_schedule_detail_item: (schedule_detail, keyDay, itemID) => {
     return async dispatch => {
       schedule_detail[keyDay] = await schedule_detail[keyDay].filter(
@@ -219,6 +249,18 @@ export const detailLichTrinhReducer = (state = initialState, action) => {
         type: types.DELETE_SCHEDULE_DETAIL_ITEM_FAIL,
         data: payload.data,
         status: payload.status,
+      };
+    }
+    case types.GET_LANDSCAPES: {
+      return {
+        type: types.GET_LANDSCAPES,
+        data: payload.data,
+      };
+    }
+    case types.ADD_LANDSCAPES: {
+      return {
+        type: types.ADD_LANDSCAPES,
+        data: payload.data,
       };
     }
     default: {

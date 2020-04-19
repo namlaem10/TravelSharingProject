@@ -40,9 +40,14 @@ export default class TimelineDetailPersonal extends Component {
           minute = minute - Math.floor(minute / 60) * 60;
         }
       }
-      timeText = `${hour < 10 ? '0' + hour : hour}:${
-        minute < 10 ? '0' + minute : minute
-      }`;
+      if (hour <= 24) {
+        timeText = `${hour < 10 ? '0' + hour : hour}:${
+          minute < 10 ? '0' + minute : minute
+        }`;
+      } else {
+        timeText = 'Qua ngày';
+      }
+
       viewData.push(
         <TimeLineItem
           data={item}
@@ -60,7 +65,7 @@ export default class TimelineDetailPersonal extends Component {
     return viewData;
   }
   render() {
-    const {day, onPressAddPlace, isGone} = this.props;
+    const {day, onPressAddPlace, isGone, keyDay} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.title}>
@@ -72,7 +77,7 @@ export default class TimelineDetailPersonal extends Component {
             Ngày {day}
           </Text>
           {isGone ? null : (
-            <TouchableOpacity onPress={() => onPressAddPlace()}>
+            <TouchableOpacity onPress={() => onPressAddPlace(keyDay)}>
               <Text
                 style={{
                   ...styles.titleText,

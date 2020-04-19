@@ -53,6 +53,7 @@ export default class TimeLineDetailScreen extends Component {
           tabLabel={lable}
           day={countday}
           isGone={isGone}
+          onPressAddPlace={this.onPressAddPlace}
           onPressDeleteItem={this.onPressDeleteItem}
         />,
       );

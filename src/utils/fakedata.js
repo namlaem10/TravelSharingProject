@@ -110,4 +110,47 @@ const schedule_detail = {
   day_6: [],
   day_7: [],
 };
-export {schedule_detail};
+const DiemThamQuan = [
+  {
+    _id: 'TQ23',
+    destination: 'DALAT',
+    location: {
+      latitude: 11.94596,
+      longitude: 108.41241,
+    },
+    tourist_destination_address: '43 Vạn Hạnh, P. 5, TP Đà Lạt, Lâm Đồng',
+    tourist_destination_image:
+      'https://triphunter.vn/media/W1siZiIsIjIwMTkvMTEvMDQvNDFqOG5teDliOF9sYW5nX2hvYV92YW5fdGhhbmhfMV90cmlwaHVudGVyLmpwZyJdLFsicCIsInRodW1iIiwiMjY3eDIwMCMiXV0/lang-hoa-van-thanh-1-triphunter.jpg?sha=10bacb9ffb014781',
+    tourist_destination_name: 'Làng hoa Vạn Thành',
+  },
+
+  /* 24 */
+  {
+    _id: 'TQ24',
+    destination: 'DALAT',
+    location: {
+      latitude: 11.968925,
+      longitude: 108.478341,
+    },
+    tourist_destination_address: 'Thái Phiên, Phường 12, TP. Đà Lạt, Lâm Đồng',
+    tourist_destination_image:
+      'https://triphunter.vn/media/W1siZiIsIjIwMTYvMDIvMTUvM2tqZG9uNm5jMV9BQUVBQVFBQUFBQUFBQUpVQUFBQUpETmxNems1TWpSaUxUVXlPVGN0TkRaall5MDRaakV4TFdFME5EQTRZMkptTmpoak5BLmpwZyJdLFsicCIsInRodW1iIiwiMjY3eDIwMCMiXV0/AAEAAQAAAAAAAAJUAAAAJDNlMzk5MjRiLTUyOTctNDZjYy04ZjExLWE0NDA4Y2JmNjhjNA.jpg?sha=7ec3b30b859822ae',
+    tourist_destination_name: 'Làng hoa Thái Phiên',
+  },
+
+  /* 25 */
+  {
+    _id: 'TQ25',
+    destination: 'DALAT',
+    location: {
+      latitude: 21.05025,
+      longitude: 105.47604,
+    },
+    tourist_destination_address:
+      'Khu phố Hà Đông, Phường 8, TP. Đà Lạt, Lâm Đồng',
+    tourist_destination_image:
+      'https://triphunter.vn/media/W1siZiIsIjIwMTYvMDIvMTUvOWM3N3Z1YnN0eV9MYV9uZ19ob2FfSGFfb19uZ18zLmpwZyJdLFsicCIsInRodW1iIiwiMjY3eDIwMCMiXV0/La%CC%80ng%20hoa%20Ha%CC%80%20%C4%90o%CC%82ng%203.jpg?sha=ed7692f27611f695',
+    tourist_destination_name: 'Làng hoa Hà Đông',
+  },
+];
+export {schedule_detail, DiemThamQuan};
