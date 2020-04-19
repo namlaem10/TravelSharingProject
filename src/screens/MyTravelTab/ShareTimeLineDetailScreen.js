@@ -5,8 +5,13 @@ import {
   ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
-
+import Dialog, {
+  DialogFooter,
+  DialogButton,
+  DialogContent,
+} from 'react-native-popup-dialog';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
@@ -19,6 +24,7 @@ import CustomTabBar from '../../components/CustomTabBar';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
+
 const tabStyle = {};
 class ShareTimeLineDetailScreen extends Component {
   constructor(props) {
@@ -26,19 +32,58 @@ class ShareTimeLineDetailScreen extends Component {
     this.state = {
       routeData: [],
       isLoading: true,
+      loadingVisible: false,
+      schedule_detail: null,
+      loadingCompleted: false,
+      message: '',
     };
   }
 
   async componentWillMount() {
-    const data = await this.props.navigation.getParam('data');
+    const data = await this.props.navigation.getParam('data'); // schedule detail de hien thi ra
     const totalDay = await this.props.navigation.getParam('totalDay');
-    this.props.get_location_info(data, totalDay);
+    this.setState({
+      schedule_detail: data,
+    });
+    this.props.get_location_info(data, totalDay); // de lay info cua cai ngày đó. ví dụ từ điểm này qua điểm kia bao xa, bao lâu
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({
-      routeData: nextProps.detailLichTrinh.data,
-      isLoading: false,
-    });
+    if (
+      nextProps.detailLichTrinh.type === types.POST_HANHTRINH ||
+      nextProps.detailLichTrinh.type === types.POST_HANHTRINH_FAIL
+    ) {
+      /// no se chay cai nay co check fail ko, neu m thich
+      if (nextProps.detailLichTrinh.type === types.POST_HANHTRINH) {
+        this.setState({
+          loadingVisible: false,
+          loadingCompleted: true,
+          message: 'Đã tạo xong! đang chuyển màn hình',
+        });
+        setTimeout(() => {
+          this.setState({
+            loadingCompleted: false,
+          });
+        }, 1500);
+      } else {
+        this.setState({
+          loadingVisible: false,
+          loadingCompleted: true,
+          message: 'Lỗi tạo hành trình!',
+        });
+      }
+    } else if (
+      nextProps.detailLichTrinh.type === types.DELETE_SCHEDULE_DETAIL_ITEM ||
+      nextProps.detailLichTrinh.type === types.DELETE_SCHEDULE_DETAIL_ITEM_FAIL
+    ) {
+      this.setState({
+        schedule_detail: nextProps.detailLichTrinh.data,
+      });
+    } else {
+      this.setState({
+        routeData: nextProps.detailLichTrinh.data,
+        isLoading: false,
+      });
+    }
   }
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
@@ -48,16 +93,40 @@ class ShareTimeLineDetailScreen extends Component {
       this.props.navigation.goBack();
     }
   };
+  onPressDeleteItem = (itemId, keyDay) => {
+    Alert.alert(
+      'Lưu ý',
+      'Bạn có chắc muốn xóa địa điểm này',
+      [
+        {
+          text: 'Không',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Có',
+          onPress: () => {
+            const {schedule_detail} = this.state;
+            this.props.delete_schedule_detail_item(
+              schedule_detail,
+              keyDay,
+              itemId,
+            );
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
   _renderItem = () => {
     let array = [];
     let countday = 0;
-    const data = this.props.navigation.getParam('data');
+    const {routeData, schedule_detail} = this.state;
     const totalDay = this.props.navigation.getParam('totalDay');
     let startDate = this.props.navigation.getParam('start');
-    const {routeData} = this.state;
     const isGone = this.props.navigation.getParam('isGone', false);
     for (let i = 1; i <= totalDay; i++) {
-      let dataItem = data['day_' + i];
+      let dataItem = schedule_detail['day_' + i];
       let routeDataItem = routeData[i - 1];
       let date = moment(startDate).format('DD/MM/YYYY');
       let day = date.split('/')[0];
@@ -68,11 +137,13 @@ class ShareTimeLineDetailScreen extends Component {
       array.push(
         <TimeLineDetailPersonal
           key={'day_' + i}
+          keyDay={'day_' + i}
           data={dataItem}
           routeData={routeDataItem}
           tabLabel={lable}
           day={countday}
           isGone={isGone}
+          onPressDeleteItem={this.onPressDeleteItem}
         />,
       );
     }
@@ -81,8 +152,31 @@ class ShareTimeLineDetailScreen extends Component {
   onPressNext = () => {
     this.props.navigation.navigate('CreatePost');
   };
-  onPressCompleted = () => {
-    this.props.navigation.navigate('TripDetail');
+  onPressCompleted = async () => {
+    this.setState({
+      loadingVisible: true,
+    });
+    let scheduleDetail = this.state.schedule_detail;
+    let startDate = this.props.navigation.getParam('start');
+    let endDate = this.props.navigation.getParam('end');
+    let startPlace = this.props.navigation.getParam('startPlace');
+    let endPlace = this.props.navigation.getParam('endPlace');
+    let memsId = this.props.navigation.getParam('memsId');
+    let nums_of_day = this.props.navigation.getParam('totalDay');
+    const data = {
+      departure: startPlace._id,
+      destination: endPlace._id,
+      start_day: moment(startDate).format('YYYY-MM-DD'),
+      end_day: moment(endDate).format('YYYY-MM-DD'),
+      rating: 0,
+      title: null,
+      description: null,
+      price: 2500000,
+      schedule_detail: scheduleDetail,
+      nums_of_day,
+      member: memsId,
+    };
+    await this.props.post_hanhtrinh(data);
   };
   onPressAddPlace = () => {
     this.props.navigation.navigate('AddPlaceDetail');
@@ -91,9 +185,46 @@ class ShareTimeLineDetailScreen extends Component {
     const action = this.props.navigation.getParam('action', 'default');
     const page = this.props.navigation.getParam('page', 1) - 1;
     const {isLoading} = this.state;
-    //trừ 1 vì Tính từ 0, nhưng page lấy từ 1
     return (
       <View style={styles.container}>
+        <Dialog visible={this.state.loadingVisible}>
+          <DialogContent>
+            <View style={styles.loadingCompleted}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('15rem'),
+                  letterSpacing: 1,
+                  marginLeft: EStyleSheet.value('5rem'),
+                }}>
+                Đang tạo hành trình...
+              </Text>
+            </View>
+          </DialogContent>
+        </Dialog>
+        <Dialog visible={this.state.loadingCompleted}>
+          <DialogContent>
+            <View style={styles.loadingCompleted}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('15rem'),
+                  letterSpacing: 1,
+                  marginLeft: EStyleSheet.value('5rem'),
+                }}>
+                {this.state.message}
+              </Text>
+            </View>
+          </DialogContent>
+        </Dialog>
         <View style={styles.backgroundHeader}>
           <ImageBackground
             source={require('../../assets/images/vinhhalong.jpeg')}
@@ -156,15 +287,21 @@ class ShareTimeLineDetailScreen extends Component {
     );
   }
 }
-const mapStateToProps = ({detailLichTrinh}) => {
+const mapStateToProps = ({detailLichTrinh, scheduleDetail}) => {
   return {
     detailLichTrinh: detailLichTrinh,
+    scheduleDetail: scheduleDetail,
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
     get_location_info: (params, number) =>
       dispatch(actions.get_location_info(params, number)),
+    post_hanhtrinh: params => dispatch(actions.post_hanhtrinh(params)),
+    delete_schedule_detail_item: (schedule_detail, keyDay, itemId) =>
+      dispatch(
+        actions.delete_schedule_detail_item(schedule_detail, keyDay, itemId),
+      ),
     reset: () => dispatch(actions.reset()),
   };
 };

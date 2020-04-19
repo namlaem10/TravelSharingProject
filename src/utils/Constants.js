@@ -65,5 +65,5 @@ export async function GetRoutes(schedule_detail, numberOfDay) {
     console.log(error);
   }
 }
-const options2 = {style: 'currency', currency: 'VND'};
+const options2 = {style: 'decimal', currency: 'VND'};
 export const currencyFormatter = new Intl.NumberFormat('vi-VI', options2);

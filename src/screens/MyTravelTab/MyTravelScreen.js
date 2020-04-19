@@ -34,12 +34,14 @@ class MyTravelScreen extends Component {
       isDarg: false,
       ownLichTrinh: null,
       isLoading: true,
+      will: 0,
+      goin: 0,
+      gone: 0,
     };
   }
   async UNSAFE_componentWillMount() {
     await this.props.get_own();
   }
-
   UNSAFE_componentWillReceiveProps(nextProps) {
     const {ownLichTrinh} = nextProps;
     if (ownLichTrinh.status) {
@@ -50,13 +52,33 @@ class MyTravelScreen extends Component {
           : 'Lỗi tải thông tin :(',
       });
     } else {
+      this.countLichTrinh(ownLichTrinh.data);
       this.setState({
         isLoading: false,
         ownLichTrinh: ownLichTrinh.data,
       });
     }
   }
-
+  countLichTrinh = lichtrinh => {
+    let will = 0;
+    let gone = 0;
+    let goin = 0;
+    lichtrinh.map(item => {
+      var currentDate = new Date();
+      var startDate = new Date(item.start_day);
+      var endDate = new Date(item.end_day);
+      if (startDate > currentDate) {
+        will++;
+      }
+      if (currentDate >= startDate && currentDate <= endDate) {
+        goin++;
+      }
+      if (endDate < currentDate) {
+        gone++;
+      }
+    });
+    this.setState({will, goin, gone});
+  };
   onSearchChangeText = text => {
     this.setState({
       searchText: text,
@@ -89,88 +111,102 @@ class MyTravelScreen extends Component {
     });
   };
   onPressAddButton = () => {
-    console.log('Add');
+    this.props.navigation.navigate('CreateTrip', {location: 'MyTravel'});
   };
   _renderWillGo = () => {
-    const {ownLichTrinh} = this.state;
-    return (
-      <View style={styles.scontentTabView} tabLabel="Sắp đi">
+    const {ownLichTrinh, will} = this.state;
+    if (will > 0) {
+      return (
+        <View style={styles.scontentTabView} tabLabel="Sắp đi">
+          <FlatList
+            style={{height: '100%'}}
+            showsVerticalScrollIndicator={false}
+            data={ownLichTrinh}
+            renderItem={({item}) => {
+              var currentDate = new Date();
+              var startDate = new Date(item.start_day);
+              if (startDate > currentDate) {
+                return (
+                  <TravelItem data={item} onPressItem={this.onPressItem} />
+                );
+              }
+            }}
+            keyExtractor={item => item._id}
+            onScrollEndDrag={() => this._handleEndDrag()}
+            onScrollBeginDrag={() => this._handleStartDrag()}
+          />
+          {this.state.isDarg ? null : (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => this.onPressAddButton()}>
+              <Image
+                source={constants.Images.IMAGE_ADD_CIRCLE_BUTTON}
+                style={{
+                  width: EStyleSheet.value('70rem'),
+                  height: EStyleSheet.value('70rem'),
+                }}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      );
+    } else {
+      return <EmptyTab tabLabel="Sắp đi" status={1} />;
+    }
+  };
+  _renderGoin = () => {
+    const {ownLichTrinh, goin} = this.state;
+    if (goin > 0) {
+      return (
         <FlatList
-          style={{height: '100%'}}
+          tabLabel="Đang đi"
           showsVerticalScrollIndicator={false}
           data={ownLichTrinh}
           renderItem={({item}) => {
             var currentDate = new Date();
             var startDate = new Date(item.start_day);
-            if (startDate > currentDate) {
+            var endDate = new Date(item.end_day);
+            if (currentDate >= startDate && currentDate <= endDate) {
               return <TravelItem data={item} onPressItem={this.onPressItem} />;
             }
           }}
-          keyExtractor={item => item.id}
-          onScrollEndDrag={() => this._handleEndDrag()}
-          onScrollBeginDrag={() => this._handleStartDrag()}
+          keyExtractor={item => item._id}
         />
-        {this.state.isDarg ? null : (
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => this.onPressAddButton()}>
-            <Image
-              source={constants.Images.IMAGE_ADD_CIRCLE_BUTTON}
-              style={{
-                width: EStyleSheet.value('70rem'),
-                height: EStyleSheet.value('70rem'),
-              }}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
-    );
-  };
-  _renderGoin = () => {
-    const {ownLichTrinh} = this.state;
-    return (
-      <FlatList
-        tabLabel="Đang đi"
-        showsVerticalScrollIndicator={false}
-        data={ownLichTrinh}
-        renderItem={({item}) => {
-          var currentDate = new Date();
-          var startDate = new Date(item.start_day);
-          var endDate = new Date(item.end_day);
-          if (currentDate >= startDate && currentDate <= endDate) {
-            return <TravelItem data={item} onPressItem={this.onPressItem} />;
-          }
-        }}
-        keyExtractor={item => item.id}
-      />
-    );
+      );
+    } else {
+      return <EmptyTab tabLabel="Đang đi" status={2} />;
+    }
   };
   _renderGone = () => {
-    const {ownLichTrinh} = this.state;
-    return (
-      <FlatList
-        tabLabel="Đã đi"
-        showsVerticalScrollIndicator={false}
-        data={ownLichTrinh}
-        renderItem={({item}) => {
-          var currentDate = new Date();
-          var endDate = new Date(item.end_day);
-          if (endDate < currentDate) {
-            return (
-              <TravelItemGone
-                data={item}
-                onPressItem={this.onPressItemGone}
-                onPressConfirm={this.onPressConfirm}
-              />
-            );
-          }
-        }}
-        keyExtractor={item => item.id}
-      />
-    );
+    const {ownLichTrinh, gone} = this.state;
+    if (gone > 0) {
+      return (
+        <FlatList
+          tabLabel="Đã đi"
+          showsVerticalScrollIndicator={false}
+          data={ownLichTrinh}
+          renderItem={({item}) => {
+            var currentDate = new Date();
+            var endDate = new Date(item.end_day);
+            if (endDate < currentDate) {
+              return (
+                <TravelItemGone
+                  data={item}
+                  onPressItem={this.onPressItemGone}
+                  onPressConfirm={this.onPressConfirm}
+                />
+              );
+            }
+          }}
+          keyExtractor={item => item._id}
+        />
+      );
+    } else {
+      return <EmptyTab tabLabel="Đã đi" status={3} />;
+    }
   };
   render() {
-    const {title, searchText, ownLichTrinh, isLoading} = this.state;
+    const {title, searchText, isLoading} = this.state;
 
     return (
       <View style={styles.container}>
@@ -202,10 +238,8 @@ class MyTravelScreen extends Component {
                 color="#34D374"
               />
             </View>
-          ) : ownLichTrinh !== null ? (
+          ) : (
             this._renderWillGo()
-          ) : (
-            <EmptyTab tabLabel="Sắp đi" status={1} />
           )}
           {isLoading ? (
             <View
@@ -219,10 +253,8 @@ class MyTravelScreen extends Component {
                 color="#34D374"
               />
             </View>
-          ) : ownLichTrinh !== null ? (
+          ) : (
             this._renderGoin()
-          ) : (
-            <EmptyTab tabLabel="Đang đi" status={2} />
           )}
           {isLoading ? (
             <View
@@ -236,10 +268,8 @@ class MyTravelScreen extends Component {
                 color="#34D374"
               />
             </View>
-          ) : ownLichTrinh !== null ? (
-            this._renderGone()
           ) : (
-            <EmptyTab tabLabel="Đã đi" status={3} />
+            this._renderGone()
           )}
         </ScrollableTabView>
       </View>
@@ -255,7 +285,6 @@ const mapStateToProps = ({user, ownLichTrinh}) => {
 const mapDispatchToProps = dispatch => {
   return {
     get_own: () => dispatch(actions.get_own()),
-    reset: () => dispatch(actions.reset()),
   };
 };
 // eslint-disable-next-line prettier/prettier

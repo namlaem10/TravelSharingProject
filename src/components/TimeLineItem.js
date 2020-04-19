@@ -117,7 +117,7 @@ export default class TimeLineItem extends Component {
     }
   };
   render() {
-    const {data, isDelete, timeText, onPressDeleteItem} = this.props;
+    const {data, isDelete, timeText, onPressDeleteItem, keyDay} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.Col1}>
@@ -159,7 +159,7 @@ export default class TimeLineItem extends Component {
           <View style={styles.pictureView}>
             <Image
               source={{
-                uri: data.place_visit_image,
+                uri: data.tourist_destination_image,
               }}
               style={{
                 width: '100%',
@@ -171,7 +171,7 @@ export default class TimeLineItem extends Component {
               <View style={styles.deleteButtonGroup}>
                 <TouchableOpacity
                   style={styles.deleteButton}
-                  onPress={() => onPressDeleteItem(data)}>
+                  onPress={() => onPressDeleteItem(data._id, keyDay)}>
                   <Text style={{color: 'white'}}>Xóa</Text>
                 </TouchableOpacity>
               </View>
@@ -190,10 +190,10 @@ export default class TimeLineItem extends Component {
                 color: '#127138',
                 marginBottom: EStyleSheet.value('3rem'),
               }}>
-              {data.place_visit_name}
+              {data.tourist_destination_name}
             </Text>
             <Text style={{...styles.detailText}}>
-              {data.place_visit_address}
+              {data.tourist_destination_address}
             </Text>
           </View>
         </View>

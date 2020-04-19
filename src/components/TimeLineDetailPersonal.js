@@ -16,7 +16,7 @@ export default class TimelineDetailPersonal extends Component {
   }
   _renderItem() {
     let viewData = [];
-    const {data, routeData, isGone} = this.props;
+    const {data, routeData, isGone, keyDay} = this.props;
     let count = 0;
     let hour = 8;
     let minute = 0;
@@ -52,6 +52,7 @@ export default class TimelineDetailPersonal extends Component {
           route={count < routeData.leg.length ? routeData.leg[count] : null}
           isDelete={isGone ? false : true}
           onPressDeleteItem={this.props.onPressDeleteItem}
+          keyDay={keyDay}
         />,
       );
       count++;

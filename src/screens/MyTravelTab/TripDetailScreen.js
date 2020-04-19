@@ -145,7 +145,7 @@ class TripDetailScreen extends Component {
                     style={styles.infoBoxIcon}
                   />
                   <Text style={{...styles.text}}>
-                    {constants.currencyFormatter.format(data.price)}
+                    {constants.currencyFormatter.format(data.price)}đ̲
                   </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>

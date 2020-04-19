@@ -4,6 +4,7 @@ import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import moment from 'moment';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
+import {BASE_URL} from '../../services/URL';
 
 export default class TravelItem extends Component {
   constructor(props) {
@@ -23,7 +24,11 @@ export default class TravelItem extends Component {
         onPress={() => onPressItem(data)}>
         <View style={styles.header}>
           <Image
-            source={require('../../assets/images/dalat2.jpg')}
+            source={
+              data.background
+                ? {uri: BASE_URL + '/' + data.background}
+                : require('../../assets/images/dalat2.jpg')
+            }
             style={{
               flex: 1,
               width: '100%',
@@ -47,7 +52,7 @@ export default class TravelItem extends Component {
               style={styles.iconVector}
             />
             <Text style={styles.subText}>
-              {constants.currencyFormatter.format(data.price)}
+              {constants.currencyFormatter.format(data.price)}đ̲
             </Text>
           </View>
           <View style={styles.textItem}>

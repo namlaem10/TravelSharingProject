@@ -19,13 +19,13 @@ export default class AddPlaceDetailScreen extends Component {
   onPressCompleted = () => {
     this.props.navigation.goBack();
   };
-  onChangeText = (text) => {
+  onChangeText = text => {
     this.setState({searchText: text});
   };
-  onPressPlace = (item) => {
+  onPressPlace = item => {
     console.log(item);
   };
-  createStars = (ratingPoint) => {
+  createStars = ratingPoint => {
     let count = ratingPoint;
     let leftstar = 5 - count;
     let starts = [];
@@ -53,7 +53,7 @@ export default class AddPlaceDetailScreen extends Component {
     }
     return starts;
   };
-  _renderGoingItem = (item) => {
+  _renderGoingItem = item => {
     return (
       <View style={styles.flatListItem} onPress={() => this.onPressPlace(item)}>
         <Image
@@ -110,7 +110,7 @@ export default class AddPlaceDetailScreen extends Component {
               }}
               data={FamousLandscapes}
               renderItem={({item}) => this._renderGoingItem(item)}
-              keyExtractor={(item) => item.id}
+              keyExtractor={item => item.id}
             />
           </View>
         </View>

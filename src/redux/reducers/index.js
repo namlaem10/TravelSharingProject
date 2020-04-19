@@ -1,6 +1,10 @@
 import {managerGroupTripReducer} from './managerGroupTripReducer';
 import {managerGroupMemberReducer} from './managerGroupMemberReducer';
-import {startPlaceReducer, endPlaceReducer} from './myTravelPlaceReducer';
+import {
+  startPlaceReducer,
+  endPlaceReducer,
+  destinationReducer,
+} from './myTravelPlaceReducer';
 import {userReducer} from './UserReducer';
 import {allLichTrinhReducer} from './allLichTrinhReducer';
 import {detailLichTrinhReducer} from './detailLichTrinhReducer';
@@ -14,4 +18,6 @@ export default {
   allLichTrinh: allLichTrinhReducer,
   detailLichTrinh: detailLichTrinhReducer,
   ownLichTrinh: ownLichTrinhReducer,
+  desitnation: destinationReducer,
+  // scheduleDetail: scheduleDetailReducer,
 };

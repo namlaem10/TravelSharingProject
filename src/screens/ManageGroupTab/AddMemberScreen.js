@@ -21,62 +21,32 @@ import SearchBar from '../../components/SearchBar';
 //fake data
 let dataUser = [
   {
-    id: 'user1',
+    id: 'USER02',
     name: 'Hoàn 1',
     avatar: constants.Images.IC_AVATAR1,
     email: 'email@gmail.com',
   },
   {
-    id: 'user2',
+    id: 'USER03',
     name: 'Hoàn 2',
     avatar: constants.Images.IC_AVATAR1,
     email: 'email@gmail.com',
   },
   {
-    id: 'user3',
+    id: 'USER04',
     name: 'Hoàn 3',
     avatar: constants.Images.IC_AVATAR1,
     email: 'email@gmail.com',
   },
   {
-    id: 'user4',
+    id: 'USER05',
     name: 'Hoàn 4',
     avatar: constants.Images.IC_AVATAR1,
     email: 'email@gmail.com',
   },
   {
-    id: 'user5',
+    id: 'USER06',
     name: 'Hoàn 5',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-  {
-    id: 'user6',
-    name: 'Hoàn 6',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-  {
-    id: 'user7',
-    name: 'Hoàn 7',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-  {
-    id: 'user8',
-    name: 'Hoàn 8',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-  {
-    id: 'user9',
-    name: 'Hoàn 9',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-  {
-    id: 'user10',
-    name: 'Hoàn 10',
     avatar: constants.Images.IC_AVATAR1,
     email: 'email@gmail.com',
   },
@@ -215,7 +185,10 @@ const mapDispatchToProps = dispatch => {
   };
 };
 // eslint-disable-next-line prettier/prettier
-export default connect(mapStateToProps, mapDispatchToProps)(AddMemberScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AddMemberScreen);
 
 const styles = EStyleSheet.create({
   container: {

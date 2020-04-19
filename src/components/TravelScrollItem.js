@@ -28,7 +28,7 @@ export default class TravelScrollItem extends Component {
                 height: EStyleSheet.value('150rem'),
                 borderRadius: EStyleSheet.value('12rem'),
               }}
-              source={{uri: data[0].place_visit_image}}
+              source={{uri: data[0].tourist_destination_image}}
             />
           </View>
           <View style={styles.dayNum}>

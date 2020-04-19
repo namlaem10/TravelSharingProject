@@ -26,11 +26,15 @@ class AddPlaceScreen extends Component {
       title: 'Chọn Điểm xuất phát',
       searchText: '',
       isStart: this.props.navigation.getParam('isStart', false),
+      desitnationArray: [],
     };
   }
-  UNSAFE_componentWillMount = () => {
-    console.log(this.props.navigation.getParam('isStart'));
+  UNSAFE_componentWillMount = async () => {
+    await this.props.getDestination();
   };
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.setState({desitnationArray: nextProps.desitnation});
+  }
   onSearchChangeText = text => {
     this.setState({searchText: text});
   };
@@ -51,34 +55,38 @@ class AddPlaceScreen extends Component {
     this.props.navigation.goBack();
   };
   _renderGoingItem = item => {
-    return (
-      <TouchableOpacity
-        style={styles.flatListItem}
-        onPress={() => this.onPressPlace(item)}>
-        <View style={{marginRight: EStyleSheet.value('10rem')}}>
-          <Image
-            source={constants.Images.IC_LOCATION_ACTIVE}
+    if (item) {
+      return (
+        <TouchableOpacity
+          style={styles.flatListItem}
+          onPress={() => this.onPressPlace(item)}>
+          <View style={{marginRight: EStyleSheet.value('10rem')}}>
+            <Image
+              source={constants.Images.IC_LOCATION_ACTIVE}
+              style={{
+                width: EStyleSheet.value('30rem'),
+                height: EStyleSheet.value('30rem'),
+              }}
+            />
+          </View>
+          <View
             style={{
-              width: EStyleSheet.value('30rem'),
-              height: EStyleSheet.value('30rem'),
-            }}
-          />
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: EStyleSheet.value('290rem'),
-          }}>
-          <Text style={styles.textPlace}>{item.place}</Text>
-          <Text style={styles.textFar}> {item.far} km</Text>
-        </View>
-      </TouchableOpacity>
-    );
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: EStyleSheet.value('290rem'),
+            }}>
+            <Text style={styles.textPlace}>{item.destination_name}</Text>
+            <Text style={styles.textFar}> {item.distance} km</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      return null;
+    }
   };
   render() {
-    const {title, searchText} = this.state;
+    const {title, searchText, desitnationArray} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -105,9 +113,9 @@ class AddPlaceScreen extends Component {
                 contentContainerStyle={{
                   paddingBottom: EStyleSheet.value('0rem'),
                 }}
-                data={Places}
+                data={desitnationArray.data}
                 renderItem={({item}) => this._renderGoingItem(item)}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item._id}
               />
             </View>
           </View>
@@ -117,15 +125,25 @@ class AddPlaceScreen extends Component {
   }
 }
 
+const mapStatetToProps = ({desitnation}) => {
+  return {
+    desitnation: desitnation,
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
     pickStartPlace: params => dispatch(actions.pickStartPlace(params)),
     pickEndPlace: params => dispatch(actions.pickEndPlace(params)),
+    getDestination: () => dispatch(actions.getDestination()),
   };
 };
 
 // eslint-disable-next-line prettier/prettier
-export default connect(null, mapDispatchToProps)(AddPlaceScreen);
+export default connect(
+  mapStatetToProps,
+  mapDispatchToProps,
+)(AddPlaceScreen);
 const styles = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,

@@ -27,6 +27,8 @@ class NewsFeedScreen extends Component {
       isLoading: true,
       message: '',
       data: null,
+      avatar: this.props.user.data.avatar || null,
+      user: this.props.user.data || null,
     };
   }
   UNSAFE_componentWillMount = async () => {
@@ -57,13 +59,9 @@ class NewsFeedScreen extends Component {
     this.props.navigation.navigate('PostDetail', {data: item});
   };
   render() {
-    const {searchText, isLoading, message, data} = this.state;
-    const {user} = this.props;
-    const User = user.data;
-    let avatar = null;
-    if (User) {
-      avatar = BASE_URL + '/' + User.avatar;
-    }
+    const {searchText, isLoading, message, data, avatar, user} = this.state;
+    let uriAvatar = null;
+    uriAvatar = BASE_URL + '/' + avatar;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -84,8 +82,8 @@ class NewsFeedScreen extends Component {
                   borderRadius: EStyleSheet.value('40rem'),
                 }}
                 source={
-                  User.avatar !== null
-                    ? {uri: avatar}
+                  avatar !== null
+                    ? {uri: uriAvatar}
                     : constants.Images.IC_AVATAR1
                 }
               />
@@ -96,7 +94,7 @@ class NewsFeedScreen extends Component {
                   ...styles.Text,
                   fontFamily: constants.Fonts.medium,
                 }}>
-                {User.display_name}
+                {user.display_name}
               </Text>
               <Text style={styles.Text}>
                 Số bài viết:{' '}
@@ -137,7 +135,7 @@ class NewsFeedScreen extends Component {
               renderItem={({item}) => (
                 <NewsFeedItem
                   data={item}
-                  key={item.id}
+                  key={item._id}
                   onPressItem={this.onPressItem}
                 />
               )}

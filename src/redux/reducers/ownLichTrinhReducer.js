@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 export const types = {
   GET_OWN: 'GET_OWN',
   GET_OWN_FAIL: 'GET_OWN_FAIL',
+  POST_HANHTRINH: 'POST_HANHTRINH',
+  POST_HANHTRINH_FAIL: 'POST_HANHTRINH_FAIL',
   RESET: 'RESET',
 };
 async function getToken() {
@@ -30,7 +32,6 @@ export const actions = {
             type: types.GET_OWN,
             payload: {
               data: result.data,
-              status: result.status,
             },
           });
         } else {
@@ -38,6 +39,7 @@ export const actions = {
             type: types.GET_OWN_FAIL,
             payload: {
               data: result.data.data,
+              status: result.status,
             },
           });
         }
@@ -71,6 +73,7 @@ const initialState = {
   status: null,
   error: null,
 };
+
 export const ownLichTrinhReducer = (state = initialState, action) => {
   const {type, payload} = action;
   switch (type) {

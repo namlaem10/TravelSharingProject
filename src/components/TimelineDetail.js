@@ -55,21 +55,6 @@ export default class TimelineDetail extends Component {
       count++;
     });
     return viewData;
-    // for (var i = 0; i <= data.length; i++) {
-    //   let lastPlace = false;
-    //   if (checkLastPlace === data.length) {
-    //     lastPlace = true;
-    //   }
-    //   checkLastPlace++;
-    //   viewData.push(
-    //     <TimeLineItem
-    //       data={data[i]}
-    //       key={checkLastPlace}
-    //       lastPlace={lastPlace}
-    //       route={i < routeData.leg.length ? routeData.leg[i] : null}
-    //     />,
-    //   );
-    // }
   }
   render() {
     const {day} = this.props;

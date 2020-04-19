@@ -9,28 +9,25 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {actions, types} from '../../redux/reducers/myTravelPlaceReducer';
-import {
-  actions as actionsMems,
-  types as typesMem,
-} from '../../redux/reducers/managerGroupMemberReducer';
 import DatePicker from 'react-native-date-picker';
 import Dialog, {
   DialogFooter,
   DialogButton,
   DialogContent,
 } from 'react-native-popup-dialog';
-
+import {schedule_detail} from '../../utils/fakedata';
 import moment from 'moment';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import HeaderBar from '../../components/HeaderBar';
-
+const miliToSecond = 86400000;
 class CreateTripScreen extends Component {
   constructor(props) {
     super(props);
@@ -47,7 +44,6 @@ class CreateTripScreen extends Component {
   UNSAFE_componentWillMount = () => {
     this.props.resetEnd();
     this.props.resetStart();
-    this.props.resetMem();
     var startDate = new Date();
     var endDate = moment(startDate).add(2, 'day');
     this.setState({startDate: startDate, endDate: endDate});
@@ -55,8 +51,10 @@ class CreateTripScreen extends Component {
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
+      console.log('back');
       this.props.navigation.navigate(location);
     } else {
+      console.log('back');
       this.props.navigation.goBack();
     }
   };
@@ -77,14 +75,85 @@ class CreateTripScreen extends Component {
     //check bấm start hay end dat, hiện popup tương ứng
     this.setState({isStartDate: isStart, visible: true});
   };
+  choseStartDate = value => {
+    this.setState({startDate: value, endDate: moment(value).add(2, 'day')});
+  };
+  choseEndDate = value => {
+    const {startDate} = this.state;
+    let endDate = value;
+    if ((endDate - startDate) / miliToSecond <= -0.5) {
+      Alert.alert(
+        'Lưu ý',
+        'Xin lỗi bạn :(. Hành trình cần ít nhất 1 ngày',
+        [
+          {
+            text: 'Chọn lại',
+            onPress: () =>
+              this.setState({
+                endDate: startDate,
+              }),
+            style: 'cancel',
+          },
+        ],
+        {cancelable: false},
+      );
+    } else if ((endDate - startDate) / miliToSecond > 6) {
+      Alert.alert(
+        'Lưu ý',
+        'Xin lỗi bạn :(. Hành trình chỉ được tối đa 7 ngày',
+        [
+          {
+            text: 'Chọn lại',
+            onPress: () =>
+              this.setState({
+                endDate: moment(startDate).add(6, 'day'),
+              }),
+            style: 'cancel',
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      this.setState({endDate: value});
+    }
+  };
   onPressConfirm = () => {
     this.setState({loadingVisible: true});
-    setTimeout(() => {
+    const {startPlace, endPlace, memsId} = this.props;
+    if (startPlace.data === null || endPlace.data === null) {
       this.setState({loadingVisible: false});
+      Alert.alert(
+        'Lưu ý',
+        'Bạn chưa chọn điểm xuất phát hoặc điểm đến',
+        [
+          {
+            text: 'Trở lại',
+            style: 'cancel',
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      const {startDate, endDate} = this.state;
+      let number_of_days = Math.round((endDate - startDate) / miliToSecond) + 1;
+      if (number_of_days <= 0) {
+        number_of_days = 1;
+      }
+      let scheduleDetail = schedule_detail;
       this.props.navigation.navigate('ShareTimeLineDetail', {
         action: 'creating',
+        data: scheduleDetail,
+        page: 1,
+        totalDay: number_of_days,
+        start: startDate,
+        end: endDate,
+        isGone: false,
+        startPlace: startPlace.data,
+        endPlace: endPlace.data,
+        memsId: memsId.data,
       });
-    }, 2000);
+    }
+    this.setState({loadingVisible: false});
   };
   onPressMember = () => {
     this.props.navigation.navigate('AddMember', {location: 'CreateTrip'});
@@ -136,12 +205,12 @@ class CreateTripScreen extends Component {
           <DialogContent>
             <DatePicker
               locale={'vi'}
-              date={startDate}
+              date={isStartDate ? startDate : endDate}
               mode="date"
               onDateChange={value => {
                 isStartDate
-                  ? this.setState({startDate: value})
-                  : this.setState({endDate: value});
+                  ? this.choseStartDate(value)
+                  : this.choseEndDate(value);
               }}
             />
           </DialogContent>
@@ -180,7 +249,7 @@ class CreateTripScreen extends Component {
                       ...styles.inputText,
                       paddingLeft: EStyleSheet.value('2rem'),
                     }}>
-                    {startPlace.data.place}
+                    {startPlace.data.destination_name}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -239,7 +308,7 @@ class CreateTripScreen extends Component {
                       ...styles.inputText,
                       paddingLeft: EStyleSheet.value('2rem'),
                     }}>
-                    {endPlace.data.place}
+                    {endPlace.data.destination_name}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -368,14 +437,14 @@ class CreateTripScreen extends Component {
               )}
             </View>
           </View>
-          <View style={styles.TouchGroup1}>
+          {/* <View style={styles.TouchGroup1}>
             <TextInput
               onChangeText={text => this.setState({nameText: text})}
               style={nameText !== '' ? styles.inputText : styles.placeholder}
               placeholder={'Nhấp để nhập tên nhóm'}
               value={nameText}
             />
-          </View>
+          </View> */}
         </View>
         <View style={styles.footer}>
           <TouchableOpacity
@@ -406,7 +475,6 @@ const mapDispatchToProps = dispatch => {
   return {
     resetStart: () => dispatch(actions.resetStart()),
     resetEnd: () => dispatch(actions.resetEnd()),
-    resetMem: () => dispatch(actionsMems.reset()),
   };
 };
 // eslint-disable-next-line prettier/prettier

@@ -56,8 +56,8 @@ export default class NewsFeedItem extends Component {
         <View style={styles.header}>
           <Image
             source={
-              data.image
-                ? {uri: BASE_URL + '/' + data.image}
+              data.background
+                ? {uri: BASE_URL + '/' + data.background}
                 : require('../../../assets/images/dalat2.jpg')
             }
             style={{
@@ -156,7 +156,7 @@ export default class NewsFeedItem extends Component {
                 source={constants.Images.IC_MONEY}
               />
               <Text style={{...styles.text}}>
-                {constants.currencyFormatter.format(data.price)}
+                {constants.currencyFormatter.format(data.price)}đ̲
               </Text>
             </View>
             <View style={styles.iconGroup}>

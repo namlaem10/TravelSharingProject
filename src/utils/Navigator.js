@@ -356,7 +356,7 @@ const MainStack = createBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'MyTravel',
+    initialRouteName: 'Sharing',
     tabBarOptions: {
       keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,

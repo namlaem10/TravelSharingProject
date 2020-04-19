@@ -23,7 +23,7 @@ export default class HeaderBar extends Component {
             flexDirection: 'row',
             left: EStyleSheet.value('15rem'),
           }}>
-          <TouchableOpacity onPress={onPressBack}>
+          <TouchableOpacity onPress={() => onPressBack()}>
             <Image
               style={{
                 width: EStyleSheet.value('25rem'),

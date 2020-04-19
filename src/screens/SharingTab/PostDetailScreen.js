@@ -37,6 +37,7 @@ class PostDetailScreen extends Component {
   }
   componentDidMount = async () => {
     const data = await this.props.navigation.getParam('data', null);
+    const isCreated = await this.props.navigation.getParam('isCreated', false);
     const {longitude, latitude} = data.destination;
     const linkImage = `https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=${
       constants.API_KEY
@@ -47,7 +48,7 @@ class PostDetailScreen extends Component {
       linkImage,
     });
     this.props.get_location_info(
-      data.schedule.schedule_detail,
+      isCreated ? data.schedule_detail : data.schedule.schedule_detail,
       data.schedule.number_of_days,
     );
   };
@@ -170,7 +171,7 @@ class PostDetailScreen extends Component {
                     style={styles.infoBoxIcon}
                   />
                   <Text style={{...styles.text}}>
-                    {constants.currencyFormatter.format(data.price)}
+                    {constants.currencyFormatter.format(data.price)}đ̲
                   </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>

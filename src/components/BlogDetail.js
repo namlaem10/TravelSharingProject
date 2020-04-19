@@ -4,7 +4,7 @@ import {View, Text, Image} from 'react-native';
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-import BASE_URL from '../services/URL';
+import {BASE_URL} from '../services/URL';
 import Comment from './Comment';
 import moment from 'moment';
 
@@ -73,7 +73,11 @@ export default class BlogDetail extends Component {
                   ? {uri: avatar}
                   : constants.Images.IC_AVATAR3
               }
-              style={{width: 35, height: 35}}
+              style={{
+                width: EStyleSheet.value('35rem'),
+                height: EStyleSheet.value('35rem'),
+                borderRadius: EStyleSheet.value('17.5rem'),
+              }}
             />
             <View
               style={{
