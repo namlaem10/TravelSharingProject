@@ -21,11 +21,17 @@ class AccountScreen extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      user: this.props.user.data.user_info || null,
     };
   }
   seeMore = () => {
     this.props.navigation.navigate('InfoUser', {user: this.props.user.data});
   };
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.user.type === types.UPDATE_INFO) {
+      this.setState({user: nextProps.user.data});
+    }
+  }
   async removeToken() {
     try {
       await AsyncStorage.removeItem('token');
@@ -89,7 +95,7 @@ class AccountScreen extends Component {
     );
   };
   render() {
-    const user = this.props.user.data;
+    const {user} = this.state;
     let avatar = null;
     if (user.avatar) {
       avatar = BASE_URL + '/' + user.avatar;

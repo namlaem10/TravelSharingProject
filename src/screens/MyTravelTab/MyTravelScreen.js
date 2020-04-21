@@ -17,7 +17,6 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 import SearchBar from '../../components/SearchBar';
 import {ScrollableTabView} from '@valdio/react-native-scrollable-tabview';
 import CustomTabBarNoScroll from '../../components/CustomTabBarNoScroll';
-import {FeedNews} from '../../utils/fakedata';
 import TravelItem from './TravelItem';
 import TravelItemGone from './TravelItemGone';
 import EmptyTab from './EmptyTab';
@@ -38,25 +37,35 @@ class MyTravelScreen extends Component {
       goin: 0,
       gone: 0,
     };
+    this.didFocusSubscription = props.navigation.addListener(
+      'willFocus',
+      async payload => {
+        if (payload.action.type === 'Navigation/NAVIGATE') {
+          await this.props.get_own();
+        }
+      },
+    );
   }
   async UNSAFE_componentWillMount() {
     await this.props.get_own();
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const {ownLichTrinh} = nextProps;
-    if (ownLichTrinh.status) {
-      this.setState({
-        isLoading: false,
-        message: ownLichTrinh.data.message
-          ? ownLichTrinh.data.message
-          : 'Lỗi tải thông tin :(',
-      });
-    } else {
-      this.countLichTrinh(ownLichTrinh.data);
-      this.setState({
-        isLoading: false,
-        ownLichTrinh: ownLichTrinh.data,
-      });
+    if (nextProps.ownLichTrinh.type === types.GET_OWN) {
+      const {ownLichTrinh} = nextProps;
+      if (ownLichTrinh.status) {
+        this.setState({
+          isLoading: false,
+          message: ownLichTrinh.data.message
+            ? ownLichTrinh.data.message
+            : 'Lỗi tải thông tin :(',
+        });
+      } else {
+        this.countLichTrinh(ownLichTrinh.data);
+        this.setState({
+          isLoading: false,
+          ownLichTrinh: ownLichTrinh.data,
+        });
+      }
     }
   }
   countLichTrinh = lichtrinh => {
@@ -151,7 +160,13 @@ class MyTravelScreen extends Component {
         </View>
       );
     } else {
-      return <EmptyTab tabLabel="Sắp đi" status={1} />;
+      return (
+        <EmptyTab
+          tabLabel="Sắp đi"
+          status={1}
+          onPressAddButton={this.onPressAddButton}
+        />
+      );
     }
   };
   _renderGoin = () => {
@@ -174,7 +189,13 @@ class MyTravelScreen extends Component {
         />
       );
     } else {
-      return <EmptyTab tabLabel="Đang đi" status={2} />;
+      return (
+        <EmptyTab
+          tabLabel="Đang đi"
+          status={2}
+          onPressAddButton={this.onPressAddButton}
+        />
+      );
     }
   };
   _renderGone = () => {
@@ -202,7 +223,13 @@ class MyTravelScreen extends Component {
         />
       );
     } else {
-      return <EmptyTab tabLabel="Đã đi" status={3} />;
+      return (
+        <EmptyTab
+          tabLabel="Đã đi"
+          status={3}
+          onPressAddButton={this.onPressAddButton}
+        />
+      );
     }
   };
   render() {

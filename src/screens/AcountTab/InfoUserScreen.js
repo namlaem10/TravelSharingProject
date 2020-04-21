@@ -14,18 +14,22 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 import TitleBarCustom from '../../components/TitleBarCustom';
 import {connect} from 'react-redux';
 import {BASE_URL} from '../../services/URL';
+import {types} from '../../redux/reducers/UserReducer';
 class InfoUserScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null,
+      user: this.props.user.data.user_info || null,
+      total_travel: this.props.user.data.total_travel || null,
+      travel_share: this.props.user.data.travel_share || null,
+      rating_point: this.props.user.data.rating_point || null,
+      people_rating: this.props.user.data.people_rating || null,
     };
   }
-  UNSAFE_componentWillMount() {
-    this.setState({user: this.props.user.data});
-  }
   UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({user: this.props.user.data});
+    if (nextProps.user.type === types.UPDATE_INFO) {
+      this.setState({user: nextProps.user.data});
+    }
   }
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
@@ -39,7 +43,13 @@ class InfoUserScreen extends Component {
     this.props.navigation.navigate('EditInfo');
   };
   render() {
-    const {user} = this.state;
+    const {
+      user,
+      rating_point,
+      people_rating,
+      travel_share,
+      total_travel,
+    } = this.state;
     let avatar = null;
     if (user.avatar) {
       avatar = BASE_URL + '/' + user.avatar;
@@ -81,11 +91,15 @@ class InfoUserScreen extends Component {
         </View>
         <View style={styles.lastInfoGroup}>
           <View style={styles.lastInfoItem}>
-            <Text style={{...styles.number, color: '#1161D8'}}>100</Text>
+            <Text style={{...styles.number, color: '#1161D8'}}>
+              {total_travel}
+            </Text>
             <Text>Lịch trình</Text>
           </View>
           <View style={styles.lastInfoItem}>
-            <Text style={{...styles.number, color: '#34D374'}}>69</Text>
+            <Text style={{...styles.number, color: '#34D374'}}>
+              {travel_share}
+            </Text>
             <Text>Bài viết</Text>
           </View>
           <View style={styles.lastInfoItem}>
@@ -94,9 +108,10 @@ class InfoUserScreen extends Component {
                 ...styles.number,
                 color: 'rgba(255,0,0,0.54)',
               }}>
-              1234
+              {rating_point}
+              <Text>/5</Text>
             </Text>
-            <Text>Lượt thích</Text>
+            <Text>Đánh giá ({people_rating})</Text>
           </View>
         </View>
         <View

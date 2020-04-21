@@ -7,62 +7,66 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
-
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import {connect} from 'react-redux';
-import {actions, types} from '../../redux/reducers/managerGroupMemberReducer';
+import {actions, types} from '../../redux/reducers/managerGroupReducer';
 
 import SearchBar from '../../components/SearchBar';
+import {BASE_URL} from '../../services/URL';
 
-//fake data
-let dataUser = [
-  {
-    id: 'USER02',
-    name: 'Hoàn 1',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-  {
-    id: 'USER03',
-    name: 'Hoàn 2',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-  {
-    id: 'USER04',
-    name: 'Hoàn 3',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-  {
-    id: 'USER05',
-    name: 'Hoàn 4',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-  {
-    id: 'USER06',
-    name: 'Hoàn 5',
-    avatar: constants.Images.IC_AVATAR1,
-    email: 'email@gmail.com',
-  },
-];
 class AddMemberScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: 'Chọn thành viên',
       searchText: '',
+      loadingVisible: false,
+      loadingCompleted: false,
       idUserPick: [],
+      friend: [],
     };
   }
   UNSAFE_componentWillMount = () => {
-    this.setState({idUserPick: this.props.memsId.data});
+    this.setState({
+      idUserPick: this.props.navigation.getParam('member', []),
+      friend: this.props.user.data.user_info.friend,
+    });
   };
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.groupInfo.type === types.PUT_UPDATE_MEMBER ||
+      nextProps.groupInfo.type === types.PUT_UPDATE_MEMBER_FAIL
+    ) {
+      if (nextProps.groupInfo.type === types.PUT_UPDATE_MEMBER) {
+        this.setState({
+          loadingVisible: false,
+          loadingCompleted: true,
+          message: 'Đã cập nhật! đang chuyển màn hình',
+        });
+        this.props.reset_member();
+        setTimeout(() => {
+          this.setState({
+            loadingCompleted: false,
+          });
+          this.props.navigation.navigate('TripDetail', {
+            data: nextProps.groupInfo.data[0],
+          });
+        }, 1500);
+      } else {
+        this.setState({
+          loadingVisible: false,
+          loadingCompleted: true,
+          message: 'Lỗi tạo hành trình!',
+        });
+      }
+    }
+  }
   onSearchChangeText = text => {
     this.setState({searchText: text});
   };
@@ -74,26 +78,35 @@ class AddMemberScreen extends Component {
       this.props.navigation.goBack();
     }
   };
-  onPressDone = () => {
-    this.props.update_mem(this.state.idUserPick);
+  onPressDone = async () => {
+    const type = this.props.navigation.getParam('type', 'create');
     const location = this.props.navigation.getParam('location', '');
-    if (location !== '') {
-      this.props.navigation.navigate(location);
-    } else {
-      this.props.navigation.goBack();
+    const idHanhTrinh = this.props.navigation.getParam('idHanhTrinh');
+    const {idUserPick} = this.state;
+    if (type === 'create') {
+      await this.props.update_mem(this.state.idUserPick);
+      if (location !== '') {
+        this.props.navigation.navigate(location);
+      } else {
+        this.props.navigation.goBack();
+      }
+    } else if (type === 'update') {
+      this.setState({
+        loadingVisible: true,
+      });
+      await this.props.put_update_member(idHanhTrinh, idUserPick);
     }
   };
   onSelectItem = item => {
     let array = this.state.idUserPick;
-    array.push(item.id);
+    array.push(item._id);
     this.setState({
       idUserPick: array,
     });
   };
   onUnselectItem = item => {
     let array = this.state.idUserPick;
-    console.log('array', array);
-    let index = array.indexOf(item.id);
+    let index = array.indexOf(item._id);
     array.splice(index, 1);
     this.setState({
       idUserPick: array,
@@ -101,19 +114,23 @@ class AddMemberScreen extends Component {
   };
   _renderItem = item => {
     let array = this.state.idUserPick;
-    let found = array.find(e => e === item.id);
+    let found = array.find(e => e === item._id);
     let isSelect = found === undefined ? false : true;
+    let avatar = item.avatar;
+    if (avatar !== null) {
+      avatar = BASE_URL + '/' + avatar;
+    }
     return (
       <View style={styles.flatListItem}>
         <Image
-          source={item.avatar}
+          source={avatar === null ? constants.Images.IC_AVATAR1 : {uri: avatar}}
           style={{
             width: EStyleSheet.value('54rem'),
             height: EStyleSheet.value('54rem'),
           }}
         />
         <View style={styles.infoCol}>
-          <Text style={styles.textName}>{item.name}</Text>
+          <Text style={styles.textName}>{item.display_name}</Text>
           <Text style={styles.textemail}>{item.email}</Text>
         </View>
         {isSelect ? (
@@ -133,9 +150,47 @@ class AddMemberScreen extends Component {
     );
   };
   render() {
-    const {title, searchText} = this.state;
+    const {title, searchText, friend} = this.state;
     return (
       <View style={styles.container}>
+        <Dialog visible={this.state.loadingVisible}>
+          <DialogContent>
+            <View style={styles.loadingCompleted}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('15rem'),
+                  letterSpacing: 1,
+                  marginLeft: EStyleSheet.value('5rem'),
+                }}>
+                Đang tạo hành trình...
+              </Text>
+            </View>
+          </DialogContent>
+        </Dialog>
+        <Dialog visible={this.state.loadingCompleted}>
+          <DialogContent>
+            <View style={styles.loadingCompleted}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('15rem'),
+                  letterSpacing: 1,
+                  marginLeft: EStyleSheet.value('5rem'),
+                }}>
+                {this.state.message}
+              </Text>
+            </View>
+          </DialogContent>
+        </Dialog>
         <View style={styles.header}>
           <SearchBar
             title={title}
@@ -164,7 +219,7 @@ class AddMemberScreen extends Component {
                 paddingBottom: EStyleSheet.value('40rem'),
                 flex: 0,
               }}
-              data={dataUser}
+              data={friend}
               renderItem={({item}) => this._renderItem(item)}
               keyExtractor={item => item.id}
             />
@@ -174,14 +229,18 @@ class AddMemberScreen extends Component {
     );
   }
 }
-const mapStateToProps = ({membersId}) => {
+const mapStateToProps = ({groupInfo, user}) => {
   return {
-    memsId: membersId,
+    groupInfo: groupInfo,
+    user: user,
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
     update_mem: parrams => dispatch(actions.update_mem(parrams)),
+    put_update_member: (idHanhTrinh, member) =>
+      dispatch(actions.put_update_member(idHanhTrinh, member)),
+    reset_member: () => dispatch(actions.reset_member()),
   };
 };
 // eslint-disable-next-line prettier/prettier

@@ -7,6 +7,8 @@ export const types = {
   RESET_END: 'RESET_END',
   GET_DESTINATION: 'GET_DESTINATION',
   GET_DESTINATION_FAIL: 'GET_DESTINATION_FAIL',
+  GET_SUGGEST_SCHEDULE: 'GET_SUGGEST_SCHEDULE',
+  GET_SUGGEST_SCHEDULE_FAIL: 'GET_SUGGEST_SCHEDULE_FAIL ',
 };
 import {getDistance} from 'geolib';
 import Geolocation from '@react-native-community/geolocation';
@@ -54,6 +56,39 @@ function calDestication(array) {
   return newArray;
 }
 export const actions = {
+  get_suggest_schedule: (desinationID, num_of_days) => {
+    return async dispatch => {
+      try {
+        const token = await getToken();
+        const url = `/api/schedule/suggest?destination=${desinationID}&day=${num_of_days}`;
+        const result = await api.get(url, token);
+        if (result.status === 200) {
+          dispatch({
+            type: types.GET_SUGGEST_SCHEDULE,
+            payload: {
+              data: result.data,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.GET_SUGGEST_SCHEDULE_FAIL,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.GET_SUGGEST_SCHEDULE_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
   getDestination: () => {
     return async dispatch => {
       try {
@@ -104,17 +139,10 @@ export const actions = {
       });
     };
   },
-  resetStart: () => {
+  reset: () => {
     return async dispatch => {
       dispatch({
-        type: types.RESET_START,
-      });
-    };
-  },
-  resetEnd: () => {
-    return async dispatch => {
-      dispatch({
-        type: types.RESET_END,
+        type: types.RESET,
       });
     };
   },
@@ -130,9 +158,35 @@ const initialState = {
   status: null,
   error: null,
 };
-export const destinationReducer = (state = initialState, action) => {
+
+export const createTripReducer = (state = initialState, action) => {
   const {type, payload} = action;
   switch (type) {
+    case types.PICK_START_PLACE: {
+      return {
+        type: types.PICK_START_PLACE,
+        data: payload.data,
+      };
+    }
+    case types.PICK_END_PLACE: {
+      return {
+        type: types.PICK_END_PLACE,
+        data: payload.data,
+      };
+    }
+    case types.GET_SUGGEST_SCHEDULE: {
+      return {
+        type: types.GET_SUGGEST_SCHEDULE,
+        data: payload.data,
+      };
+    }
+    case types.GET_SUGGEST_SCHEDULE_FAIL: {
+      return {
+        type: types.GET_SUGGEST_SCHEDULE_FAIL,
+        data: payload.data,
+        status: payload.status,
+      };
+    }
     case types.GET_DESTINATION: {
       return {
         type: types.GET_DESTINATION,
@@ -146,43 +200,9 @@ export const destinationReducer = (state = initialState, action) => {
         status: payload.status,
       };
     }
-    default: {
-      return state;
-    }
-  }
-};
-export const startPlaceReducer = (state = initialState, action) => {
-  const {type, payload} = action;
-  switch (type) {
-    case types.PICK_START_PLACE: {
+    case types.RESET: {
       return {
-        type: types.PICK_START_PLACE,
-        data: payload.data,
-      };
-    }
-    case types.RESET_START: {
-      return {
-        type: types.RESET_START,
-        data: null,
-      };
-    }
-    default: {
-      return state;
-    }
-  }
-};
-export const endPlaceReducer = (state = initialState, action) => {
-  const {type, payload} = action;
-  switch (type) {
-    case types.PICK_END_PLACE: {
-      return {
-        type: types.PICK_END_PLACE,
-        data: payload.data,
-      };
-    }
-    case types.RESET_END: {
-      return {
-        type: types.RESET_END,
+        type: types.RESET,
         data: null,
       };
     }

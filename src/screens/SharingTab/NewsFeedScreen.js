@@ -12,7 +12,6 @@ import {
 import SearchBar from '../../components/SearchBar';
 import * as constants from '../../utils/Constants';
 import NewsFeedItem from './SharingTapComponents/NewsFeedItem';
-import {FeedNews} from '../../utils/fakedata';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {BASE_URL} from '../../services/URL';
 import {connect} from 'react-redux';
@@ -27,27 +26,37 @@ class NewsFeedScreen extends Component {
       isLoading: true,
       message: '',
       data: null,
-      avatar: this.props.user.data.avatar || null,
-      user: this.props.user.data || null,
+      avatar: this.props.user.data.user_info.avatar || null,
+      user: this.props.user.data.user_info || null,
     };
+    this.didFocusSubscription = props.navigation.addListener(
+      'willFocus',
+      async payload => {
+        if (payload.action.type === 'Navigation/NAVIGATE') {
+          await this.props.get_all();
+        }
+      },
+    );
   }
   UNSAFE_componentWillMount = async () => {
     await this.props.get_all();
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const {allLichTrinh} = nextProps;
-    if (allLichTrinh.status) {
-      this.setState({
-        isLoading: false,
-        message: allLichTrinh.data.message
-          ? allLichTrinh.data.message
-          : 'Lỗi tải thông tin :(',
-      });
-    } else {
-      this.setState({
-        isLoading: false,
-        data: allLichTrinh.data,
-      });
+    if (nextProps.allLichTrinh.type === types.GET_ALL) {
+      const {allLichTrinh} = nextProps;
+      if (allLichTrinh.status) {
+        this.setState({
+          isLoading: false,
+          message: allLichTrinh.data.message
+            ? allLichTrinh.data.message
+            : 'Lỗi tải thông tin :(',
+        });
+      } else {
+        this.setState({
+          isLoading: false,
+          data: allLichTrinh.data,
+        });
+      }
     }
   }
   onSearchChangeText = text => {
@@ -132,13 +141,15 @@ class NewsFeedScreen extends Component {
             <FlatList
               showsVerticalScrollIndicator={false}
               data={data}
-              renderItem={({item}) => (
-                <NewsFeedItem
-                  data={item}
-                  key={item._id}
-                  onPressItem={this.onPressItem}
-                />
-              )}
+              renderItem={({item}) =>
+                item.isShare ? (
+                  <NewsFeedItem
+                    data={item}
+                    key={item._id}
+                    onPressItem={this.onPressItem}
+                  />
+                ) : null
+              }
               keyExtractor={item => item._id}
             />
           ) : (

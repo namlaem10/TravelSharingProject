@@ -14,7 +14,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import {connect} from 'react-redux';
-import {actions, types} from '../../redux/reducers/managerGroupTripReducer';
+import {actions, types} from '../../redux/reducers/managerGroupReducer';
 
 import SearchBar from '../../components/SearchBar';
 

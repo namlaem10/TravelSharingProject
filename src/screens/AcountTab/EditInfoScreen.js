@@ -33,7 +33,7 @@ class EditInfoScreen extends Component {
     };
   }
   UNSAFE_componentWillMount = () => {
-    const user = this.props.user.data;
+    const user = this.props.user.data.user_info;
     let avatar = null;
     if (user.avatar) {
       avatar = BASE_URL + '/' + user.avatar;

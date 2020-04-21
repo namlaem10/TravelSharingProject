@@ -29,6 +29,24 @@ class TripDetailScreen extends Component {
       isDetailLichTrinhReady: false,
       isGone: false,
     };
+    this.didFocusSubscription = props.navigation.addListener(
+      'willFocus',
+      async payload => {
+        if (payload.action.type === 'Navigation/NAVIGATE') {
+          this.setState({isLoading: true});
+          const data = await this.props.navigation.getParam('data', null);
+          this.setState({
+            isLoading: false,
+            data,
+            isGone: this.props.navigation.getParam('isGone', false),
+          });
+          this.props.get_location_info(
+            data.schedule.schedule_detail,
+            data.schedule.number_of_days,
+          );
+        }
+      },
+    );
   }
   componentDidMount = async () => {
     const data = await this.props.navigation.getParam('data', null);
@@ -48,10 +66,12 @@ class TripDetailScreen extends Component {
     );
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({
-      routeData: nextProps.detailLichTrinh.data,
-      isDetailLichTrinhReady: true,
-    });
+    if (nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO) {
+      this.setState({
+        routeData: nextProps.detailLichTrinh.data,
+        isDetailLichTrinhReady: true,
+      });
+    }
   }
   onPressBack = () => {
     this.props.navigation.navigate('MyTravel');
@@ -65,6 +85,8 @@ class TripDetailScreen extends Component {
       start: data.start_day,
       routeData: routeData,
       isGone: isGone,
+      destinationId: data.schedule.destination,
+      idHanhTrinh: data._id,
     });
   };
   onPressTravelDay = page => {
@@ -76,11 +98,23 @@ class TripDetailScreen extends Component {
       start: data.start_day,
       routeData: routeData,
       isGone: isGone,
+      destinationId: data.schedule.destination,
+      idHanhTrinh: data._id,
     });
   };
   onPressAddMember = () => {
+    let member = [];
+    let user = this.props.user.data;
+    this.state.data.member.map(item => {
+      if (item._id !== user.user_info._id) {
+        member.push(item._id);
+      }
+    });
     this.props.navigation.navigate('AddMember', {
       location: 'TripDetail',
+      member: member,
+      type: 'update',
+      idHanhTrinh: this.state.data._id,
     });
   };
   onPressChat = () => {
@@ -208,9 +242,10 @@ class TripDetailScreen extends Component {
     );
   }
 }
-const mapStateToProps = ({detailLichTrinh}) => {
+const mapStateToProps = ({detailLichTrinh, user}) => {
   return {
     detailLichTrinh: detailLichTrinh,
+    user: user,
   };
 };
 const mapDispatchToProps = dispatch => {

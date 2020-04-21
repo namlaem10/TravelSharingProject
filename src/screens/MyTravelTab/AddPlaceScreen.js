@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -27,13 +28,23 @@ class AddPlaceScreen extends Component {
       searchText: '',
       isStart: this.props.navigation.getParam('isStart', false),
       desitnationArray: [],
+      isLoadding: true,
     };
   }
-  UNSAFE_componentWillMount = async () => {
+  componentDidMount = async () => {
     await this.props.getDestination();
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({desitnationArray: nextProps.desitnation});
+    if (
+      nextProps.createTrip.type === types.GET_DESTINATION ||
+      nextProps.createTrip.type === types.GET_DESTINATION_FAIL
+    ) {
+      console.log(nextProps.createTrip.data);
+      this.setState({
+        desitnationArray: nextProps.createTrip.data,
+        isLoadding: false,
+      });
+    }
   }
   onSearchChangeText = text => {
     this.setState({searchText: text});
@@ -86,7 +97,7 @@ class AddPlaceScreen extends Component {
     }
   };
   render() {
-    const {title, searchText, desitnationArray} = this.state;
+    const {title, searchText, desitnationArray, isLoadding} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -108,16 +119,25 @@ class AddPlaceScreen extends Component {
               }}>
               Địa điểm phổ biến
             </Text>
-            <View style={styles.flatList}>
-              <FlatList
-                contentContainerStyle={{
-                  paddingBottom: EStyleSheet.value('0rem'),
-                }}
-                data={desitnationArray.data}
-                renderItem={({item}) => this._renderGoingItem(item)}
-                keyExtractor={item => item._id}
-              />
-            </View>
+            {isLoadding ? (
+              <View>
+                <ActivityIndicator
+                  size={EStyleSheet.value('60rem')}
+                  color="#34D374"
+                />
+              </View>
+            ) : (
+              <View style={styles.flatList}>
+                <FlatList
+                  contentContainerStyle={{
+                    paddingBottom: EStyleSheet.value('0rem'),
+                  }}
+                  data={desitnationArray}
+                  renderItem={({item}) => this._renderGoingItem(item)}
+                  keyExtractor={item => item._id}
+                />
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -125,9 +145,9 @@ class AddPlaceScreen extends Component {
   }
 }
 
-const mapStatetToProps = ({desitnation}) => {
+const mapStatetToProps = ({createTrip}) => {
   return {
-    desitnation: desitnation,
+    createTrip: createTrip,
   };
 };
 

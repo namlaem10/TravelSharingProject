@@ -13,14 +13,7 @@ import {connect} from 'react-redux';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-import {
-  actions as actionsTrip,
-  types as typesTrip,
-} from '../../redux/reducers/managerGroupTripReducer';
-import {
-  actions as actionsMems,
-  types as typesMem,
-} from '../../redux/reducers/managerGroupMemberReducer';
+import {actions, types} from '../../redux/reducers/managerGroupReducer';
 
 import HeaderBar from '../../components/HeaderBar';
 
@@ -30,12 +23,12 @@ class CreateTeamScreen extends Component {
     this.state = {
       nameText: '',
       title: 'Tạo nhóm du lịch',
+      trip: null,
+      member: [],
     };
   }
   UNSAFE_componentWillMount = () => {
-    this.props.resetTrip();
-    this.props.resetMem();
-    console.log('resetState');
+    this.props.reset();
   };
   onSearchChangeText = text => {
     this.setState({
@@ -56,9 +49,9 @@ class CreateTeamScreen extends Component {
     console.log('confirm');
   };
   render() {
-    const {nameText, title} = this.state;
-    const haveTrip = this.props.trip.data;
-    const MemberGroup = this.props.memsId.data.length;
+    const {nameText, title, trip, member} = this.state;
+    const haveTrip = trip;
+    const MemberGroup = member.length;
     return (
       <View style={styles.container}>
         <HeaderBar title={title} onPressBack={this.onPressBack} />
@@ -226,20 +219,21 @@ class CreateTeamScreen extends Component {
     );
   }
 }
-const mapStateToProps = ({trip, membersId}) => {
+const mapStateToProps = ({groupInfo}) => {
   return {
-    trip: trip,
-    memsId: membersId,
+    groupInfo: groupInfo,
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
-    resetTrip: () => dispatch(actionsTrip.reset()),
-    resetMem: () => dispatch(actionsMems.reset()),
+    reset: () => dispatch(actions.reset()),
   };
 };
 // eslint-disable-next-line prettier/prettier
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTeamScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CreateTeamScreen);
 
 const styles = EStyleSheet.create({
   container: {

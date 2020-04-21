@@ -30,6 +30,7 @@ export default class EmptyTab extends Component {
   // }
   render() {
     const {statusText} = this.state;
+    const {onPressAddButton} = this.props;
     return (
       <View style={styles.container}>
         <Image
@@ -42,8 +43,7 @@ export default class EmptyTab extends Component {
         <Text>Bạn không có lịch trình nào {statusText} diễn ra</Text>
         <TouchableOpacity
           style={styles.confirmButton}
-          // onPress={() => this.onPressConfirm()}
-        >
+          onPress={() => onPressAddButton()}>
           <Text
             style={{
               fontSize: EStyleSheet.value('15rem'),

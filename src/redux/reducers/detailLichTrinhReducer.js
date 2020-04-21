@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../services/APIservice';
 
 import {GetRoutes} from '../../utils/Constants';
-import {DiemThamQuan} from '../../utils/fakedata';
 
 export const types = {
   GET_LOCATION_INFO: 'GET_LOCATION_INFO',
@@ -14,6 +13,8 @@ export const types = {
   GET_LANDSCAPES: 'GET_LANDSCAPES',
   GET_LANDSCAPES_FAIL: 'GET_LANDSCAPES_FAIL',
   ADD_LANDSCAPES: 'ADD_LANDSCAPES',
+  UPDATE_SCHEDULE_DETAIL: 'UPDATE_SCHEDULE_DETAIL',
+  UPDATE_SCHEDULE_DETAIL_FAIL: 'UPDATE_SCHEDULE_DETAIL_FAIL',
   RESET: 'RESET',
 };
 async function getToken() {
@@ -29,6 +30,50 @@ async function getToken() {
   }
 }
 export const actions = {
+  update_schedule_detail: (schedule_detail, idHanhTrinh, number_of_days) => {
+    //vi thằng làm api óc chó nên phải kèm member = [],
+    // let params = new URLSearchParams();
+    return async dispatch => {
+      try {
+        const url = `/api/travel/update/${idHanhTrinh}`;
+        const token = await getToken();
+        const contentType = 'application/x-www-form-urlencoded';
+        let params = new URLSearchParams();
+        for (let i = 1; i <= number_of_days; i++) {
+          let count = 0;
+          schedule_detail['day_' + i].map(item => {
+            params.append(`schedule_detail[day_${i}][${count}]`, item._id);
+            count++;
+          });
+        }
+        const result = await api.put(url, params, token, contentType);
+        if (result.status === 200) {
+          dispatch({
+            type: types.UPDATE_SCHEDULE_DETAIL,
+            payload: {
+              data: result.data,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.UPDATE_SCHEDULE_DETAIL_FAIL,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.UPDATE_SCHEDULE_DETAIL_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
   add_landscapes: (arrayItems, keyDay, schedule_detail, number_of_days) => {
     return async dispatch => {
       arrayItems.map(item => {
@@ -45,14 +90,35 @@ export const actions = {
   },
   get_landscapes: destinationId => {
     return async dispatch => {
-      // gọi api kèm destinationId để lấy array địa điểm
-      let landscapes = DiemThamQuan;
-      dispatch({
-        type: types.GET_LANDSCAPES,
-        payload: {
-          data: landscapes,
-        },
-      });
+      try {
+        const url = `/api/touristdestination/${destinationId}`;
+        const token = await getToken();
+        const result = await api.get(url, token);
+        if (result.status === 200) {
+          dispatch({
+            type: types.GET_LANDSCAPES,
+            payload: {
+              data: result.data,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.GET_LANDSCAPES_FAIL,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.GET_LANDSCAPES_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
     };
   },
   delete_schedule_detail_item: (schedule_detail, keyDay, itemID) => {
@@ -260,6 +326,12 @@ export const detailLichTrinhReducer = (state = initialState, action) => {
     case types.ADD_LANDSCAPES: {
       return {
         type: types.ADD_LANDSCAPES,
+        data: payload.data,
+      };
+    }
+    case types.UPDATE_SCHEDULE_DETAIL: {
+      return {
+        type: types.UPDATE_SCHEDULE_DETAIL,
         data: payload.data,
       };
     }

@@ -18,7 +18,9 @@ import BlogDetail from './BlogDetail';
 export default class ScrollVerticalLichTrinh extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      data: this.props.data || null,
+    };
   }
   _RenderScrollTravelItem = (schedule, routeInfo) => {
     let Items = [];
@@ -38,10 +40,12 @@ export default class ScrollVerticalLichTrinh extends Component {
   };
   _RenderScrollMemberItem = () => {
     let Items = [];
-
-    for (let i = 1; i <= 4; i++) {
-      Items.push(<MemberScrollItem key={i} data={i} />);
-    }
+    let member = this.props.data.member;
+    let count = 0;
+    member.map(item => {
+      Items.push(<MemberScrollItem key={item._id} data={item} count={count} />);
+      count++;
+    });
     return Items;
   };
   onPressAddMember = () => {

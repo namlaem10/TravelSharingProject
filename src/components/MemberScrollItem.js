@@ -4,6 +4,7 @@ import {View, Text, Image} from 'react-native';
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
+import {BASE_URL} from '../services/URL';
 
 export default class MemberScrollItem extends Component {
   constructor(props) {
@@ -12,16 +13,23 @@ export default class MemberScrollItem extends Component {
   }
 
   render() {
-    const {data} = this.props;
-    if (data === 1) {
+    const {data, count} = this.props;
+    let avatar = data.avatar;
+    if (avatar !== null) {
+      avatar = BASE_URL + '/' + avatar;
+    }
+    if (count === 0) {
       return (
         <View style={styles.container}>
           <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
             <Image
-              source={constants.Images.IC_AVATAR1}
+              source={
+                avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+              }
               style={{
                 width: EStyleSheet.value('40rem'),
                 height: EStyleSheet.value('40rem'),
+                borderRadius: EStyleSheet.value('20rem'),
               }}
             />
             <Image
@@ -46,10 +54,13 @@ export default class MemberScrollItem extends Component {
         <View style={styles.container}>
           <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
             <Image
-              source={constants.Images.IC_AVATAR1}
+              source={
+                avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+              }
               style={{
                 width: EStyleSheet.value('40rem'),
                 height: EStyleSheet.value('40rem'),
+                borderRadius: EStyleSheet.value('20rem'),
               }}
             />
           </View>
@@ -58,7 +69,7 @@ export default class MemberScrollItem extends Component {
               fontSize: EStyleSheet.value('12rem'),
               marginVertical: EStyleSheet.value('5rem'),
             }}>
-            Nam ngu si
+            {data.display_name}
           </Text>
         </View>
       );

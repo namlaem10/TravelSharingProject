@@ -11,9 +11,14 @@ export default class TravelItem extends Component {
       isShare: false,
     };
   }
-
+  componentWillMount() {
+    this.setState({
+      isShare: this.props.data.isShare,
+    });
+  }
   render() {
     const {data, onPressConfirm, onPressItem} = this.props;
+    const {isShare} = this.state;
     return (
       <TouchableOpacity
         style={styles.container}
@@ -55,13 +60,13 @@ export default class TravelItem extends Component {
             </Text>
           </View>
         </View>
-        {this.state.isShare ? (
-          <View style={styles.confirmButton}>
+        {isShare ? (
+          <View style={styles.sharedBox}>
             <Text
               style={{
                 fontSize: EStyleSheet.value('15rem'),
                 fontFamily: constants.Fonts.medium,
-                color: 'black',
+                color: '#34D374',
               }}>
               Đã chia sẻ
             </Text>
@@ -148,7 +153,16 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    bottom: '75rem',
+    bottom: '78rem',
+    right: '10rem',
+  },
+  sharedBox: {
+    width: '75rem',
+    height: '28rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: '78rem',
     right: '10rem',
   },
 });

@@ -61,6 +61,9 @@ class ShareTimeLineDetailScreen extends Component {
           this.setState({
             loadingCompleted: false,
           });
+          this.props.navigation.navigate('TripDetail', {
+            data: nextProps.detailLichTrinh.data[0],
+          });
         }, 1500);
       } else {
         this.setState({
@@ -305,10 +308,9 @@ class ShareTimeLineDetailScreen extends Component {
     );
   }
 }
-const mapStateToProps = ({detailLichTrinh, scheduleDetail}) => {
+const mapStateToProps = ({detailLichTrinh}) => {
   return {
     detailLichTrinh: detailLichTrinh,
-    scheduleDetail: scheduleDetail,
   };
 };
 const mapDispatchToProps = dispatch => {

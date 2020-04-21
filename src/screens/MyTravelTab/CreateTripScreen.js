@@ -15,13 +15,13 @@ import {connect} from 'react-redux';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {actions, types} from '../../redux/reducers/myTravelPlaceReducer';
+import {types as groupType} from '../../redux/reducers/managerGroupReducer';
 import DatePicker from 'react-native-date-picker';
 import Dialog, {
   DialogFooter,
   DialogButton,
   DialogContent,
 } from 'react-native-popup-dialog';
-import {schedule_detail} from '../../utils/fakedata';
 import moment from 'moment';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
@@ -39,15 +39,56 @@ class CreateTripScreen extends Component {
       isStartDate: true,
       nameText: '',
       loadingVisible: false,
+      startPlace: null,
+      endPlace: null,
+      member: [],
     };
   }
   UNSAFE_componentWillMount = () => {
-    this.props.resetEnd();
-    this.props.resetStart();
+    this.props.reset();
     var startDate = new Date();
     var endDate = moment(startDate).add(2, 'day');
     this.setState({startDate: startDate, endDate: endDate});
   };
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.groupInfo.type === groupType.UPDATE_MEMBER) {
+      this.setState({
+        member: nextProps.groupInfo.data,
+      });
+    }
+    if (
+      nextProps.createTrip.type === types.GET_SUGGEST_SCHEDULE ||
+      nextProps.createTrip.type === types.GET_SUGGEST_SCHEDULE_FAIL
+    ) {
+      let scDetail = nextProps.createTrip.data[0].schedule_detail;
+      const {startDate, endDate, startPlace, endPlace, member} = this.state;
+
+      let number_of_days = Math.round((endDate - startDate) / miliToSecond) + 1;
+      if (number_of_days <= 0) {
+        number_of_days = 1;
+      }
+      this.props.navigation.navigate('ShareTimeLineDetail', {
+        action: 'creating',
+        data: scDetail,
+        page: 1,
+        totalDay: number_of_days,
+        start: startDate,
+        end: endDate,
+        isGone: false,
+        startPlace: startPlace,
+        endPlace: endPlace,
+        memsId: member,
+      });
+    } else if (nextProps.createTrip.type === types.PICK_START_PLACE) {
+      this.setState({
+        startPlace: nextProps.createTrip.data,
+      });
+    } else if (nextProps.createTrip.type === types.PICK_END_PLACE) {
+      this.setState({
+        endPlace: nextProps.createTrip.data,
+      });
+    }
+  }
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
@@ -117,10 +158,10 @@ class CreateTripScreen extends Component {
       this.setState({endDate: value});
     }
   };
-  onPressConfirm = () => {
+  onPressConfirm = async () => {
     this.setState({loadingVisible: true});
-    const {startPlace, endPlace, memsId} = this.props;
-    if (startPlace.data === null || endPlace.data === null) {
+    const {startPlace, endPlace} = this.state;
+    if (startPlace === null || endPlace === null) {
       this.setState({loadingVisible: false});
       Alert.alert(
         'Lưu ý',
@@ -139,29 +180,28 @@ class CreateTripScreen extends Component {
       if (number_of_days <= 0) {
         number_of_days = 1;
       }
-      let scheduleDetail = schedule_detail;
-      this.props.navigation.navigate('ShareTimeLineDetail', {
-        action: 'creating',
-        data: scheduleDetail,
-        page: 1,
-        totalDay: number_of_days,
-        start: startDate,
-        end: endDate,
-        isGone: false,
-        startPlace: startPlace.data,
-        endPlace: endPlace.data,
-        memsId: memsId.data,
-      });
+      await this.props.get_suggest_schedule(endPlace._id, number_of_days);
     }
     this.setState({loadingVisible: false});
   };
   onPressMember = () => {
-    this.props.navigation.navigate('AddMember', {location: 'CreateTrip'});
+    this.props.navigation.navigate('AddMember', {
+      location: 'CreateTrip',
+      member: this.state.member,
+      type: 'create',
+    });
   };
   render() {
-    const {title, startDate, endDate, isStartDate, nameText} = this.state;
-    const {startPlace, endPlace, memsId} = this.props;
-    const MemberGroup = memsId.data.length;
+    const {
+      title,
+      startDate,
+      endDate,
+      isStartDate,
+      startPlace,
+      endPlace,
+      member,
+    } = this.state;
+    const MemberGroup = member.length;
     const start = moment(startDate).format('DD/MM/YYYY');
     const end = moment(endDate).format('DD/MM/YYYY');
     return (
@@ -225,7 +265,7 @@ class CreateTripScreen extends Component {
                 height: EStyleSheet.value('35rem'),
               }}
             />
-            {startPlace.data !== null ? (
+            {startPlace !== null ? (
               <View style={styles.TouchGroup}>
                 <Text style={styles.label}>Điểm xuất phát</Text>
                 <TouchableOpacity
@@ -249,7 +289,7 @@ class CreateTripScreen extends Component {
                       ...styles.inputText,
                       paddingLeft: EStyleSheet.value('2rem'),
                     }}>
-                    {startPlace.data.destination_name}
+                    {startPlace.destination_name}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -284,7 +324,7 @@ class CreateTripScreen extends Component {
                 height: EStyleSheet.value('35rem'),
               }}
             />
-            {endPlace.data !== null ? (
+            {endPlace !== null ? (
               <View style={styles.TouchGroup}>
                 <Text style={styles.label}>Điểm Đến</Text>
                 <TouchableOpacity
@@ -308,7 +348,7 @@ class CreateTripScreen extends Component {
                       ...styles.inputText,
                       paddingLeft: EStyleSheet.value('2rem'),
                     }}>
-                    {endPlace.data.destination_name}
+                    {endPlace.destination_name}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -464,17 +504,17 @@ class CreateTripScreen extends Component {
     );
   }
 }
-const mapStateToProps = ({startPlace, endPlace, membersId}) => {
+const mapStateToProps = ({createTrip, groupInfo}) => {
   return {
-    startPlace: startPlace,
-    endPlace: endPlace,
-    memsId: membersId,
+    createTrip: createTrip,
+    groupInfo: groupInfo,
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
-    resetStart: () => dispatch(actions.resetStart()),
-    resetEnd: () => dispatch(actions.resetEnd()),
+    reset: () => dispatch(actions.reset()),
+    get_suggest_schedule: (destinationId, num_of_days) =>
+      dispatch(actions.get_suggest_schedule(destinationId, num_of_days)),
   };
 };
 // eslint-disable-next-line prettier/prettier
