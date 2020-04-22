@@ -53,11 +53,21 @@ class PostDetailScreen extends Component {
     );
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({
-      routeData: nextProps.detailLichTrinh.data,
-      isDetailLichTrinhReady: true,
-    });
+    if (nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO) {
+      this.setState({
+        routeData: nextProps.detailLichTrinh.data,
+        isDetailLichTrinhReady: true,
+      });
+    }
   }
+  getSchedule = data => {
+    this.props.navigation.navigate('CreateTrip', {
+      destination: data.destination,
+      schedule_detail: data.schedule.schedule_detail,
+      destinationId: data.schedule.destination,
+      number_of_days: data.schedule.number_of_days,
+    });
+  };
   onPressBack = () => {
     this.props.navigation.goBack();
   };
@@ -196,6 +206,9 @@ class PostDetailScreen extends Component {
             </View>
             <View style={styles.AddButton}>
               <TouchableOpacity
+                onPress={() => {
+                  this.getSchedule(data);
+                }}
                 style={{
                   justifyContent: 'center',
                   alignItems: 'center',

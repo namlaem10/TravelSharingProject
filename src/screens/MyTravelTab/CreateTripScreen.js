@@ -42,13 +42,37 @@ class CreateTripScreen extends Component {
       startPlace: null,
       endPlace: null,
       member: [],
+      schedule_detail: null,
     };
   }
   UNSAFE_componentWillMount = () => {
     this.props.reset();
     var startDate = new Date();
     var endDate = moment(startDate).add(2, 'day');
-    this.setState({startDate: startDate, endDate: endDate});
+    let schedule_detail = this.props.navigation.getParam(
+      'schedule_detail',
+      null,
+    );
+    if (schedule_detail) {
+      let propsDestination = this.props.navigation.getParam('destination');
+      let destinationId = this.props.navigation.getParam('destinationId');
+      let number_of_days = this.props.navigation.getParam('number_of_days');
+      let desination = {
+        ...propsDestination,
+        _id: destinationId,
+      };
+      this.setState({
+        startDate: startDate,
+        endDate: moment(startDate).add(number_of_days - 1, 'day'),
+        endPlace: desination,
+        schedule_detail: schedule_detail,
+      });
+    } else {
+      this.setState({
+        startDate: startDate,
+        endDate: endDate,
+      });
+    }
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.groupInfo.type === groupType.UPDATE_MEMBER) {
@@ -180,7 +204,27 @@ class CreateTripScreen extends Component {
       if (number_of_days <= 0) {
         number_of_days = 1;
       }
-      await this.props.get_suggest_schedule(endPlace._id, number_of_days);
+      if (this.state.schedule_detail !== null) {
+        let props_nums_day = this.props.navigation.getParam('number_of_days');
+        if (props_nums_day >= number_of_days) {
+          this.props.navigation.navigate('ShareTimeLineDetail', {
+            action: 'creating',
+            data: this.state.schedule_detail,
+            page: 1,
+            totalDay: number_of_days,
+            start: startDate,
+            end: endDate,
+            isGone: false,
+            startPlace: startPlace,
+            endPlace: endPlace,
+            memsId: this.state.member,
+          });
+        } else {
+          await this.props.get_suggest_schedule(endPlace._id, number_of_days);
+        }
+      } else {
+        await this.props.get_suggest_schedule(endPlace._id, number_of_days);
+      }
     }
     this.setState({loadingVisible: false});
   };

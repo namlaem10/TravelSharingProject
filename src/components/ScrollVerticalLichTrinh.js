@@ -65,6 +65,7 @@ export default class ScrollVerticalLichTrinh extends Component {
       routeInfo,
       isDetailLichTrinhReady,
     } = this.props;
+    console.log(routeInfo);
     const {isLoading} = this.state;
     let Button = true;
     if (isButton === false) {
