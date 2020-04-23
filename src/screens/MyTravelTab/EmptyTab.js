@@ -25,9 +25,6 @@ export default class EmptyTab extends Component {
     this.setState({statusText});
   }
 
-  // UNSAFE_componentWillReceiveProps(nextProps) {
-  //   console.log('WillReceive', nextProps);
-  // }
   render() {
     const {statusText} = this.state;
     const {onPressAddButton} = this.props;

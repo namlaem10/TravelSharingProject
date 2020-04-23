@@ -138,15 +138,16 @@ export default class NewsFeedItem extends Component {
                 color: '#41A96B',
                 marginBottom: EStyleSheet.value('5rem'),
               }}>
-              #test,#bosungsau
+              #{data.schedule.destination}
             </Text>
             <Text
+              numberOfLines={2}
               style={{
                 ...styles.text,
                 fontFamily: constants.Fonts.light,
                 fontSize: EStyleSheet.value('9rem'),
               }}>
-              {data.description}...
+              {data.description}
             </Text>
           </View>
           <View style={styles.lastInfo}>

@@ -36,6 +36,7 @@ class TimeLineDetailScreen extends Component {
       isGone: false,
       startDate: null,
       idHanhTrinh: null,
+      isShare: false,
     };
   }
   UNSAFE_componentWillMount = () => {
@@ -45,6 +46,7 @@ class TimeLineDetailScreen extends Component {
     const routeData = this.props.navigation.getParam('routeData');
     const isGone = this.props.navigation.getParam('isGone', false);
     const idHanhTrinh = this.props.navigation.getParam('idHanhTrinh');
+    const isShare = this.props.navigation.getParam('isShare', false);
     this.setState({
       routeData,
       schedule_detail: data,
@@ -52,6 +54,7 @@ class TimeLineDetailScreen extends Component {
       isGone,
       startDate,
       idHanhTrinh,
+      isShare,
     });
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -166,11 +169,11 @@ class TimeLineDetailScreen extends Component {
     }
     return array;
   };
-  onPressNext = () => {
-    this.props.navigation.navigate('CreatePost');
-  };
   onPressShare = () => {
-    console.log('Shared');
+    this.props.navigation.navigate('CreatePost', {
+      idHanhTrinh: this.state.idHanhTrinh,
+      background: this.props.navigation.getParam('background'),
+    });
   };
   onPressCompleted = () => {
     this.setState({loadingVisible: true});
@@ -254,20 +257,22 @@ class TimeLineDetailScreen extends Component {
           {this._renderItem()}
         </ScrollableTabView>
         {isGone ? (
-          <View style={styles.footer}>
-            <TouchableOpacity
-              style={styles.confirmButton}
-              onPress={() => this.onPressShare()}>
-              <Text
-                style={{
-                  fontSize: EStyleSheet.value('15rem'),
-                  fontFamily: constants.Fonts.medium,
-                  color: 'white',
-                }}>
-                Chia sẻ
-              </Text>
-            </TouchableOpacity>
-          </View>
+          this.state.isShare ? null : (
+            <View style={styles.footer}>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => this.onPressShare()}>
+                <Text
+                  style={{
+                    fontSize: EStyleSheet.value('15rem'),
+                    fontFamily: constants.Fonts.medium,
+                    color: 'white',
+                  }}>
+                  Chia sẻ
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )
         ) : (
           <View style={styles.footer}>
             <TouchableOpacity

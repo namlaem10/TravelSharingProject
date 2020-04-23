@@ -133,7 +133,7 @@ export default class BlogDetail extends Component {
               color: '#41A96B',
               marginBottom: EStyleSheet.value('5rem'),
             }}>
-            #hanoi #hoguom
+            #{data.schedule.destination}
           </Text>
           <Text
             style={{

@@ -97,7 +97,11 @@ class MyTravelScreen extends Component {
     this.props.navigation.navigate('TripDetail', {data: item});
   };
   onPressItemGone = item => {
-    this.props.navigation.navigate('TripDetail', {data: item, isGone: true});
+    this.props.navigation.navigate('TripDetail', {
+      data: item,
+      isGone: true,
+      isShare: item.isShare,
+    });
   };
   _handleStartDrag = () => {
     this.setState({
@@ -114,6 +118,8 @@ class MyTravelScreen extends Component {
       action: 'sharing',
       data: item.schedule.schedule_detail,
       page: 1,
+      idHanhTrinh: item._id,
+      background: item.background,
       totalDay: item.schedule.number_of_days,
       start: item.start_day,
       isGone: true,

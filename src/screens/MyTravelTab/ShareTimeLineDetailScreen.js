@@ -164,7 +164,10 @@ class ShareTimeLineDetailScreen extends Component {
     return array;
   };
   onPressNext = () => {
-    this.props.navigation.navigate('CreatePost');
+    this.props.navigation.navigate('CreatePost', {
+      idHanhTrinh: this.props.navigation.getParam('idHanhTrinh'),
+      background: this.props.navigation.getParam('background'),
+    });
   };
   onPressCompleted = async () => {
     this.setState({

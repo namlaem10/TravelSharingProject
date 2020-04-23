@@ -39,7 +39,6 @@ class AddPlaceScreen extends Component {
       nextProps.createTrip.type === types.GET_DESTINATION ||
       nextProps.createTrip.type === types.GET_DESTINATION_FAIL
     ) {
-      console.log(nextProps.createTrip.data);
       this.setState({
         desitnationArray: nextProps.createTrip.data,
         isLoadding: false,

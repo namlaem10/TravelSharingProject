@@ -15,6 +15,8 @@ export const types = {
   ADD_LANDSCAPES: 'ADD_LANDSCAPES',
   UPDATE_SCHEDULE_DETAIL: 'UPDATE_SCHEDULE_DETAIL',
   UPDATE_SCHEDULE_DETAIL_FAIL: 'UPDATE_SCHEDULE_DETAIL_FAIL',
+  CREATE_POST: 'CREATE_POST',
+  CREATE_POST_FAIL: 'CREATE_POST_FAIL',
   RESET: 'RESET',
 };
 async function getToken() {
@@ -30,8 +32,51 @@ async function getToken() {
   }
 }
 export const actions = {
+  create_post: (idHanhTrinh, title, description, backgroundFile = null) => {
+    return async dispatch => {
+      try {
+        const url = `/api/travel/blog/${idHanhTrinh}`;
+        const token = await getToken();
+        const contentType = 'multipart/form-data';
+        var bodyFormData = new FormData();
+        bodyFormData.append('title', title);
+        bodyFormData.append('description', description);
+        if (backgroundFile !== null) {
+          bodyFormData.append('background', {
+            uri: backgroundFile.uri,
+            type: backgroundFile.type,
+            name: backgroundFile.fileName,
+          });
+        }
+        const result = await api.put(url, bodyFormData, token, contentType);
+        if (result.status === 200) {
+          dispatch({
+            type: types.CREATE_POST,
+            payload: {
+              data: result.data,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.CREATE_POST_FAIL,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.CREATE_POST_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
   update_schedule_detail: (schedule_detail, idHanhTrinh, number_of_days) => {
-    //vi thằng làm api óc chó nên phải kèm member = [],
     // let params = new URLSearchParams();
     return async dispatch => {
       try {
@@ -165,7 +210,6 @@ export const actions = {
           bodyFormData.append(`member[${count}]`, item);
           count++;
         });
-        console.log(bodyFormData);
         const result = await api.post(url, bodyFormData, token, contentType);
         if (result.status === 200) {
           dispatch({
@@ -247,27 +291,6 @@ const initialState = {
   status: null,
   error: null,
 };
-// export const scheduleDetailReducer = (state = initialState, action) => {
-//   const {type, payload} = action;
-//   switch (type) {
-//     case types.DELETE_SCHEDULE_DETAIL_ITEM: {
-//       return {
-//         type: types.DELETE_SCHEDULE_DETAIL_ITEM,
-//         data: payload.data,
-//       };
-//     }
-//     case types.DELETE_SCHEDULE_DETAIL_ITEM_FAIL: {
-//       return {
-//         type: types.DELETE_SCHEDULE_DETAIL_ITEM_FAIL,
-//         data: payload.data,
-//         status: payload.status,
-//       };
-//     }
-//     default: {
-//       return state;
-//     }
-//   }
-// };
 export const detailLichTrinhReducer = (state = initialState, action) => {
   const {type, payload} = action;
   switch (type) {
@@ -333,6 +356,19 @@ export const detailLichTrinhReducer = (state = initialState, action) => {
       return {
         type: types.UPDATE_SCHEDULE_DETAIL,
         data: payload.data,
+      };
+    }
+    case types.CREATE_POST: {
+      return {
+        type: types.CREATE_POST,
+        data: payload.data,
+      };
+    }
+    case types.CREATE_POST_FAIL: {
+      return {
+        type: types.CREATE_POST_FAIL,
+        data: payload.data,
+        status: payload.status,
       };
     }
     default: {

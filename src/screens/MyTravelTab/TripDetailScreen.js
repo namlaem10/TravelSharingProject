@@ -8,6 +8,8 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -28,6 +30,7 @@ class TripDetailScreen extends Component {
       routeData: [],
       isDetailLichTrinhReady: false,
       isGone: false,
+      isShare: false,
     };
     this.didFocusSubscription = props.navigation.addListener(
       'willFocus',
@@ -39,6 +42,7 @@ class TripDetailScreen extends Component {
             isLoading: false,
             data,
             isGone: this.props.navigation.getParam('isGone', false),
+            isShare: this.props.navigation.getParam('isShare', false),
           });
           this.props.get_location_info(
             data.schedule.schedule_detail,
@@ -59,6 +63,7 @@ class TripDetailScreen extends Component {
       data,
       linkImage,
       isGone: this.props.navigation.getParam('isGone', false),
+      isShare: this.props.navigation.getParam('isShare', false),
     });
     this.props.get_location_info(
       data.schedule.schedule_detail,
@@ -77,7 +82,7 @@ class TripDetailScreen extends Component {
     this.props.navigation.navigate('MyTravel');
   };
   onPressDetailButton = () => {
-    const {data, routeData, isGone} = this.state;
+    const {data, routeData, isGone, isShare} = this.state;
     this.props.navigation.navigate('TimeLineDetail', {
       data: data.schedule.schedule_detail,
       page: 1,
@@ -87,10 +92,12 @@ class TripDetailScreen extends Component {
       isGone: isGone,
       destinationId: data.schedule.destination,
       idHanhTrinh: data._id,
+      isShare: isShare,
+      background: data.background,
     });
   };
   onPressTravelDay = page => {
-    const {data, routeData, isGone} = this.state;
+    const {data, routeData, isGone, isShare} = this.state;
     this.props.navigation.navigate('TimeLineDetail', {
       data: data.schedule.schedule_detail,
       page: page,
@@ -100,6 +107,8 @@ class TripDetailScreen extends Component {
       isGone: isGone,
       destinationId: data.schedule.destination,
       idHanhTrinh: data._id,
+      isShare: isShare,
+      background: data.background,
     });
   };
   onPressAddMember = () => {
@@ -129,9 +138,11 @@ class TripDetailScreen extends Component {
       linkImage,
       routeData,
       isDetailLichTrinhReady,
+      isGone,
+      isShare,
     } = this.state;
     return !isLoading ? (
-      <View style={styles.container}>
+      <View style={isGone ? styles.container1 : styles.container}>
         <ScrollView
           // eslint-disable-next-line react/no-string-refs
           scrollEventThrottle={16}
@@ -213,26 +224,28 @@ class TripDetailScreen extends Component {
               isButton={true}
               onPressAddMember={this.onPressAddMember}
               onPressChat={this.onPressChat}
-              isBlog={false}
+              isBlog={isShare ? true : false}
             />
           </View>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity style={styles.trackingButton}>
-              <Text
-                style={{
-                  fontSize: EStyleSheet.value('15rem'),
-                  fontFamily: constants.Fonts.light,
-                  letterSpacing: 0.5,
-                  color: 'white',
-                }}>
-                Theo dõi nhóm
-              </Text>
-            </TouchableOpacity>
-          </View>
+          {isGone ? null : (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity style={styles.trackingButton}>
+                <Text
+                  style={{
+                    fontSize: EStyleSheet.value('15rem'),
+                    fontFamily: constants.Fonts.light,
+                    letterSpacing: 0.5,
+                    color: 'white',
+                  }}>
+                  Theo dõi nhóm
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </ScrollView>
       </View>
     ) : (
@@ -262,6 +275,12 @@ export default connect(
   mapDispatchToProps,
 )(TripDetailScreen);
 const styles = EStyleSheet.create({
+  container1: {
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
