@@ -8,7 +8,8 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/ownLichTrinhReducer';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
@@ -16,74 +17,34 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 import SearchBar from '../../components/SearchBar';
 import TeamItem from './TeamItem';
 
-//fake data:
-const Data = [
-  {
-    id: 'Group1',
-    teamName: 'Ngu si nhóm',
-    place: 'Tp. Hồ Chí Minh - Đà Lạt',
-    leader: 'Nam ngu si',
-    memberQuantity: 4,
-  },
-  {
-    id: 'Group7',
-    teamName: 'Ngu si nhóm',
-    place: 'Tp. Hồ Chí Minh - Đà Lạt',
-    leader: 'Nam ngu si',
-    memberQuantity: 4,
-  },
-  {
-    id: 'Group2',
-    teamName: 'Ngu si nhóm',
-    place: 'Tp. Hồ Chí Minh - Đà Lạt',
-    leader: 'Nam ngu si',
-    memberQuantity: 4,
-  },
-  {
-    id: 'Group3',
-    teamName: 'Ngu si nhóm',
-    place: 'Tp. Hồ Chí Minh - Đà Lạt',
-    leader: 'Nam ngu si',
-    memberQuantity: 4,
-  },
-  {
-    id: 'Group4',
-    teamName: 'Ngu si nhóm',
-    place: 'Tp. Hồ Chí Minh - Đà Lạt',
-    leader: 'Nam ngu si',
-    memberQuantity: 4,
-  },
-  {
-    id: 'Group5',
-    teamName: 'Ngu si nhóm',
-    place: 'Tp. Hồ Chí Minh - Đà Lạt',
-    leader: 'Nam ngu si',
-    memberQuantity: 4,
-  },
-  {
-    id: 'Group6',
-    teamName: 'Ngu si nhóm',
-    place: 'Tp. Hồ Chí Minh - Đà Lạt',
-    leader: 'Nam ngu si',
-    memberQuantity: 4,
-  },
-];
-export default class ManageGroupScreen extends Component {
+class ManageGroupScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: 'Quản lý nhóm du lịch',
       searchText: '',
-      isDarg: false,
+      // isDarg: false,
+      data: null,
     };
   }
+  UNSAFE_componentWillMount() {
+    this.setState({
+      data: this.props.ownLichTrinh.data,
+    });
+  }
+  _renderItem = item => {
+    return <TeamItem data={item} onPress={this.onPressItem} />;
+  };
   onSearchChangeText = text => {
     this.setState({
       searchText: text,
     });
   };
-  onPressItem = id => {
-    console.log(id);
+  onPressItem = item => {
+    this.props.navigation.navigate('InfoGroup', {
+      location: 'ManageGroup',
+      data: item,
+    });
   };
   _handleStartDrag = () => {
     this.setState({
@@ -108,7 +69,7 @@ export default class ManageGroupScreen extends Component {
   };
 
   render() {
-    const {title, searchText} = this.state;
+    const {title, searchText, data} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -125,16 +86,14 @@ export default class ManageGroupScreen extends Component {
               paddingBottom: EStyleSheet.value('100rem'),
               paddingHorizontal: EStyleSheet.value('20rem'),
             }}
-            data={Data}
-            renderItem={({item}) => (
-              <TeamItem data={item} onPress={this.onPressItem} />
-            )}
-            keyExtractor={item => item.id}
+            data={data}
+            renderItem={({item}) => this._renderItem(item)}
+            keyExtractor={item => item._id}
             onScrollEndDrag={() => this._handleEndDrag()}
             onScrollBeginDrag={() => this._handleStartDrag()}
           />
         </View>
-        {this.state.isDarg ? null : (
+        {/* {this.state.isDarg ? null : (
           <TouchableOpacity
             style={styles.addButton}
             onPress={() => this.onPressAddButton()}>
@@ -146,12 +105,27 @@ export default class ManageGroupScreen extends Component {
               }}
             />
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
     );
   }
 }
-
+const mapStateToProps = ({user, ownLichTrinh}) => {
+  return {
+    user: user,
+    ownLichTrinh: ownLichTrinh,
+  };
+};
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     get_own: () => dispatch(actions.get_own()),
+//   };
+// };
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  mapStateToProps,
+  // mapDispatchToProps,
+)(ManageGroupScreen);
 const styles = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,

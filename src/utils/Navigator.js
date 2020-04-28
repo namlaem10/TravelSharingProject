@@ -23,6 +23,8 @@ import AddTrip from '../screens/ManageGroupTab/AddTripScreen';
 import AddMember from '../screens/ManageGroupTab/AddMemberScreen';
 import Chatting from '../screens/ManageGroupTab/ChattingScreen';
 import TrackingMap from '../screens/ManageGroupTab/TrackingMapScreen';
+import InfoGroup from '../screens/ManageGroupTab/InfoGroupScreen';
+import Member from '../screens/ManageGroupTab/MemberScreen';
 
 import Account from '../screens/AcountTab/AccountScreen';
 import InfoUser from '../screens/AcountTab/InfoUserScreen';
@@ -118,6 +120,12 @@ const ManageGroupStack = createStackNavigator(
     },
     TrackingMap: {
       screen: TrackingMap,
+    },
+    InfoGroup: {
+      screen: InfoGroup,
+    },
+    Member: {
+      screen: Member,
     },
   },
   {

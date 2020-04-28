@@ -4,7 +4,8 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-
+import {BASE_URL} from '../../services/URL';
+import moment from 'moment';
 export default class TeamItem extends Component {
   constructor(props) {
     super(props);
@@ -13,10 +14,13 @@ export default class TeamItem extends Component {
 
   render() {
     const {onPress, data} = this.props;
+    let background = null;
+    if (data.background != null) {
+      background = BASE_URL + '/' + data.background;
+    }
+    let member = data.member.length;
     return (
-      <TouchableOpacity
-        style={styles.container}
-        onPress={() => onPress(data.id)}>
+      <TouchableOpacity style={styles.container} onPress={() => onPress(data)}>
         <View style={styles.card}>
           <View style={{position: 'absolute', right: 5, bottom: 2}}>
             <Text
@@ -30,7 +34,11 @@ export default class TeamItem extends Component {
           </View>
           <View style={styles.picture}>
             <Image
-              source={require('../../assets/images/dalat2.jpg')}
+              source={
+                background !== null
+                  ? {uri: background}
+                  : require('../../assets/images/dalat2.jpg')
+              }
               style={{
                 width: EStyleSheet.value('85rem'),
                 height: EStyleSheet.value('85rem'),
@@ -46,7 +54,8 @@ export default class TeamItem extends Component {
                 fontSize: EStyleSheet.value('15rem'),
                 fontFamily: constants.Fonts.medium,
               }}>
-              {data.teamName}
+              {data.departure.destination_name}&nbsp;-&nbsp;
+              {data.destination.destination_name}
             </Text>
             <Text
               style={{
@@ -54,7 +63,8 @@ export default class TeamItem extends Component {
                 ...styles.subText,
                 fontSize: EStyleSheet.value('13rem'),
               }}>
-              {data.place}
+              {moment(data.start_day).format('DD/MM/YYYY')}&nbsp;-&nbsp;
+              {moment(data.end_day).format('DD/MM/YYYY')}
             </Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{...styles.text, ...styles.subText}}>
@@ -67,7 +77,7 @@ export default class TeamItem extends Component {
                   fontSize: EStyleSheet.value('11rem'),
                   color: 'black',
                 }}>
-                {data.leader}
+                {data.create_by.display_name}
               </Text>
             </View>
             <View style={{flexDirection: 'row'}}>
@@ -81,7 +91,7 @@ export default class TeamItem extends Component {
                   fontSize: EStyleSheet.value('11rem'),
                   color: 'black',
                 }}>
-                {data.memberQuantity} người
+                {member} người
               </Text>
             </View>
           </View>
