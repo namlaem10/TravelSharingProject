@@ -36,6 +36,7 @@ class MyTravelScreen extends Component {
       will: 0,
       goin: 0,
       gone: 0,
+      user: null,
     };
     this.didFocusSubscription = props.navigation.addListener(
       'willFocus',
@@ -64,6 +65,7 @@ class MyTravelScreen extends Component {
         this.setState({
           isLoading: false,
           ownLichTrinh: ownLichTrinh.data,
+          user: this.props.user.data.user_info,
         });
       }
     }
@@ -93,14 +95,18 @@ class MyTravelScreen extends Component {
       searchText: text,
     });
   };
-  onPressItem = item => {
-    this.props.navigation.navigate('TripDetail', {data: item});
+  onPressItem = (item, isLeader) => {
+    this.props.navigation.navigate('TripDetail', {
+      data: item,
+      isLeader: isLeader,
+    });
   };
-  onPressItemGone = item => {
+  onPressItemGone = (item, isLeader) => {
     this.props.navigation.navigate('TripDetail', {
       data: item,
       isGone: true,
       isShare: item.isShare,
+      isLeader: isLeader,
     });
   };
   _handleStartDrag = () => {
@@ -113,7 +119,7 @@ class MyTravelScreen extends Component {
       isDarg: false,
     });
   };
-  onPressConfirm = item => {
+  onPressConfirm = (item, isLeader) => {
     this.props.navigation.navigate('ShareTimeLineDetail', {
       action: 'sharing',
       data: item.schedule.schedule_detail,
@@ -123,6 +129,7 @@ class MyTravelScreen extends Component {
       totalDay: item.schedule.number_of_days,
       start: item.start_day,
       isGone: true,
+      isLeader: isLeader,
     });
   };
   onPressAddButton = () => {
@@ -141,8 +148,16 @@ class MyTravelScreen extends Component {
               var currentDate = new Date();
               var startDate = new Date(item.start_day);
               if (startDate > currentDate) {
+                let isLeader = false;
+                if (this.state.user._id === item.create_by._id) {
+                  isLeader = true;
+                }
                 return (
-                  <TravelItem data={item} onPressItem={this.onPressItem} />
+                  <TravelItem
+                    data={item}
+                    isLeader={isLeader}
+                    onPressItem={this.onPressItem}
+                  />
                 );
               }
             }}
@@ -188,7 +203,17 @@ class MyTravelScreen extends Component {
             var startDate = new Date(item.start_day);
             var endDate = new Date(item.end_day);
             if (currentDate >= startDate && currentDate <= endDate) {
-              return <TravelItem data={item} onPressItem={this.onPressItem} />;
+              let isLeader = false;
+              if (this.state.user._id === item.create_by._id) {
+                isLeader = true;
+              }
+              return (
+                <TravelItem
+                  data={item}
+                  onPressItem={this.onPressItem}
+                  isLeader={isLeader}
+                />
+              );
             }
           }}
           keyExtractor={item => item._id}
@@ -215,12 +240,17 @@ class MyTravelScreen extends Component {
           renderItem={({item}) => {
             var currentDate = new Date();
             var endDate = new Date(item.end_day);
+            let isLeader = false;
+            if (this.state.user._id === item.create_by._id) {
+              isLeader = true;
+            }
             if (endDate < currentDate) {
               return (
                 <TravelItemGone
                   data={item}
                   onPressItem={this.onPressItemGone}
                   onPressConfirm={this.onPressConfirm}
+                  isLeader={isLeader}
                 />
               );
             }

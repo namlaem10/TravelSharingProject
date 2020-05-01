@@ -69,7 +69,6 @@ class APIService {
       }
       axios(config)
         .then(response => {
-          console.log('login success');
           resolve(response);
         })
         .catch(error => {

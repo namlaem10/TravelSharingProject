@@ -37,6 +37,7 @@ class TimeLineDetailScreen extends Component {
       startDate: null,
       idHanhTrinh: null,
       isShare: false,
+      isLeader: false,
     };
   }
   UNSAFE_componentWillMount = () => {
@@ -47,6 +48,8 @@ class TimeLineDetailScreen extends Component {
     const isGone = this.props.navigation.getParam('isGone', false);
     const idHanhTrinh = this.props.navigation.getParam('idHanhTrinh');
     const isShare = this.props.navigation.getParam('isShare', false);
+    const isLeader = this.props.navigation.getParam('isLeader');
+    console.log(isLeader);
     this.setState({
       routeData,
       schedule_detail: data,
@@ -55,6 +58,7 @@ class TimeLineDetailScreen extends Component {
       startDate,
       idHanhTrinh,
       isShare,
+      isLeader,
     });
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -164,6 +168,7 @@ class TimeLineDetailScreen extends Component {
           isGone={isGone}
           onPressAddPlace={this.onPressAddPlace}
           onPressDeleteItem={this.onPressDeleteItem}
+          isLeader={this.state.isLeader}
         />,
       );
     }
@@ -256,7 +261,7 @@ class TimeLineDetailScreen extends Component {
           )}>
           {this._renderItem()}
         </ScrollableTabView>
-        {isGone ? (
+        {!this.state.isLeader ? null : isGone ? (
           this.state.isShare ? null : (
             <View style={styles.footer}>
               <TouchableOpacity

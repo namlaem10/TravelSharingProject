@@ -49,15 +49,25 @@ class AddMemberScreen extends Component {
           loadingCompleted: true,
           message: 'Đã cập nhật! đang chuyển màn hình',
         });
-        this.props.reset_member();
-        setTimeout(() => {
-          this.setState({
-            loadingCompleted: false,
-          });
-          this.props.navigation.navigate('TripDetail', {
-            data: nextProps.groupInfo.data[0],
-          });
-        }, 1500);
+        let location = this.props.navigation.getParam('location');
+        if (location === 'InfoGroup') {
+          setTimeout(() => {
+            this.setState({
+              loadingCompleted: false,
+            });
+            this.props.navigation.navigate('InfoGroup');
+          }, 1000);
+        } else {
+          this.props.reset_member();
+          setTimeout(() => {
+            this.setState({
+              loadingCompleted: false,
+            });
+            this.props.navigation.navigate('TripDetail', {
+              data: nextProps.groupInfo.data[0],
+            });
+          }, 1500);
+        }
       } else {
         this.setState({
           loadingVisible: false,

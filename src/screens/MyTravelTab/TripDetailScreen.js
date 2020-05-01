@@ -94,6 +94,7 @@ class TripDetailScreen extends Component {
       idHanhTrinh: data._id,
       isShare: isShare,
       background: data.background,
+      isLeader: this.props.navigation.getParam('isLeader'),
     });
   };
   onPressTravelDay = page => {
@@ -109,6 +110,7 @@ class TripDetailScreen extends Component {
       idHanhTrinh: data._id,
       isShare: isShare,
       background: data.background,
+      isLeader: this.props.navigation.getParam('isLeader'),
     });
   };
   onPressAddMember = () => {
@@ -129,6 +131,14 @@ class TripDetailScreen extends Component {
   onPressChat = () => {
     this.props.navigation.navigate('Chatting', {
       location: 'TripDetail',
+    });
+  };
+  onPressTrackingButton = () => {
+    const {data} = this.state;
+    this.props.navigation.navigate('TrackingMap', {
+      location: 'TripDetail',
+      data: data,
+      isLeader: this.props.navigation.getParam('isLeader'),
     });
   };
   render() {
@@ -225,6 +235,7 @@ class TripDetailScreen extends Component {
               onPressAddMember={this.onPressAddMember}
               onPressChat={this.onPressChat}
               isBlog={isShare ? true : false}
+              isLeader={this.props.navigation.getParam('isLeader')}
             />
           </View>
           {isGone ? null : (
@@ -233,7 +244,9 @@ class TripDetailScreen extends Component {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <TouchableOpacity style={styles.trackingButton}>
+              <TouchableOpacity
+                style={styles.trackingButton}
+                onPress={() => this.onPressTrackingButton()}>
                 <Text
                   style={{
                     fontSize: EStyleSheet.value('15rem'),
@@ -276,7 +289,6 @@ export default connect(
 )(TripDetailScreen);
 const styles = EStyleSheet.create({
   container1: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: 'white',
     justifyContent: 'center',

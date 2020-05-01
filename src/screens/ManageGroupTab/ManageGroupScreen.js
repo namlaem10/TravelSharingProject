@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/ownLichTrinhReducer';
@@ -25,12 +26,44 @@ class ManageGroupScreen extends Component {
       searchText: '',
       // isDarg: false,
       data: null,
+      isLoading: true,
     };
+    this.didFocusSubscription = props.navigation.addListener(
+      'willFocus',
+      async payload => {
+        console.log(payload.action);
+        if (payload.action.type === 'Navigation/NAVIGATE') {
+          await this.props.get_own();
+        }
+      },
+    );
   }
   UNSAFE_componentWillMount() {
     this.setState({
       data: this.props.ownLichTrinh.data,
+      isLoading: false,
     });
+  }
+  // async UNSAFE_componentWillMount() {
+  //   await this.props.get_own();
+  // }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.ownLichTrinh.type === types.GET_OWN) {
+      const {ownLichTrinh} = nextProps;
+      if (ownLichTrinh.status) {
+        this.setState({
+          isLoading: false,
+          message: ownLichTrinh.data.message
+            ? ownLichTrinh.data.message
+            : 'Lỗi tải thông tin :(',
+        });
+      } else {
+        this.setState({
+          isLoading: false,
+          data: ownLichTrinh.data,
+        });
+      }
+    }
   }
   _renderItem = item => {
     return <TeamItem data={item} onPress={this.onPressItem} />;
@@ -44,6 +77,10 @@ class ManageGroupScreen extends Component {
     this.props.navigation.navigate('InfoGroup', {
       location: 'ManageGroup',
       data: item,
+      title:
+        item.departure.destination_name +
+        ' - ' +
+        item.destination.destination_name,
     });
   };
   _handleStartDrag = () => {
@@ -69,7 +106,7 @@ class ManageGroupScreen extends Component {
   };
 
   render() {
-    const {title, searchText, data} = this.state;
+    const {title, searchText, data, isLoading} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -80,18 +117,37 @@ class ManageGroupScreen extends Component {
           />
         </View>
         <View styles={styles.content}>
-          <Text style={styles.text}>Danh sách nhóm của bạn</Text>
-          <FlatList
-            contentContainerStyle={{
-              paddingBottom: EStyleSheet.value('100rem'),
-              paddingHorizontal: EStyleSheet.value('20rem'),
-            }}
-            data={data}
-            renderItem={({item}) => this._renderItem(item)}
-            keyExtractor={item => item._id}
-            onScrollEndDrag={() => this._handleEndDrag()}
-            onScrollBeginDrag={() => this._handleStartDrag()}
-          />
+          {isLoading ? (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1,
+              }}>
+              <ActivityIndicator
+                size={EStyleSheet.value('60rem')}
+                color="#34D374"
+              />
+            </View>
+          ) : (
+            <View
+              style={{
+                paddingBottom: EStyleSheet.value('100rem'),
+              }}>
+              <Text style={styles.text}>Danh sách nhóm của bạn</Text>
+              <FlatList
+                contentContainerStyle={{
+                  paddingBottom: EStyleSheet.value('40rem'),
+                  paddingHorizontal: EStyleSheet.value('20rem'),
+                }}
+                data={data}
+                renderItem={({item}) => this._renderItem(item)}
+                keyExtractor={item => item._id}
+                onScrollEndDrag={() => this._handleEndDrag()}
+                onScrollBeginDrag={() => this._handleStartDrag()}
+              />
+            </View>
+          )}
         </View>
         {/* {this.state.isDarg ? null : (
           <TouchableOpacity
@@ -116,15 +172,15 @@ const mapStateToProps = ({user, ownLichTrinh}) => {
     ownLichTrinh: ownLichTrinh,
   };
 };
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     get_own: () => dispatch(actions.get_own()),
-//   };
-// };
+const mapDispatchToProps = dispatch => {
+  return {
+    get_own: () => dispatch(actions.get_own()),
+  };
+};
 // eslint-disable-next-line prettier/prettier
 export default connect(
   mapStateToProps,
-  // mapDispatchToProps,
+  mapDispatchToProps,
 )(ManageGroupScreen);
 const styles = EStyleSheet.create({
   container: {

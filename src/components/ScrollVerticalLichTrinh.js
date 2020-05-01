@@ -122,12 +122,14 @@ export default class ScrollVerticalLichTrinh extends Component {
             </Text>
             {Button ? (
               <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity onPress={() => onPressAddMember()}>
-                  <Image
-                    source={constants.Images.IC_ADD_MEMBER}
-                    style={styles.iconVector}
-                  />
-                </TouchableOpacity>
+                {this.props.isLeader ? (
+                  <TouchableOpacity onPress={() => onPressAddMember()}>
+                    <Image
+                      source={constants.Images.IC_ADD_MEMBER}
+                      style={styles.iconVector}
+                    />
+                  </TouchableOpacity>
+                ) : null}
                 <TouchableOpacity onPress={() => onPressChat()}>
                   <Image
                     source={constants.Images.IC_COMMENT_RED}

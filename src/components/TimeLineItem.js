@@ -168,13 +168,15 @@ export default class TimeLineItem extends Component {
               }}
             />
             {isDelete ? (
-              <View style={styles.deleteButtonGroup}>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => onPressDeleteItem(data._id, keyDay)}>
-                  <Text style={{color: 'white'}}>Xóa</Text>
-                </TouchableOpacity>
-              </View>
+              this.props.isLeader ? (
+                <View style={styles.deleteButtonGroup}>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => onPressDeleteItem(data._id, keyDay)}>
+                    <Text style={{color: 'white'}}>Xóa</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : null
             ) : null}
           </View>
           <View

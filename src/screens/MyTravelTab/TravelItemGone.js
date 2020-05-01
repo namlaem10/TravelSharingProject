@@ -17,12 +17,12 @@ export default class TravelItem extends Component {
     });
   }
   render() {
-    const {data, onPressConfirm, onPressItem} = this.props;
+    const {data, onPressConfirm, onPressItem, isLeader} = this.props;
     const {isShare} = this.state;
     return (
       <TouchableOpacity
         style={styles.container}
-        onPress={() => onPressItem(data)}>
+        onPress={() => onPressItem(data, isLeader)}>
         <View style={styles.header}>
           <Image
             source={require('../../assets/images/dalat2.jpg')}
@@ -60,31 +60,33 @@ export default class TravelItem extends Component {
             </Text>
           </View>
         </View>
-        {isShare ? (
-          <View style={styles.sharedBox}>
-            <Text
-              style={{
-                fontSize: EStyleSheet.value('15rem'),
-                fontFamily: constants.Fonts.medium,
-                color: '#34D374',
-              }}>
-              Đã chia sẻ
-            </Text>
-          </View>
-        ) : (
-          <TouchableOpacity
-            style={styles.confirmButton}
-            onPress={() => onPressConfirm(data)}>
-            <Text
-              style={{
-                fontSize: EStyleSheet.value('15rem'),
-                fontFamily: constants.Fonts.medium,
-                color: 'white',
-              }}>
-              Chia sẻ
-            </Text>
-          </TouchableOpacity>
-        )}
+        {isLeader ? (
+          isShare ? (
+            <View style={styles.sharedBox}>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('15rem'),
+                  fontFamily: constants.Fonts.medium,
+                  color: '#34D374',
+                }}>
+                Đã chia sẻ
+              </Text>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={() => onPressConfirm(data, isLeader)}>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('15rem'),
+                  fontFamily: constants.Fonts.medium,
+                  color: 'white',
+                }}>
+                Chia sẻ
+              </Text>
+            </TouchableOpacity>
+          )
+        ) : null}
       </TouchableOpacity>
     );
   }

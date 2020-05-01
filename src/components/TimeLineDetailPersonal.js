@@ -58,6 +58,7 @@ export default class TimelineDetailPersonal extends Component {
           isDelete={isGone ? false : true}
           onPressDeleteItem={this.props.onPressDeleteItem}
           keyDay={keyDay}
+          isLeader={this.props.isLeader}
         />,
       );
       count++;
@@ -65,9 +66,9 @@ export default class TimelineDetailPersonal extends Component {
     return viewData;
   }
   render() {
-    const {day, onPressAddPlace, isGone, keyDay} = this.props;
+    const {day, onPressAddPlace, isGone, keyDay, isLeader} = this.props;
     return (
-      <View style={styles.container}>
+      <View style={isLeader ? styles.container : styles.containerSub}>
         <View style={styles.title}>
           <Text
             style={{
@@ -76,7 +77,7 @@ export default class TimelineDetailPersonal extends Component {
             }}>
             Ngày {day}
           </Text>
-          {isGone ? null : (
+          {isGone ? null : isLeader ? (
             <TouchableOpacity onPress={() => onPressAddPlace(keyDay)}>
               <Text
                 style={{
@@ -86,7 +87,7 @@ export default class TimelineDetailPersonal extends Component {
                 Thêm địa điểm
               </Text>
             </TouchableOpacity>
-          )}
+          ) : null}
         </View>
         <ScrollView>
           <View style={styles.content}>{this._renderItem()}</View>
@@ -98,6 +99,9 @@ export default class TimelineDetailPersonal extends Component {
 const styles = EStyleSheet.create({
   container: {
     height: '420rem',
+  },
+  containerSub: {
+    height: '470rem',
   },
   title: {
     flexDirection: 'row',

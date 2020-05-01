@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  Alert,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -16,14 +17,16 @@ import database from '../../utils/fireBaseConfig';
 import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {getDistance} from 'geolib';
-const idGroup = 'group1';
-const idUser = 'mem2';
+import {connect} from 'react-redux';
+import {BASE_URL} from '../../services/URL';
+import HeaderBar from '../../components/HeaderBar';
 const RADIUS = 1000;
-export default class TrackingMapScreen extends Component {
+class TrackingMapScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      arrayMem: null,
+      title: 'Vị trí nhóm',
+      arrayMem: [],
       isLoading: true,
       lastPosition: null,
       region: {
@@ -32,9 +35,20 @@ export default class TrackingMapScreen extends Component {
         latitudeDelta: 21,
         longitudeDelta: 21,
       },
+      user: null,
+      groupData: null,
+      isLeader: false,
+      isAlert: false,
     };
   }
-
+  onPressBack = () => {
+    const location = this.props.navigation.getParam('location', '');
+    if (location !== '') {
+      this.props.navigation.navigate(location);
+    } else {
+      this.props.navigation.goBack();
+    }
+  };
   DistanceCalculation = array => {
     let distances = [];
     const leader = array.find(e => e.rank === 'leader');
@@ -51,34 +65,55 @@ export default class TrackingMapScreen extends Component {
           },
         );
         if (dis > 1000) {
-          distances.push({id: item.id, dis: dis});
+          distances.push({user: item, dis: dis});
         }
       }
     });
-    console.log('this members is out of range!!! ', distances);
-  };
-
-  UNSAFE_componentWillMount = async () => {
-    const GroupRef = database.ref('groups/' + idGroup);
-    const snapshot = await GroupRef.once('value');
-    let arrayMem = [];
-    let array = snapshot.val();
-    Object.keys(array.members).forEach((key, index) => {
-      arrayMem.push(array.members[key]);
-    });
-    this.setState({
-      arrayMem,
-    });
-
-    Geolocation.watchPosition(position => {
-      const {longitude, latitude} = position.coords;
-      database.ref('groups/' + idGroup + '/members/' + idUser).update({
-        location: {
-          latitude: latitude,
-          longitude: longitude,
-        },
-        name: 'Thien',
+    if (distances.length > 0) {
+      let warnMessage = 'Các thành viên sau đang quá xa nhóm trưởng: ';
+      distances.map(item => {
+        let dis = Math.round((item.dis / 1000) * 10 + Number.EPSILON) / 10;
+        dis += ' km';
+        let name = item.user.name;
+        warnMessage += `${name} - ${dis},`;
       });
+      if (this.state.isAlert === false) {
+        Alert.alert(
+          'Cảnh báo',
+          warnMessage,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                console.log('cancle');
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+        this.setState({isAlert: true});
+      }
+    }
+  };
+  componentDidMount() {
+    let groupData = this.props.navigation.getParam('data');
+    const user = this.props.user.data;
+    let isLeader = this.props.navigation.getParam('isLeader');
+
+    Geolocation.getCurrentPosition(position => {
+      const {longitude, latitude} = position.coords;
+      database
+        .ref('groups/' + groupData._id + '/members/' + user.user_info._id)
+        .update({
+          id: user.user_info._id,
+          location: {
+            latitude: latitude,
+            longitude: longitude,
+          },
+          name: user.user_info.display_name,
+          rank: isLeader ? 'leader' : 'member',
+          avatar: user.user_info.avatar,
+        });
       this.setState({
         region: {
           latitude: latitude,
@@ -86,12 +121,64 @@ export default class TrackingMapScreen extends Component {
           latitudeDelta: 0.015,
           longitudeDelta: 0.015,
         },
-        isLoading: false,
         lastPosition: {
           latitude: latitude,
           longitude: longitude,
         },
       });
+    });
+
+    Geolocation.watchPosition(position => {
+      const {longitude, latitude} = position.coords;
+      database
+        .ref('groups/' + groupData._id + '/members/' + user.user_info._id)
+        .update({
+          id: user.user_info._id,
+          location: {
+            latitude: latitude,
+            longitude: longitude,
+          },
+          name: user.user_info.display_name,
+          rank: isLeader ? 'leader' : 'member',
+          avatar: user.user_info.avatar,
+        });
+      this.setState({
+        region: {
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 0.015,
+          longitudeDelta: 0.015,
+        },
+        lastPosition: {
+          latitude: latitude,
+          longitude: longitude,
+        },
+      });
+    });
+  }
+  UNSAFE_componentWillMount = async () => {
+    let groupData = this.props.navigation.getParam('data');
+    let user = this.props.user.data;
+    let isLeader = this.props.navigation.getParam('isLeader');
+    const GroupRef = database.ref('groups/' + groupData._id);
+    const snapshot = await GroupRef.once('value');
+    let arrayMem = [];
+    let array = snapshot.val();
+    if (array === null) {
+      GroupRef.set({
+        members: [],
+      });
+    } else {
+      Object.keys(array.members).forEach((key, index) => {
+        arrayMem.push(array.members[key]);
+      });
+    }
+    this.setState({
+      arrayMem,
+      user: user,
+      isLoading: false,
+      groupData: groupData,
+      isLeader: isLeader,
     });
     GroupRef.on(
       'child_changed',
@@ -109,15 +196,37 @@ export default class TrackingMapScreen extends Component {
     this.DistanceCalculation(arrayMem);
   };
   render() {
-    const {arrayMem, isLoading, lastPosition, region} = this.state;
+    const {
+      arrayMem,
+      isLoading,
+      lastPosition,
+      region,
+      user,
+      isLeader,
+      title,
+    } = this.state;
     let leader = null;
-    if (arrayMem !== null) {
+    if (arrayMem !== []) {
       leader = arrayMem.find(e => e.rank === 'leader');
     }
+    let avatar = null;
+    if (user !== null) {
+      if (user.user_info.avatar !== null) {
+        avatar = BASE_URL + '/' + user.user_info.avatar;
+      }
+    }
     return isLoading ? (
-      <ActivityIndicator size={EStyleSheet.value('60rem')} color="#34D374" />
+      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        <ActivityIndicator size={EStyleSheet.value('60rem')} color="#34D374" />
+        <Text>Bản đồ đang tải xuống...</Text>
+      </View>
     ) : (
       <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.title}>
+            <HeaderBar title={title} onPressBack={this.onPressBack} />
+          </View>
+        </View>
         <MapView style={styles.mapView} region={region}>
           {leader !== null ? (
             <MapView.Circle
@@ -129,41 +238,60 @@ export default class TrackingMapScreen extends Component {
             />
           ) : null}
           {lastPosition !== null ? (
-            <Marker coordinate={lastPosition} title={'Bạn'}>
-              <View style={styles.markerCustom}>
-                <Image
-                  source={constants.Images.IC_AVATAR1}
-                  style={{
-                    height: EStyleSheet.value('24rem'),
-                    width: EStyleSheet.value('24rem'),
-                    borderRadius: EStyleSheet.value('12rem'),
-                  }}
-                />
+            <Marker coordinate={lastPosition}>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.leaderText}>Bạn</Text>
+                <View style={styles.markerCustom}>
+                  <Image
+                    source={
+                      avatar !== null
+                        ? {uri: avatar}
+                        : constants.Images.IC_AVATAR1
+                    }
+                    style={{
+                      height: EStyleSheet.value('24rem'),
+                      width: EStyleSheet.value('24rem'),
+                      borderRadius: EStyleSheet.value('12rem'),
+                    }}
+                  />
+                </View>
               </View>
             </Marker>
           ) : null}
-          {arrayMem !== null
+          {arrayMem !== []
             ? arrayMem.map(item => {
-                if (item.id !== idUser) {
+                if (item.id !== user.user_info._id) {
                   return (
                     <Marker
                       key={item.id}
                       coordinate={{
                         latitude: item.location.latitude,
                         longitude: item.location.longitude,
-                      }}
-                      title={item.name}>
+                      }}>
                       <View
                         style={{
                           justifyContent: 'center',
                           alignItems: 'center',
                         }}>
-                        {item.rank === 'leader' ? (
-                          <Text style={styles.leaderText}>Nhóm Trưởng</Text>
-                        ) : null}
-                        <View style={styles.markerCustomAnother}>
+                        <Text style={styles.leaderText}>{item.name}</Text>
+                        <View
+                          style={
+                            item.rank === 'leader'
+                              ? styles.markerCustomForLeader
+                              : styles.markerCustomAnother
+                          }>
                           <Image
-                            source={constants.Images.IC_AVATAR2}
+                            source={
+                              item.avatar !== undefined
+                                ? {
+                                    uri: BASE_URL + '/' + item.avatar,
+                                  }
+                                : constants.Images.IC_AVATAR1
+                            }
                             style={{
                               height: EStyleSheet.value('24rem'),
                               width: EStyleSheet.value('24rem'),
@@ -182,7 +310,13 @@ export default class TrackingMapScreen extends Component {
     );
   }
 }
-
+const mapStateToProps = ({user, groupInfo}) => {
+  return {
+    user: user,
+    groupInfo: groupInfo,
+  };
+};
+export default connect(mapStateToProps)(TrackingMapScreen);
 const styles = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
@@ -208,14 +342,19 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  markerCustomForLeader: {
+    backgroundColor: 'rgba(247,130,30,0.6)',
+    width: '45rem',
+    height: '45rem',
+    borderRadius: '22.5rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   leaderText: {
     fontSize: constants.FontSizes.regular,
-    fontFamily: constants.Fonts.bold,
-    backgroundColor: 'rgba(52,211,116,0.4)',
-    borderRadius: '5rem',
-    width: '120rem',
-    height: '25rem',
+    fontFamily: constants.Fonts.regular,
+    borderRadius: '2rem',
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
   },
 });
