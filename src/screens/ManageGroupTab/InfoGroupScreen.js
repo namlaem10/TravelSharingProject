@@ -123,6 +123,13 @@ class InfoGroupScreen extends Component {
       isLeader: this.state.isLeader,
     });
   };
+  onPressChatting = data => {
+    this.props.navigation.navigate('Chatting', {
+      location: 'InfoGroup',
+      data: data,
+      isLeader: this.state.isLeader,
+    });
+  };
   render() {
     const {title, data, isLeader} = this.state;
     return (
@@ -195,7 +202,9 @@ class InfoGroupScreen extends Component {
               Theo dõi nhóm
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.settingItem}>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => this.onPressChatting(data)}>
             <View style={styles.circleIcon}>
               <Image
                 style={styles.iconVector}

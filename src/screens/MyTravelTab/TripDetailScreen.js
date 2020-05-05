@@ -131,6 +131,7 @@ class TripDetailScreen extends Component {
   onPressChat = () => {
     this.props.navigation.navigate('Chatting', {
       location: 'TripDetail',
+      data: this.state.data,
     });
   };
   onPressTrackingButton = () => {
