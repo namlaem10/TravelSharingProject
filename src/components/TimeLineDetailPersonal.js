@@ -16,7 +16,7 @@ export default class TimelineDetailPersonal extends Component {
   }
   _renderItem() {
     let viewData = [];
-    const {data, routeData, isGone, keyDay} = this.props;
+    const {data, routeData, isGone, keyDay, action} = this.props;
     let count = 0;
     let hour = 8;
     let minute = 0;
@@ -59,6 +59,7 @@ export default class TimelineDetailPersonal extends Component {
           onPressDeleteItem={this.props.onPressDeleteItem}
           keyDay={keyDay}
           isLeader={this.props.isLeader}
+          action={action}
         />,
       );
       count++;
@@ -66,7 +67,7 @@ export default class TimelineDetailPersonal extends Component {
     return viewData;
   }
   render() {
-    const {day, onPressAddPlace, isGone, keyDay, isLeader} = this.props;
+    const {day, onPressAddPlace, isGone, keyDay, isLeader, action} = this.props;
     return (
       <View style={isLeader ? styles.container : styles.containerSub}>
         <View style={styles.title}>
@@ -77,7 +78,7 @@ export default class TimelineDetailPersonal extends Component {
             }}>
             Ngày {day}
           </Text>
-          {isGone ? null : isLeader ? (
+          {isGone ? null : isLeader || action === 'creating' ? (
             <TouchableOpacity onPress={() => onPressAddPlace(keyDay)}>
               <Text
                 style={{

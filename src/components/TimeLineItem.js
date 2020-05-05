@@ -117,7 +117,14 @@ export default class TimeLineItem extends Component {
     }
   };
   render() {
-    const {data, isDelete, timeText, onPressDeleteItem, keyDay} = this.props;
+    const {
+      data,
+      isDelete,
+      timeText,
+      onPressDeleteItem,
+      keyDay,
+      action,
+    } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.Col1}>
@@ -168,7 +175,7 @@ export default class TimeLineItem extends Component {
               }}
             />
             {isDelete ? (
-              this.props.isLeader ? (
+              this.props.isLeader || action === 'creating' ? (
                 <View style={styles.deleteButtonGroup}>
                   <TouchableOpacity
                     style={styles.deleteButton}

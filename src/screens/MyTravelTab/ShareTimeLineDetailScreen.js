@@ -138,6 +138,7 @@ class ShareTimeLineDetailScreen extends Component {
     const totalDay = this.props.navigation.getParam('totalDay');
     let startDate = this.props.navigation.getParam('start');
     const isGone = this.props.navigation.getParam('isGone', false);
+    const action = this.props.navigation.getParam('action', 'default');
     for (let i = 1; i <= totalDay; i++) {
       let dataItem = schedule_detail['day_' + i];
       let routeDataItem = routeData[i - 1];
@@ -158,6 +159,7 @@ class ShareTimeLineDetailScreen extends Component {
           isGone={isGone}
           onPressAddPlace={this.onPressAddPlace}
           onPressDeleteItem={this.onPressDeleteItem}
+          action={action}
         />,
       );
     }
