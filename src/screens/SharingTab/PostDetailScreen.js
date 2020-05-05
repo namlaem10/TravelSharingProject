@@ -18,6 +18,7 @@ import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
+import {BASE_URL} from '../../services/URL';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 const HEADER_MAX_HEIGHT = EStyleSheet.value('290rem');
@@ -99,6 +100,14 @@ class PostDetailScreen extends Component {
       routeData,
       isDetailLichTrinhReady,
     } = this.state;
+    let background = null;
+    if (data !== null) {
+      background =
+        data.background !== null
+          ? BASE_URL + '/' + data.background
+          : BASE_URL + '/' + data.destination.destination_image;
+    }
+    console.log(background);
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
       outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
@@ -145,7 +154,11 @@ class PostDetailScreen extends Component {
           ]}>
           <View style={styles.backgroundHeader}>
             <ImageBackground
-              source={require('../../assets/images/vinhhalong.jpeg')}
+              source={
+                background !== null
+                  ? {uri: background}
+                  : require('../../assets/images/vinhhalong.jpeg')
+              }
               style={{width: '100%', height: '100%'}}>
               <TitleBarCustom
                 onPress={this.onPressBack}

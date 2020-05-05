@@ -18,6 +18,7 @@ import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
+import {BASE_URL} from '../../services/URL';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 class TripDetailScreen extends Component {
@@ -156,6 +157,13 @@ class TripDetailScreen extends Component {
       isGone,
       isShare,
     } = this.state;
+    let background = null;
+    if (data !== null) {
+      background =
+        data.background !== null
+          ? BASE_URL + '/' + data.background
+          : BASE_URL + '/' + data.destination.destination_image;
+    }
     return !isLoading ? (
       <View style={isGone ? styles.container1 : styles.container}>
         <ScrollView
@@ -164,7 +172,7 @@ class TripDetailScreen extends Component {
           showsVerticalScrollIndicator={false}>
           <View style={styles.backgroundHeader}>
             <ImageBackground
-              source={require('../../assets/images/vinhhalong.jpeg')}
+              source={{uri: background}}
               style={{
                 width: '100%',
                 height: '100%',
@@ -241,6 +249,7 @@ class TripDetailScreen extends Component {
               onPressChat={this.onPressChat}
               isBlog={isShare ? true : false}
               isLeader={this.props.navigation.getParam('isLeader')}
+              isGone={isGone}
             />
           </View>
           {isGone ? null : (

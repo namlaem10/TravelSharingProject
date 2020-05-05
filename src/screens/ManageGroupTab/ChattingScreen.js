@@ -154,6 +154,7 @@ class ChattingScreen extends Component {
         isGone: this.props.navigation.getParam('isGone'),
         isShare: this.props.navigation.getParam('isShare'),
         isLeader: this.props.navigation.getParam('isLeader'),
+        title: this.props.navigation.getParam('title'),
       });
     } else {
       this.props.navigation.goBack();

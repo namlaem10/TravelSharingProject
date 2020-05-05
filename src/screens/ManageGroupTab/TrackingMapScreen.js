@@ -44,7 +44,11 @@ class TrackingMapScreen extends Component {
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
-      this.props.navigation.navigate(location);
+      this.props.navigation.navigate(location, {
+        data: this.props.navigation.getParam('data'),
+        isLeader: this.props.navigation.getParam('isLeader'),
+        title: this.props.navigation.getParam('title'),
+      });
     } else {
       this.props.navigation.goBack();
     }

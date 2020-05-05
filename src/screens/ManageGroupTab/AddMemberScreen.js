@@ -55,7 +55,10 @@ class AddMemberScreen extends Component {
             this.setState({
               loadingCompleted: false,
             });
-            this.props.navigation.navigate('InfoGroup');
+            this.props.navigation.navigate('InfoGroup', {
+              data: nextProps.groupInfo.data[0],
+              title: this.props.navigation.getParam('title'),
+            });
           }, 1000);
         } else {
           this.props.reset_member();
@@ -76,6 +79,11 @@ class AddMemberScreen extends Component {
         });
       }
     }
+    if (nextProps.groupInfo.type === types.UPDATE_MEMBER) {
+      this.props.navigation.navigate('CreateTrip', {
+        member: nextProps.groupInfo.data,
+      });
+    }
   }
   onSearchChangeText = text => {
     this.setState({searchText: text});
@@ -83,23 +91,20 @@ class AddMemberScreen extends Component {
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
-      this.props.navigation.navigate(location);
+      this.props.navigation.navigate(location, {
+        data: this.props.navigation.getParam('data'),
+        title: this.props.navigation.getParam('title'),
+      });
     } else {
       this.props.navigation.goBack();
     }
   };
   onPressDone = async () => {
     const type = this.props.navigation.getParam('type', 'create');
-    const location = this.props.navigation.getParam('location', '');
     const idHanhTrinh = this.props.navigation.getParam('idHanhTrinh');
     const {idUserPick} = this.state;
     if (type === 'create') {
       await this.props.update_mem(this.state.idUserPick);
-      if (location !== '') {
-        this.props.navigation.navigate(location);
-      } else {
-        this.props.navigation.goBack();
-      }
     } else if (type === 'update') {
       this.setState({
         loadingVisible: true,

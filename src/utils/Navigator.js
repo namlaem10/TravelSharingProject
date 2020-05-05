@@ -112,12 +112,6 @@ const ManageGroupStack = createStackNavigator(
     AddTrip: {
       screen: AddTrip,
     },
-    AddMember: {
-      screen: AddMember,
-    },
-    TrackingMap: {
-      screen: TrackingMap,
-    },
     InfoGroup: {
       screen: InfoGroup,
     },
@@ -236,6 +230,32 @@ const ChattingStack = createStackNavigator(
   },
   {
     initialRouteName: 'Chatting',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+const AddMemberStack = createStackNavigator(
+  {
+    AddMember: {
+      screen: AddMember,
+    },
+  },
+  {
+    initialRouteName: 'AddMember',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+const TrackingMapStack = createStackNavigator(
+  {
+    TrackingMap: {
+      screen: TrackingMap,
+    },
+  },
+  {
+    initialRouteName: 'TrackingMap',
     defaultNavigationOptions: {
       header: null,
     },
@@ -406,6 +426,12 @@ const AppStack = createSwitchNavigator({
   },
   Chat: {
     screen: ChattingStack,
+  },
+  Member: {
+    screen: AddMemberStack,
+  },
+  Tracking: {
+    screen: TrackingMapStack,
   },
 });
 

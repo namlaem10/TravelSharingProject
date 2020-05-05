@@ -53,6 +53,7 @@ class CreateTripScreen extends Component {
       'schedule_detail',
       null,
     );
+    let member = this.props.navigation.getParam('member', null);
     if (schedule_detail) {
       let propsDestination = this.props.navigation.getParam('destination');
       let destinationId = this.props.navigation.getParam('destinationId');
@@ -66,20 +67,17 @@ class CreateTripScreen extends Component {
         endDate: moment(startDate).add(number_of_days - 1, 'day'),
         endPlace: desination,
         schedule_detail: schedule_detail,
+        member: member !== null ? member : [],
       });
     } else {
       this.setState({
         startDate: startDate,
         endDate: endDate,
+        member: member !== null ? member : [],
       });
     }
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.groupInfo.type === groupType.UPDATE_MEMBER) {
-      this.setState({
-        member: nextProps.groupInfo.data,
-      });
-    }
     if (
       nextProps.createTrip.type === types.GET_SUGGEST_SCHEDULE ||
       nextProps.createTrip.type === types.GET_SUGGEST_SCHEDULE_FAIL

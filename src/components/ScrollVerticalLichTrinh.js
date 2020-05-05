@@ -64,6 +64,7 @@ export default class ScrollVerticalLichTrinh extends Component {
       isButton,
       routeInfo,
       isDetailLichTrinhReady,
+      isGone,
     } = this.props;
     const {isLoading} = this.state;
     let Button = true;
@@ -120,7 +121,7 @@ export default class ScrollVerticalLichTrinh extends Component {
               }}>
               Thành viên
             </Text>
-            {Button ? (
+            {Button && !isGone ? (
               <View style={{flexDirection: 'row'}}>
                 {this.props.isLeader ? (
                   <TouchableOpacity onPress={() => onPressAddMember()}>

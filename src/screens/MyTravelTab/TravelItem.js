@@ -18,17 +18,18 @@ export default class TravelItem extends Component {
     var currentDate = new Date();
     var startDate = new Date(data.start_day);
     var leftDay = startDate.getDate() - currentDate.getDate();
+    let background = null;
+    background =
+      data.background !== null
+        ? BASE_URL + '/' + data.background
+        : BASE_URL + '/' + data.destination.destination_image;
     return (
       <TouchableOpacity
         style={styles.container}
         onPress={() => onPressItem(data, isLeader)}>
         <View style={styles.header}>
           <Image
-            source={
-              data.background
-                ? {uri: BASE_URL + '/' + data.background}
-                : require('../../assets/images/dalat2.jpg')
-            }
+            source={{uri: background}}
             style={{
               flex: 1,
               width: '100%',

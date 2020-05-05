@@ -53,6 +53,7 @@ class InfoGroupScreen extends Component {
     let data = this.props.navigation.getParam('data');
     let user = this.props.user.data.user_info;
     let title = this.props.navigation.getParam('title');
+
     let isLeader = false;
     if (user._id === data.member[0]._id) {
       isLeader = true;
@@ -88,7 +89,6 @@ class InfoGroupScreen extends Component {
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
-      console.log(location);
       this.props.navigation.navigate(location);
     } else {
       this.props.navigation.goBack();
@@ -107,6 +107,9 @@ class InfoGroupScreen extends Component {
       member: member,
       type: 'update',
       idHanhTrinh: idHanhTrinh,
+      data: this.props.navigation.getParam('data'),
+      isLeader: this.state.isLeader,
+      title: this.state.title,
     });
   };
   onPressMemberInfo = data => {
@@ -121,6 +124,7 @@ class InfoGroupScreen extends Component {
       location: 'InfoGroup',
       data: data,
       isLeader: this.state.isLeader,
+      title: this.state.title,
     });
   };
   onPressChatting = data => {
@@ -128,6 +132,7 @@ class InfoGroupScreen extends Component {
       location: 'InfoGroup',
       data: data,
       isLeader: this.state.isLeader,
+      title: this.state.title,
     });
   };
   render() {
