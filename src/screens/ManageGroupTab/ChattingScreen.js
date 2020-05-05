@@ -149,7 +149,12 @@ class ChattingScreen extends Component {
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
-      this.props.navigation.navigate(location);
+      this.props.navigation.navigate(location, {
+        data: this.props.navigation.getParam('data'),
+        isGone: this.props.navigation.getParam('isGone'),
+        isShare: this.props.navigation.getParam('isShare'),
+        isLeader: this.props.navigation.getParam('isLeader'),
+      });
     } else {
       this.props.navigation.goBack();
     }

@@ -132,6 +132,10 @@ class TripDetailScreen extends Component {
     this.props.navigation.navigate('Chatting', {
       location: 'TripDetail',
       data: this.state.data,
+      isInfoGroup: false,
+      isLeader: this.props.navigation.getParam('isLeader'),
+      isGone: this.state.isGone,
+      isShare: this.state.isShare,
     });
   };
   onPressTrackingButton = () => {

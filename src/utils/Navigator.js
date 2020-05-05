@@ -115,9 +115,6 @@ const ManageGroupStack = createStackNavigator(
     AddMember: {
       screen: AddMember,
     },
-    Chatting: {
-      screen: Chatting,
-    },
     TrackingMap: {
       screen: TrackingMap,
     },
@@ -230,6 +227,20 @@ MyTravelStack.navigationOptions = ({navigation}) => {
     tabBarVisible,
   };
 };
+
+const ChattingStack = createStackNavigator(
+  {
+    Chatting: {
+      screen: Chatting,
+    },
+  },
+  {
+    initialRouteName: 'Chatting',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
 const MainStack = createBottomTabNavigator(
   {
     Sharing: {
@@ -392,6 +403,9 @@ const AppStack = createSwitchNavigator({
   },
   Main: {
     screen: MainStack,
+  },
+  Chat: {
+    screen: ChattingStack,
   },
 });
 
