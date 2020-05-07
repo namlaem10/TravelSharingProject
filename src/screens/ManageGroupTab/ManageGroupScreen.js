@@ -26,13 +26,18 @@ class ManageGroupScreen extends Component {
       searchText: '',
       // isDarg: false,
       data: null,
+      dataBackup: null,
       isLoading: true,
     };
     this.didFocusSubscription = props.navigation.addListener(
       'willFocus',
       async payload => {
         console.log(payload.action);
-        if (payload.action.type === 'Navigation/NAVIGATE') {
+        if (
+          payload.action.type === 'Navigation/NAVIGATE' ||
+          payload.action.type === 'Navigation/BACK'
+        ) {
+          this.setState({searchText: ''});
           await this.props.get_own();
         }
       },
@@ -41,6 +46,7 @@ class ManageGroupScreen extends Component {
   UNSAFE_componentWillMount() {
     this.setState({
       data: this.props.ownLichTrinh.data,
+      dataBackup: this.props.ownLichTrinh.data,
       isLoading: false,
     });
   }
@@ -61,6 +67,7 @@ class ManageGroupScreen extends Component {
         this.setState({
           isLoading: false,
           data: ownLichTrinh.data,
+          dataBackup: ownLichTrinh.data,
         });
       }
     }
@@ -71,6 +78,23 @@ class ManageGroupScreen extends Component {
   onSearchChangeText = text => {
     this.setState({
       searchText: text,
+    });
+  };
+  setSearchText = text => {
+    let searchText = text.replace(/[^a-zA-Z-  ]/g, '');
+    this.setState({searchText: searchText});
+    let data = this.state.dataBackup;
+    searchText = searchText.trim().toLowerCase();
+    data = data.filter(element => {
+      let searchData = null;
+      let sText =
+        element.departure.destination_name +
+        element.destination.destination_name;
+      searchData = sText.toLowerCase().match(searchText);
+      return searchData;
+    });
+    this.setState({
+      data: data,
     });
   };
   onPressItem = item => {
@@ -112,7 +136,7 @@ class ManageGroupScreen extends Component {
         <View style={styles.header}>
           <SearchBar
             title={title}
-            onChangeText={this.onSearchChangeText}
+            onChangeText={this.setSearchText}
             value={searchText}
           />
         </View>

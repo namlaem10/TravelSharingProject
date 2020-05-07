@@ -26,13 +26,18 @@ class NewsFeedScreen extends Component {
       isLoading: true,
       message: '',
       data: null,
+      dataBackup: null,
       avatar: this.props.user.data.user_info.avatar || null,
       user: this.props.user.data.user_info || null,
     };
     this.didFocusSubscription = props.navigation.addListener(
       'willFocus',
       async payload => {
-        if (payload.action.type === 'Navigation/NAVIGATE') {
+        if (
+          payload.action.type === 'Navigation/NAVIGATE' ||
+          payload.action.type === 'Navigation/BACK'
+        ) {
+          this.setState({searchText: ''});
           await this.props.get_all();
         }
       },
@@ -55,6 +60,7 @@ class NewsFeedScreen extends Component {
         this.setState({
           isLoading: false,
           data: allLichTrinh.data,
+          dataBackup: allLichTrinh.data,
         });
       }
     }
@@ -67,6 +73,23 @@ class NewsFeedScreen extends Component {
   onPressItem = item => {
     this.props.navigation.navigate('PostDetail', {data: item});
   };
+  setSearchText = text => {
+    let searchText = text.replace(/[^a-zA-Z ]/g, '');
+    this.setState({searchText: searchText});
+    let data = this.state.dataBackup;
+    searchText = searchText.trim().toLowerCase();
+    data = data.filter(element => {
+      let searchData = null;
+      let sText =
+        element.departure.destination_name +
+        element.destination.destination_name;
+      searchData = sText.toLowerCase().match(searchText);
+      return searchData;
+    });
+    this.setState({
+      data: data,
+    });
+  };
   render() {
     const {searchText, isLoading, message, data, avatar, user} = this.state;
     let uriAvatar = null;
@@ -76,10 +99,11 @@ class NewsFeedScreen extends Component {
         <View style={styles.header}>
           <View style={styles.titleGroup}>
             <SearchBar
-              onChangeText={this.onSearchChangeText}
+              onChangeText={this.setSearchText}
               value={searchText}
               placeHolder={'Nhập để tìm kiếm'}
               title={'Hành trình phổ biến'}
+              data={data}
             />
           </View>
           <View style={styles.userInfo}>

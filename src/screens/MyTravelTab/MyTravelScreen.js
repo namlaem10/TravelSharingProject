@@ -32,6 +32,7 @@ class MyTravelScreen extends Component {
       searchText: '',
       isDarg: false,
       ownLichTrinh: null,
+      ownLichTrinhBackup: null,
       isLoading: true,
       will: 0,
       goin: 0,
@@ -41,7 +42,11 @@ class MyTravelScreen extends Component {
     this.didFocusSubscription = props.navigation.addListener(
       'willFocus',
       async payload => {
-        if (payload.action.type === 'Navigation/NAVIGATE') {
+        if (
+          payload.action.type === 'Navigation/NAVIGATE' ||
+          payload.action.type === 'Navigation/BACK'
+        ) {
+          this.setState({searchText: ''});
           await this.props.get_own();
         }
       },
@@ -65,11 +70,29 @@ class MyTravelScreen extends Component {
         this.setState({
           isLoading: false,
           ownLichTrinh: ownLichTrinh.data,
+          ownLichTrinhBackup: ownLichTrinh.data,
           user: this.props.user.data.user_info,
         });
       }
     }
   }
+  setSearchText = text => {
+    let searchText = text.replace(/[^a-zA-Z-  ]/g, '');
+    this.setState({searchText: searchText});
+    let data = this.state.ownLichTrinhBackup;
+    searchText = searchText.trim().toLowerCase();
+    data = data.filter(element => {
+      let searchData = null;
+      let sText =
+        element.departure.destination_name +
+        element.destination.destination_name;
+      searchData = sText.toLowerCase().match(searchText);
+      return searchData;
+    });
+    this.setState({
+      ownLichTrinh: data,
+    });
+  };
   countLichTrinh = lichtrinh => {
     let will = 0;
     let gone = 0;
@@ -276,7 +299,7 @@ class MyTravelScreen extends Component {
         <View style={styles.header}>
           <SearchBar
             title={title}
-            onChangeText={this.onSearchChangeText}
+            onChangeText={this.setSearchText}
             value={searchText}
           />
         </View>

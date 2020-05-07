@@ -30,12 +30,14 @@ class AddMemberScreen extends Component {
       loadingCompleted: false,
       idUserPick: [],
       friend: [],
+      friendBackup: [],
     };
   }
   UNSAFE_componentWillMount = () => {
     this.setState({
       idUserPick: this.props.navigation.getParam('member', []),
       friend: this.props.user.data.user_info.friend,
+      friendBackup: this.props.user.data.user_info.friend,
     });
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -87,6 +89,21 @@ class AddMemberScreen extends Component {
   }
   onSearchChangeText = text => {
     this.setState({searchText: text});
+  };
+  setSearchText = text => {
+    let searchText = text.replace(/[^a-zA-Z0-9-  ]/g, '');
+    this.setState({searchText: searchText});
+    let data = this.state.friendBackup;
+    searchText = searchText.trim().toLowerCase();
+    data = data.filter(element => {
+      let searchData = null;
+      let sText = element.display_name;
+      searchData = sText.toLowerCase().match(searchText);
+      return searchData;
+    });
+    this.setState({
+      friend: data,
+    });
   };
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
@@ -209,7 +226,7 @@ class AddMemberScreen extends Component {
         <View style={styles.header}>
           <SearchBar
             title={title}
-            onChangeText={this.onSearchChangeText}
+            onChangeText={this.setSearchText}
             value={searchText}
             isBack={true}
             onPressBack={this.onPressBack}

@@ -24,6 +24,7 @@ class AddPlaceDetailScreen extends Component {
       title: 'Thêm địa điểm',
       searchText: '',
       famousLandscapes: [],
+      famousLandscapesBackup: [],
       ChoseItem: [],
       loadingVisible: false,
     };
@@ -36,6 +37,7 @@ class AddPlaceDetailScreen extends Component {
     if (nextProps.detailLichTrinh.type === types.GET_LANDSCAPES) {
       this.setState({
         famousLandscapes: nextProps.detailLichTrinh.data,
+        famousLandscapesBackup: nextProps.detailLichTrinh.data,
       });
     } else if (nextProps.detailLichTrinh.type === types.ADD_LANDSCAPES) {
       setTimeout(() => {
@@ -62,8 +64,20 @@ class AddPlaceDetailScreen extends Component {
     this.props.add_landscapes(addItems, keyDay, scheduledetail, number_of_days);
     //this.props.navigation.goBack();
   };
-  onChangeText = text => {
-    this.setState({searchText: text});
+  setSearchText = text => {
+    let searchText = text.replace(/[^a-zA-Z-  ]/g, '');
+    this.setState({searchText: searchText});
+    let data = this.state.famousLandscapesBackup;
+    searchText = searchText.trim().toLowerCase();
+    data = data.filter(element => {
+      let searchData = null;
+      let sText = element.tourist_destination_name;
+      searchData = sText.toLowerCase().match(searchText);
+      return searchData;
+    });
+    this.setState({
+      famousLandscapes: data,
+    });
   };
   onPressPlace = item => {
     console.log(item);
@@ -182,7 +196,7 @@ class AddPlaceDetailScreen extends Component {
         <View style={styles.header}>
           <SearchBar
             title={title}
-            onChangeText={this.onSearchChangeText}
+            onChangeText={this.setSearchText}
             value={searchText}
           />
         </View>

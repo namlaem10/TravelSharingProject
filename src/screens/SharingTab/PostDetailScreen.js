@@ -107,7 +107,6 @@ class PostDetailScreen extends Component {
           ? BASE_URL + '/' + data.background
           : BASE_URL + '/' + data.destination.destination_image;
     }
-    console.log(background);
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
       outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],

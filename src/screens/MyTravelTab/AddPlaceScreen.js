@@ -28,6 +28,7 @@ class AddPlaceScreen extends Component {
       searchText: '',
       isStart: this.props.navigation.getParam('isStart', false),
       desitnationArray: [],
+      destinationArrayBackup: [],
       isLoadding: true,
     };
   }
@@ -41,12 +42,25 @@ class AddPlaceScreen extends Component {
     ) {
       this.setState({
         desitnationArray: nextProps.createTrip.data,
+        destinationArrayBackup: nextProps.createTrip.data,
         isLoadding: false,
       });
     }
   }
-  onSearchChangeText = text => {
-    this.setState({searchText: text});
+  setSearchText = text => {
+    let searchText = text.replace(/[^a-zA-Z-  ]/g, '');
+    this.setState({searchText: searchText});
+    let data = this.state.destinationArrayBackup;
+    searchText = searchText.trim().toLowerCase();
+    data = data.filter(element => {
+      let searchData = null;
+      let sText = element.destination_name;
+      searchData = sText.toLowerCase().match(searchText);
+      return searchData;
+    });
+    this.setState({
+      desitnationArray: data,
+    });
   };
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
@@ -102,7 +116,7 @@ class AddPlaceScreen extends Component {
         <View style={styles.header}>
           <SearchBar
             title={title}
-            onChangeText={this.onSearchChangeText}
+            onChangeText={this.setSearchText}
             value={searchText}
             isBack={true}
             onPressBack={this.onPressBack}
