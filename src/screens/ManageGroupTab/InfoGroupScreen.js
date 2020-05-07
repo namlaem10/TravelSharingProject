@@ -318,7 +318,8 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
   },
   iconVector: {
-    height: '45rem',
-    width: '45rem',
+    height: '35rem',
+    width: '35rem',
+    resizeMode: 'contain',
   },
 });

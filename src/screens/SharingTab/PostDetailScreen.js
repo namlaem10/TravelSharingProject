@@ -343,7 +343,8 @@ const styles = EStyleSheet.create({
   infoBoxIcon: {
     width: '15rem',
     height: '15rem',
-    marginRight: '7rem',
+    marginRight: '5rem',
+    resizeMode: 'contain',
   },
   infoBoxText: {
     marginHorizontal: '12rem',

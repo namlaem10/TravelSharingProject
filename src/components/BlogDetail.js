@@ -26,6 +26,7 @@ export default class BlogDetail extends Component {
           style={{
             width: EStyleSheet.value('16rem'),
             height: EStyleSheet.value('16rem'),
+            resizeMode: 'contain',
           }}
         />,
       );
@@ -37,6 +38,7 @@ export default class BlogDetail extends Component {
           style={{
             width: EStyleSheet.value('16rem'),
             height: EStyleSheet.value('16rem'),
+            resizeMode: 'contain',
           }}
         />,
       );
@@ -222,6 +224,7 @@ const styles = EStyleSheet.create({
     height: '18rem',
     marginBottom: '8rem',
     marginRight: '10rem',
+    resizeMode: 'contain',
   },
   likeAndCommentBigIcon: {
     marginTop: '8rem',
@@ -235,6 +238,7 @@ const styles = EStyleSheet.create({
     height: '24rem',
     marginBottom: '8rem',
     marginRight: '10rem',
+    resizeMode: 'contain',
   },
   icItem: {
     flexDirection: 'row',

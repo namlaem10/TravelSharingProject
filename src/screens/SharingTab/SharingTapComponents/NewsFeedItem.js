@@ -21,8 +21,9 @@ export default class NewsFeedItem extends Component {
         <Image
           source={constants.Images.IC_GOLD_STAR}
           style={{
-            width: EStyleSheet.value('14rem'),
-            height: EStyleSheet.value('14rem'),
+            width: EStyleSheet.value('16rem'),
+            height: EStyleSheet.value('16rem'),
+            resizeMode: 'contain',
           }}
         />,
       );
@@ -32,8 +33,9 @@ export default class NewsFeedItem extends Component {
         <Image
           source={constants.Images.IC_NORMAL_STAR}
           style={{
-            width: EStyleSheet.value('14rem'),
-            height: EStyleSheet.value('14rem'),
+            width: EStyleSheet.value('16rem'),
+            height: EStyleSheet.value('16rem'),
+            resizeMode: 'contain',
           }}
         />,
       );
@@ -63,7 +65,9 @@ export default class NewsFeedItem extends Component {
             style={{
               flex: 1,
               width: '100%',
-              borderRadius: EStyleSheet.value('19rem'),
+              borderTopLeftRadius: EStyleSheet.value('19rem'),
+              borderTopRightRadius: EStyleSheet.value('19rem'),
+              marginBottom: EStyleSheet.value('5rem'),
             }}
           />
         </View>
@@ -91,7 +95,7 @@ export default class NewsFeedItem extends Component {
                 <Text
                   style={{
                     ...styles.text,
-                    fontSize: EStyleSheet.value('12rem'),
+                    fontSize: EStyleSheet.value('14rem'),
                     fontFamily: constants.Fonts.regular,
                   }}>
                   {data.create_by.display_name}
@@ -99,7 +103,7 @@ export default class NewsFeedItem extends Component {
                 <Text
                   style={{
                     ...styles.text,
-                    fontSize: EStyleSheet.value('12rem'),
+                    fontSize: EStyleSheet.value('14rem'),
                     fontFamily: constants.Fonts.light,
                   }}>
                   {data.departure.destination_name}&nbsp;-&nbsp;
@@ -112,7 +116,7 @@ export default class NewsFeedItem extends Component {
                 style={{
                   ...styles.text,
                   fontFamily: constants.Fonts.light,
-                  fontSize: EStyleSheet.value('11rem'),
+                  fontSize: EStyleSheet.value('13rem'),
                   color: '#8E8E8E',
                 }}>
                 {moment(data.start_day).format('DD/MM/YYYY')}&nbsp;-&nbsp;
@@ -126,7 +130,7 @@ export default class NewsFeedItem extends Component {
               style={{
                 ...styles.text,
                 fontFamily: constants.Fonts.medium,
-                fontSize: EStyleSheet.value('14rem'),
+                fontSize: EStyleSheet.value('16rem'),
               }}>
               {data.title}
             </Text>
@@ -134,7 +138,7 @@ export default class NewsFeedItem extends Component {
               style={{
                 ...styles.text,
                 fontFamily: constants.Fonts.medium,
-                fontSize: EStyleSheet.value('9rem'),
+                fontSize: EStyleSheet.value('12rem'),
                 color: '#41A96B',
                 marginBottom: EStyleSheet.value('5rem'),
               }}>
@@ -145,7 +149,7 @@ export default class NewsFeedItem extends Component {
               style={{
                 ...styles.text,
                 fontFamily: constants.Fonts.light,
-                fontSize: EStyleSheet.value('9rem'),
+                fontSize: EStyleSheet.value('13rem'),
               }}>
               {data.description}
             </Text>
@@ -156,7 +160,12 @@ export default class NewsFeedItem extends Component {
                 style={styles.iconVector}
                 source={constants.Images.IC_MONEY}
               />
-              <Text style={{...styles.text}}>
+              <Text
+                style={{
+                  ...styles.text,
+                  fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('13rem'),
+                }}>
                 {constants.currencyFormatter.format(data.price)}đ̲
               </Text>
             </View>
@@ -166,14 +175,28 @@ export default class NewsFeedItem extends Component {
                   style={styles.iconVector}
                   source={constants.Images.IC_HEART}
                 />
-                <Text style={{...styles.text}}>1234</Text>
+                <Text
+                  style={{
+                    ...styles.text,
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('13rem'),
+                  }}>
+                  1234
+                </Text>
               </View>
               <View style={styles.heartComment}>
                 <Image
                   style={styles.iconVector}
                   source={constants.Images.IC_COMMENT}
                 />
-                <Text style={{...styles.text}}>1234</Text>
+                <Text
+                  style={{
+                    ...styles.text,
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('13rem'),
+                  }}>
+                  1234
+                </Text>
               </View>
             </View>
           </View>
@@ -190,24 +213,17 @@ const styles = EStyleSheet.create({
     borderRadius: '20rem',
     marginVertical: '10rem',
     flexDirection: 'column',
-    //shadow
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#DADDE1',
+    // backgroundColor: '#CDCDCD',
   },
-  text: {
-    letterSpacing: 0.8,
-  },
+  // text: {
+  //   letterSpacing: 0.8,
+  // },
   header: {
-    flex: 1.1,
-    borderRadius: '19rem',
-    margin: '6rem',
+    flex: 1,
+    borderRadius: '20rem',
+    // margin: '6rem',
   },
   content: {
     flex: 1.3,
@@ -217,6 +233,7 @@ const styles = EStyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   headerCol1: {
     flexDirection: 'row',
@@ -228,12 +245,12 @@ const styles = EStyleSheet.create({
     flexDirection: 'column',
   },
   contentInfo: {
-    flex: 1.9,
+    flex: 2,
     borderBottomWidth: 0.3,
     borderBottomColor: '#CFCFCF',
   },
   lastInfo: {
-    flex: 1.1,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -243,6 +260,7 @@ const styles = EStyleSheet.create({
     width: '24rem',
     height: '24rem',
     marginHorizontal: '5rem',
+    resizeMode: 'contain',
   },
   iconGroup: {
     flexDirection: 'row',

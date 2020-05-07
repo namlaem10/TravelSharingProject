@@ -101,58 +101,10 @@ class NewsFeedScreen extends Component {
             <SearchBar
               onChangeText={this.setSearchText}
               value={searchText}
-              placeHolder={'Nhập để tìm kiếm'}
+              placeHolder={'Nhập địa điểm bạn tìm kiếm'}
               title={'Hành trình phổ biến'}
               data={data}
             />
-          </View>
-          <View style={styles.userInfo}>
-            <View style={styles.avatar}>
-              <Image
-                style={{
-                  width: EStyleSheet.value('80rem'),
-                  height: EStyleSheet.value('80rem'),
-                  borderRadius: EStyleSheet.value('40rem'),
-                }}
-                source={
-                  avatar !== null
-                    ? {uri: uriAvatar}
-                    : constants.Images.IC_AVATAR1
-                }
-              />
-            </View>
-            <View style={styles.infoText}>
-              <Text
-                style={{
-                  ...styles.Text,
-                  fontFamily: constants.Fonts.medium,
-                }}>
-                {user.display_name}
-              </Text>
-              <Text style={styles.Text}>
-                Số bài viết:{' '}
-                <Text style={{fontFamily: constants.Fonts.medium}}>69</Text>
-              </Text>
-              <Text style={styles.Text}>
-                Lượt yêu thích:{' '}
-                <Text style={{fontFamily: constants.Fonts.medium}}>69</Text>
-              </Text>
-            </View>
-            <View style={styles.shareButtonGroup}>
-              <TouchableOpacity style={styles.ShareButton}>
-                <Text
-                  style={{
-                    ...styles.Text,
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                    flex: 1,
-                    color: 'white',
-                    fontFamily: constants.Fonts.medium,
-                  }}>
-                  {'Chia sẻ \n hành trình của bạn'}
-                </Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
         <View style={styles.content}>
@@ -216,7 +168,7 @@ const styles = EStyleSheet.create({
   },
   header: {
     width: constants.WIDTH,
-    height: '150rem',
+    height: '50rem',
     flexDirection: 'column',
     justifyContent: 'center',
     borderBottomWidth: 0.3,

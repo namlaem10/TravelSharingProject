@@ -40,7 +40,8 @@ export default class SearchBar extends Component {
               <Image
                 style={{
                   width: EStyleSheet.value('25rem'),
-                  height: EStyleSheet.value('25rem'),
+                  height: EStyleSheet.value('20rem'),
+                  resizeMode: 'contain',
                 }}
                 source={constants.Images.IC_ARROW_BACK_GREEN}
               />
@@ -50,8 +51,9 @@ export default class SearchBar extends Component {
             <TouchableOpacity>
               <Image
                 style={{
-                  width: EStyleSheet.value('35rem'),
-                  height: EStyleSheet.value('35rem'),
+                  width: EStyleSheet.value('30rem'),
+                  height: EStyleSheet.value('30rem'),
+                  resizeMode: 'contain',
                 }}
                 source={constants.Images.IC_SEARCH}
               />
@@ -67,13 +69,14 @@ export default class SearchBar extends Component {
           alignItems: 'center',
           position: 'absolute',
           flexDirection: 'row',
-          left: EStyleSheet.value('10rem'),
+          left: 0,
         }}>
         <TouchableOpacity>
           <Image
             style={{
-              width: EStyleSheet.value('35rem'),
-              height: EStyleSheet.value('35rem'),
+              width: EStyleSheet.value('30rem'),
+              height: EStyleSheet.value('30rem'),
+              resizeMode: 'contain',
             }}
             source={constants.Images.IC_SEARCH}
           />
@@ -89,7 +92,8 @@ export default class SearchBar extends Component {
             <Image
               style={{
                 width: EStyleSheet.value('25rem'),
-                height: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('20rem'),
+                resizeMode: 'contain',
               }}
               source={constants.Images.IC_ARROW_BACK_GREEN}
             />
@@ -107,7 +111,9 @@ export default class SearchBar extends Component {
         {this.renderIcon()}
         <View style={styles.inputText}>
           <TextInput
-            placeholder={placeHolder ? placeHolder : 'Nhập để tìm kiếm'}
+            placeholder={
+              placeHolder ? placeHolder : 'Nhập địa điểm bạn tìm kiếm'
+            }
             style={styles.searchBar}
             onChangeText={text => onChangeText(text)}
             value={value}
@@ -122,9 +128,8 @@ export default class SearchBar extends Component {
         <View style={styles.title}>
           <Text
             style={{
-              fontSize: EStyleSheet.value('20rem'),
+              fontSize: EStyleSheet.value('22rem'),
               fontFamily: constants.Fonts.regular,
-              letterSpacing: 2,
             }}>
             {title}
           </Text>
@@ -134,8 +139,8 @@ export default class SearchBar extends Component {
           <TouchableOpacity onPress={this.onPressSearchIcon}>
             <Image
               style={{
-                width: EStyleSheet.value('35rem'),
-                height: EStyleSheet.value('35rem'),
+                width: EStyleSheet.value('30rem'),
+                height: EStyleSheet.value('30rem'),
               }}
               source={require('../assets/images/ic-search.png')}
             />
@@ -153,7 +158,6 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    borderRadius: '10rem',
   },
   container2: {
     width: '100%',
@@ -164,14 +168,13 @@ const styles = EStyleSheet.create({
   inputText: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: '15rem',
+    width: '300rem',
   },
   searchBar: {
-    width: '230rem',
+    width: '280rem',
     height: '45rem',
     fontSize: '16rem',
     fontFamily: constants.Fonts.light,
-    letterSpacing: 2,
   },
   title: {
     justifyContent: 'center',

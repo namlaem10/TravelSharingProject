@@ -61,7 +61,7 @@ const AuthStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'SignIn',
+    initialRouteName: 'Start',
     defaultNavigationOptions: {
       header: null,
     },

@@ -146,6 +146,7 @@ const styles = EStyleSheet.create({
   iconVector: {
     height: '30rem',
     width: '30rem',
+    resizeMode: 'contain',
   },
   subText: {
     fontSize: constants.FontSizes.title,

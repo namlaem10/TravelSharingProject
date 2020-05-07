@@ -111,6 +111,7 @@ class AddPlaceDetailScreen extends Component {
           style={{
             width: EStyleSheet.value('16rem'),
             height: EStyleSheet.value('16rem'),
+            resizeMode: 'contain',
           }}
         />,
       );
@@ -122,6 +123,7 @@ class AddPlaceDetailScreen extends Component {
           style={{
             width: EStyleSheet.value('16rem'),
             height: EStyleSheet.value('16rem'),
+            resizeMode: 'contain',
           }}
         />,
       );

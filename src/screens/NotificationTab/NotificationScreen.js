@@ -86,6 +86,7 @@ export default class NotificationScreen extends Component {
               style={{
                 width: EStyleSheet.value('30rem'),
                 height: EStyleSheet.value('30rem'),
+                resizeMode: 'contain',
               }}
               source={constants.Images.IC_DIFFERENCE_ACTIVE}
             />

@@ -146,6 +146,7 @@ export default class TimeLineItem extends Component {
             style={{
               height: EStyleSheet.value('30rem'),
               width: EStyleSheet.value('30rem'),
+              resizeMode: 'contain',
             }}
           />
           {this.props.lastPlace ? null : (

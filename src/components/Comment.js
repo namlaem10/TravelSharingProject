@@ -21,6 +21,7 @@ export default class Comment extends Component {
             style={{
               width: EStyleSheet.value('35rem'),
               height: EStyleSheet.value('35rem'),
+              resizeMode: 'contain',
             }}
           />
           <View
