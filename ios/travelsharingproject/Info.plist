@@ -67,6 +67,14 @@
 		<string>Roboto-Regular.ttf</string>
 		<string>Roboto-Thin.ttf</string>
 		<string>Roboto-ThinItalic.ttf</string>
+		<string>sf-ui-display-black.otf</string>
+		<string>sf-ui-display-bold.otf</string>
+		<string>sf-ui-display-heavy.otf</string>
+		<string>sf-ui-display-light.otf</string>
+		<string>sf-ui-display-medium.otf</string>
+		<string>sf-ui-display-semibold.otf</string>
+		<string>sf-ui-display-thin.otf</string>
+		<string>sf-ui-display-ultralight.otf</string>
 	</array>
 </dict>
 </plist>

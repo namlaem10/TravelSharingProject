@@ -129,6 +129,7 @@ class AddTripScreen extends Component {
             style={{
               width: EStyleSheet.value('30rem'),
               height: EStyleSheet.value('30rem'),
+              resizeMode: 'contain',
             }}
           />
         </View>

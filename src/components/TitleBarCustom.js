@@ -61,6 +61,7 @@ const styles = EStyleSheet.create({
   icon: {
     width: '24rem',
     height: '24rem',
+    resizeMode: 'contain',
   },
   text: {
     fontFamily: constants.Fonts.medium,

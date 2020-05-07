@@ -27,7 +27,8 @@ export default class HeaderBar extends Component {
             <Image
               style={{
                 width: EStyleSheet.value('25rem'),
-                height: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('20rem'),
+                resizeMode: 'contain',
               }}
               source={constants.Images.IC_ARROW_BACK_GREEN}
             />

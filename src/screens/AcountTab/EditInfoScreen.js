@@ -148,7 +148,7 @@ class EditInfoScreen extends Component {
         <View style={styles.backgroundHeader}>
           <ImageBackground
             source={require('../../assets/images/vinhhalong.jpeg')}
-            style={{width: '100%', height: '100%'}}>
+            style={{width: '100%', height: '100%', resizeMode: 'contain'}}>
             <TitleBarCustom onPress={this.onPressBack} />
           </ImageBackground>
         </View>

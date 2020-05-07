@@ -93,6 +93,7 @@ const styles = EStyleSheet.create({
     width: '15rem',
     height: '15rem',
     marginRight: '10rem',
+    resizeMode: 'contain',
   },
   infoText: {
     marginTop: '3rem',

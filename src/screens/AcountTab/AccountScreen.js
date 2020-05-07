@@ -58,6 +58,7 @@ class AccountScreen extends Component {
           style={{
             width: EStyleSheet.value('70rem'),
             height: EStyleSheet.value('70rem'),
+            resizeMode: 'contain',
           }}
         />
         <View
@@ -74,6 +75,7 @@ class AccountScreen extends Component {
               style={{
                 width: EStyleSheet.value('30rem'),
                 height: EStyleSheet.value('30rem'),
+                resizeMode: 'contain',
               }}
               source={constants.Images.IC_DIFFERENCE_ACTIVE}
             />
@@ -193,6 +195,7 @@ class AccountScreen extends Component {
               style={{
                 width: EStyleSheet.value('28rem'),
                 height: EStyleSheet.value('28rem'),
+                resizeMode: 'contain',
               }}
             />
             <Text
@@ -293,10 +296,12 @@ const styles = EStyleSheet.create({
   iconVectorRun: {
     height: '30rem',
     width: '20rem',
+    resizeMode: 'contain',
   },
   iconVector: {
     height: '30rem',
     width: '30rem',
+    resizeMode: 'contain',
   },
   paddingText: {
     position: 'absolute',
