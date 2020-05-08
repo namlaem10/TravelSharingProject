@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -38,6 +39,7 @@ class MyTravelScreen extends Component {
       goin: 0,
       gone: 0,
       user: null,
+      isRefreshing: false,
     };
     this.didFocusSubscription = props.navigation.addListener(
       'willFocus',
@@ -47,7 +49,6 @@ class MyTravelScreen extends Component {
           payload.action.type === 'Navigation/BACK'
         ) {
           this.setState({searchText: ''});
-          await this.props.get_own();
         }
       },
     );
@@ -76,6 +77,11 @@ class MyTravelScreen extends Component {
       }
     }
   }
+  onRefresh = async () => {
+    this.setState({isRefreshing: true, searchText: ''});
+    await this.props.get_own();
+    this.setState({isRefreshing: false});
+  };
   setSearchText = text => {
     let searchText = text.replace(/[^a-zA-Z-  ]/g, '');
     this.setState({searchText: searchText});
@@ -187,6 +193,12 @@ class MyTravelScreen extends Component {
             keyExtractor={item => item._id}
             onScrollEndDrag={() => this._handleEndDrag()}
             onScrollBeginDrag={() => this._handleStartDrag()}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.isRefreshing}
+                onRefresh={this.onRefresh.bind(this)}
+              />
+            }
           />
           {this.state.isDarg ? null : (
             <TouchableOpacity
@@ -240,6 +252,12 @@ class MyTravelScreen extends Component {
             }
           }}
           keyExtractor={item => item._id}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={this.onRefresh.bind(this)}
+            />
+          }
         />
       );
     } else {
@@ -279,6 +297,12 @@ class MyTravelScreen extends Component {
             }
           }}
           keyExtractor={item => item._id}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={this.onRefresh.bind(this)}
+            />
+          }
         />
       );
     } else {

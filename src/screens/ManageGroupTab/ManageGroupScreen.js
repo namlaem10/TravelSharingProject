@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/ownLichTrinhReducer';
@@ -28,17 +29,16 @@ class ManageGroupScreen extends Component {
       data: null,
       dataBackup: null,
       isLoading: true,
+      isRefreshing: false,
     };
     this.didFocusSubscription = props.navigation.addListener(
       'willFocus',
       async payload => {
-        console.log(payload.action);
         if (
           payload.action.type === 'Navigation/NAVIGATE' ||
           payload.action.type === 'Navigation/BACK'
         ) {
           this.setState({searchText: ''});
-          await this.props.get_own();
         }
       },
     );
@@ -50,9 +50,11 @@ class ManageGroupScreen extends Component {
       isLoading: false,
     });
   }
-  // async UNSAFE_componentWillMount() {
-  //   await this.props.get_own();
-  // }
+  onRefresh = async () => {
+    this.setState({isRefreshing: true, searchText: ''});
+    await this.props.get_own();
+    this.setState({isRefreshing: false});
+  };
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.ownLichTrinh.type === types.GET_OWN) {
       const {ownLichTrinh} = nextProps;
@@ -169,6 +171,12 @@ class ManageGroupScreen extends Component {
                 keyExtractor={item => item._id}
                 onScrollEndDrag={() => this._handleEndDrag()}
                 onScrollBeginDrag={() => this._handleStartDrag()}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={this.state.isRefreshing}
+                    onRefresh={this.onRefresh.bind(this)}
+                  />
+                }
               />
             </View>
           )}

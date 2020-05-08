@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  RefreshControl,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -60,7 +61,9 @@ const data = [
 export default class NotificationScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isRefreshing: false,
+    };
   }
   _renderItem = item => {
     return (
@@ -107,6 +110,12 @@ export default class NotificationScreen extends Component {
       </TouchableOpacity>
     );
   };
+  onRefresh = () => {
+    this.setState({isRefreshing: true});
+    setTimeout(() => {
+      this.setState({isRefreshing: false});
+    }, 1000);
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -132,6 +141,12 @@ export default class NotificationScreen extends Component {
               data={data}
               renderItem={({item}) => this._renderItem(item)}
               keyExtractor={item => item.id}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={this.onRefresh.bind(this)}
+                />
+              }
             />
           </View>
         </View>

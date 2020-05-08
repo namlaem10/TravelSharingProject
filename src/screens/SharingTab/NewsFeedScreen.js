@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import * as constants from '../../utils/Constants';
@@ -27,8 +28,7 @@ class NewsFeedScreen extends Component {
       message: '',
       data: null,
       dataBackup: null,
-      avatar: this.props.user.data.user_info.avatar || null,
-      user: this.props.user.data.user_info || null,
+      isRefreshing: false,
     };
     this.didFocusSubscription = props.navigation.addListener(
       'willFocus',
@@ -38,7 +38,6 @@ class NewsFeedScreen extends Component {
           payload.action.type === 'Navigation/BACK'
         ) {
           this.setState({searchText: ''});
-          await this.props.get_all();
         }
       },
     );
@@ -90,10 +89,13 @@ class NewsFeedScreen extends Component {
       data: data,
     });
   };
+  onRefresh = async () => {
+    this.setState({isRefreshing: true, searchText: ''});
+    await this.props.get_all();
+    this.setState({isRefreshing: false});
+  };
   render() {
-    const {searchText, isLoading, message, data, avatar, user} = this.state;
-    let uriAvatar = null;
-    uriAvatar = BASE_URL + '/' + avatar;
+    const {searchText, isLoading, message, data} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -127,6 +129,12 @@ class NewsFeedScreen extends Component {
                 ) : null
               }
               keyExtractor={item => item._id}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={this.onRefresh.bind(this)}
+                />
+              }
             />
           ) : (
             <Text
