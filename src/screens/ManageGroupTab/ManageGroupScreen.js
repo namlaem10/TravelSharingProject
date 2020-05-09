@@ -38,7 +38,12 @@ class ManageGroupScreen extends Component {
           payload.action.type === 'Navigation/NAVIGATE' ||
           payload.action.type === 'Navigation/BACK'
         ) {
-          this.setState({searchText: ''});
+          if (payload.action.type === 'Navigation/BACK') {
+            this.setState({searchText: '', isLoading: true});
+            await this.props.get_own();
+          } else {
+            this.setState({searchText: ''});
+          }
         }
       },
     );
@@ -75,7 +80,9 @@ class ManageGroupScreen extends Component {
     }
   }
   _renderItem = item => {
-    return <TeamItem data={item} onPress={this.onPressItem} />;
+    if (!item.isShare) {
+      return <TeamItem data={item} onPress={this.onPressItem} />;
+    }
   };
   onSearchChangeText = text => {
     this.setState({
@@ -148,7 +155,6 @@ class ManageGroupScreen extends Component {
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                flex: 1,
               }}>
               <ActivityIndicator
                 size={EStyleSheet.value('60rem')}
@@ -235,7 +241,9 @@ const styles = EStyleSheet.create({
     fontSize: constants.FontSizes.title,
     letterSpacing: '1.5rem',
   },
-  content: {},
+  content: {
+    justifyContent: 'center',
+  },
   addButton: {
     width: '70rem',
     height: '70rem',

@@ -57,21 +57,24 @@ class AddMemberScreen extends Component {
             this.setState({
               loadingCompleted: false,
             });
-            this.props.navigation.navigate('InfoGroup', {
+            this.props.navigation.navigate(location, {
               data: nextProps.groupInfo.data[0],
               title: this.props.navigation.getParam('title'),
             });
-          }, 1000);
+          }, 2000);
         } else {
-          this.props.reset_member();
+          // this.props.reset_member();
           setTimeout(() => {
             this.setState({
               loadingCompleted: false,
             });
-            this.props.navigation.navigate('TripDetail', {
+            this.props.navigation.navigate(location, {
               data: nextProps.groupInfo.data[0],
+              isGone: this.props.navigation.getParam('isGone'),
+              isShare: this.props.navigation.getParam('isShare'),
+              isLeader: this.props.navigation.getParam('isLeader'),
             });
-          }, 1500);
+          }, 2000);
         }
       } else {
         this.setState({
@@ -84,6 +87,14 @@ class AddMemberScreen extends Component {
     if (nextProps.groupInfo.type === types.UPDATE_MEMBER) {
       this.props.navigation.navigate('CreateTrip', {
         member: nextProps.groupInfo.data,
+        startPlace: this.props.navigation.getParam('startPlace'),
+        endPlace: this.props.navigation.getParam('endPlace'),
+        startDate: this.props.navigation.getParam('startDate'),
+        endDate: this.props.navigation.getParam('endDate'),
+        schedule_detail: this.props.navigation.getParam('schedule_detail'),
+        destination: this.props.navigation.getParam('destination'),
+        destinationId: this.props.navigation.getParam('destinationId'),
+        number_of_days: this.props.navigation.getParam('number_of_days'),
       });
     }
   }
@@ -108,10 +119,31 @@ class AddMemberScreen extends Component {
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
-      this.props.navigation.navigate(location, {
-        data: this.props.navigation.getParam('data'),
-        title: this.props.navigation.getParam('title'),
-      });
+      if (location === 'CreateTrip') {
+        this.props.navigation.navigate(location, {
+          member: this.props.navigation.getParam('member'),
+          startPlace: this.props.navigation.getParam('startPlace'),
+          endPlace: this.props.navigation.getParam('endPlace'),
+          startDate: this.props.navigation.getParam('startDate'),
+          endDate: this.props.navigation.getParam('endDate'),
+          schedule_detail: this.props.navigation.getParam('schedule_detail'),
+          destination: this.props.navigation.getParam('destination'),
+          destinationId: this.props.navigation.getParam('destinationId'),
+          number_of_days: this.props.navigation.getParam('number_of_days'),
+        });
+      } else if (location === 'TripDetail') {
+        this.props.navigation.navigate(location, {
+          data: this.props.navigation.getParam('data'),
+          isGone: this.props.navigation.getParam('isGone'),
+          isShare: this.props.navigation.getParam('isShare'),
+          isLeader: this.props.navigation.getParam('isLeader'),
+        });
+      } else if (location === 'InfoGroup') {
+        this.props.navigation.navigate(location, {
+          data: this.props.navigation.getParam('data'),
+          title: this.props.navigation.getParam('title'),
+        });
+      }
     } else {
       this.props.navigation.goBack();
     }
@@ -126,6 +158,7 @@ class AddMemberScreen extends Component {
       this.setState({
         loadingVisible: true,
       });
+      console.log(idUserPick);
       await this.props.put_update_member(idHanhTrinh, idUserPick);
     }
   };
@@ -182,10 +215,16 @@ class AddMemberScreen extends Component {
     );
   };
   render() {
-    const {title, searchText, friend} = this.state;
+    const {
+      title,
+      searchText,
+      friend,
+      loadingCompleted,
+      loadingVisible,
+    } = this.state;
     return (
       <View style={styles.container}>
-        <Dialog visible={this.state.loadingVisible}>
+        <Dialog visible={loadingVisible}>
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
@@ -204,7 +243,7 @@ class AddMemberScreen extends Component {
             </View>
           </DialogContent>
         </Dialog>
-        <Dialog visible={this.state.loadingCompleted}>
+        <Dialog visible={loadingCompleted}>
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator

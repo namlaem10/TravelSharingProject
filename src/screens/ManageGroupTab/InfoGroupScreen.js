@@ -16,30 +16,6 @@ import {actions, types} from '../../redux/reducers/managerGroupReducer';
 import HeaderBar from '../../components/HeaderBar';
 import MemberScrollItem from '../../components/MemberScrollItem';
 
-// var data = [
-//   {
-//     _id: 'USER01',
-//     email: 'test@gmail.com',
-//     display_name: 'Nam Ngu',
-//     phone: '0123546789',
-//     avatar: 'uploads/fd72eff14fe22bc10f1b35e59f82f6f3.png',
-//   },
-//   {
-//     _id: 'USER02',
-//     email: 'test2@gmail.com',
-//     display_name: 'Manager 2',
-//     phone: '0912313333',
-//     avatar: null,
-//   },
-//   {
-//     _id: 'USER03',
-//     email: 'test3@gmail.com',
-//     display_name: 'Manager 3',
-//     phone: '0911111111',
-//     avatar: null,
-//   },
-// ];
-
 class InfoGroupScreen extends Component {
   constructor(props) {
     super(props);
@@ -53,7 +29,6 @@ class InfoGroupScreen extends Component {
     let data = this.props.navigation.getParam('data');
     let user = this.props.user.data.user_info;
     let title = this.props.navigation.getParam('title');
-
     let isLeader = false;
     if (user._id === data.member[0]._id) {
       isLeader = true;
@@ -107,7 +82,7 @@ class InfoGroupScreen extends Component {
       member: member,
       type: 'update',
       idHanhTrinh: idHanhTrinh,
-      data: this.props.navigation.getParam('data'),
+      data: this.state.data,
       isLeader: this.state.isLeader,
       title: this.state.title,
     });

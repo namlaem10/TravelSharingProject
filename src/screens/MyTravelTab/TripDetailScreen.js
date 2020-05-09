@@ -33,25 +33,6 @@ class TripDetailScreen extends Component {
       isGone: false,
       isShare: false,
     };
-    this.didFocusSubscription = props.navigation.addListener(
-      'willFocus',
-      async payload => {
-        if (payload.action.type === 'Navigation/NAVIGATE') {
-          this.setState({isLoading: true});
-          const data = await this.props.navigation.getParam('data', null);
-          this.setState({
-            isLoading: false,
-            data,
-            isGone: this.props.navigation.getParam('isGone', false),
-            isShare: this.props.navigation.getParam('isShare', false),
-          });
-          this.props.get_location_info(
-            data.schedule.schedule_detail,
-            data.schedule.number_of_days,
-          );
-        }
-      },
-    );
   }
   componentDidMount = async () => {
     const data = await this.props.navigation.getParam('data', null);
@@ -127,6 +108,10 @@ class TripDetailScreen extends Component {
       member: member,
       type: 'update',
       idHanhTrinh: this.state.data._id,
+      data: this.state.data,
+      isGone: this.state.isGone,
+      isShare: this.state.isShare,
+      isLeader: this.props.navigation.getParam('isLeader'),
     });
   };
   onPressChat = () => {

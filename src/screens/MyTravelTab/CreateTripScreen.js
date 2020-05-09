@@ -47,25 +47,33 @@ class CreateTripScreen extends Component {
   }
   UNSAFE_componentWillMount = () => {
     this.props.reset();
-    var startDate = new Date();
-    var endDate = moment(startDate).add(2, 'day');
+    let startDate = this.props.navigation.getParam('startDate', null);
+    let endDate = this.props.navigation.getParam('endDate', null);
+    let startPlace = this.props.navigation.getParam('startPlace', null);
+    let endPlace = this.props.navigation.getParam('endPlace', null);
+    if (startDate === null && endDate === null) {
+      startDate = new Date();
+      endDate = moment(startDate).add(2, 'day');
+    }
     let schedule_detail = this.props.navigation.getParam(
       'schedule_detail',
       null,
     );
     let member = this.props.navigation.getParam('member', null);
-    if (schedule_detail) {
+    if (schedule_detail !== null) {
+      // khác null - mới thêm vào
       let propsDestination = this.props.navigation.getParam('destination');
       let destinationId = this.props.navigation.getParam('destinationId');
       let number_of_days = this.props.navigation.getParam('number_of_days');
-      let desination = {
+      let destination = {
         ...propsDestination,
         _id: destinationId,
       };
       this.setState({
         startDate: startDate,
         endDate: moment(startDate).add(number_of_days - 1, 'day'),
-        endPlace: desination,
+        startPlace: startPlace,
+        endPlace: destination,
         schedule_detail: schedule_detail,
         member: member !== null ? member : [],
       });
@@ -73,6 +81,8 @@ class CreateTripScreen extends Component {
       this.setState({
         startDate: startDate,
         endDate: endDate,
+        startPlace: startPlace,
+        endPlace: endPlace,
         member: member !== null ? member : [],
       });
     }
@@ -114,10 +124,8 @@ class CreateTripScreen extends Component {
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
-      console.log('back');
       this.props.navigation.navigate(location);
     } else {
-      console.log('back');
       this.props.navigation.goBack();
     }
   };
@@ -227,10 +235,26 @@ class CreateTripScreen extends Component {
     this.setState({loadingVisible: false});
   };
   onPressMember = () => {
+    const {
+      startDate,
+      endDate,
+      member,
+      startPlace,
+      endPlace,
+      schedule_detail,
+    } = this.state;
     this.props.navigation.navigate('AddMember', {
       location: 'CreateTrip',
-      member: this.state.member,
+      member: member,
       type: 'create',
+      startPlace: startPlace,
+      endPlace: endPlace,
+      startDate: startDate,
+      endDate: endDate,
+      schedule_detail: schedule_detail,
+      destination: this.props.navigation.getParam('destination', null),
+      destinationId: this.props.navigation.getParam('destinationId', null),
+      number_of_days: this.props.navigation.getParam('number_of_days', null),
     });
   };
   render() {
