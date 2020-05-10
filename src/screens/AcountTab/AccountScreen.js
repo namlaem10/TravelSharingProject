@@ -127,11 +127,11 @@ class AccountScreen extends Component {
           <View style={styles.title}>
             <Text
               style={{
-                fontSize: EStyleSheet.value('20rem'),
+                fontSize: EStyleSheet.value('22rem'),
                 fontFamily: constants.Fonts.regular,
-                letterSpacing: 2,
+                // letterSpacing: 2,
               }}>
-              Thông báo
+              Khác
             </Text>
           </View>
         </View>
@@ -256,9 +256,9 @@ const styles = EStyleSheet.create({
     backgroundColor: '#F9F9F9',
   },
   header: {
-    paddingTop: '20rem',
+    paddingTop: '40rem',
     width: '100%',
-    height: '90rem',
+    height: '89rem',
     borderBottomWidth: 0.3,
     borderBottomColor: '#CDCDCD',
     paddingHorizontal: '13rem',

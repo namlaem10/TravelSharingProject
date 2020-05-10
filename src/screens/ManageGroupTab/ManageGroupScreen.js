@@ -164,6 +164,7 @@ class ManageGroupScreen extends Component {
                   paddingBottom: EStyleSheet.value('40rem'),
                   paddingHorizontal: EStyleSheet.value('20rem'),
                 }}
+                showsVerticalScrollIndicator={false}
                 data={data}
                 renderItem={({item}) => this._renderItem(item)}
                 keyExtractor={item => item._id}
@@ -214,7 +215,7 @@ const styles = EStyleSheet.create({
   },
   header: {
     width: '100%',
-    height: '60rem',
+    height: '50rem',
     borderBottomWidth: 0.3,
     borderBottomColor: '#CDCDCD',
     paddingHorizontal: '13rem',
@@ -224,8 +225,7 @@ const styles = EStyleSheet.create({
     marginLeft: '20rem',
     marginTop: '10rem',
     fontFamily: constants.Fonts.regular,
-    fontSize: constants.FontSizes.title,
-    letterSpacing: '1.5rem',
+    fontSize: constants.FontSizes.header,
   },
   content: {},
   addButton: {

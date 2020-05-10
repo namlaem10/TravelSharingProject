@@ -277,6 +277,7 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
   },
   settingGroup: {
+    flex: 1,
     backgroundColor: 'white',
     width: '100%',
     borderBottomWidth: '0.3rem',
@@ -287,7 +288,7 @@ const styles = EStyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     paddingHorizontal: '20rem',
-    paddingVertical: '12rem',
+    paddingVertical: '20rem',
   },
   settingItem: {
     backgroundColor: 'white',
@@ -295,15 +296,17 @@ const styles = EStyleSheet.create({
     height: '153rem',
     width: '161rem',
     //shadow
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 4,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 16,
 
-    elevation: 6,
+    // elevation: 6,
+    borderWidth: 1,
+    borderColor: '#DADDE1',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: '20rem',

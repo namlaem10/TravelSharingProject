@@ -305,6 +305,7 @@ class CreateTripScreen extends Component {
               style={{
                 width: EStyleSheet.value('35rem'),
                 height: EStyleSheet.value('35rem'),
+                resizeMode: 'contain',
               }}
             />
             {startPlace !== null ? (
@@ -321,7 +322,7 @@ class CreateTripScreen extends Component {
                   <View
                     style={{
                       position: 'absolute',
-                      top: EStyleSheet.value('25rem'),
+                      top: EStyleSheet.value('16rem'),
                       right: EStyleSheet.value('13rem'),
                     }}>
                     <Text style={{color: '#1161D8'}}> Chỉnh sửa </Text>
@@ -344,7 +345,7 @@ class CreateTripScreen extends Component {
                   }}
                   style={{
                     justifyContent: 'center',
-                    height: '100%',
+                    height: '90%',
                   }}>
                   <Text
                     style={{
@@ -380,7 +381,7 @@ class CreateTripScreen extends Component {
                   <View
                     style={{
                       position: 'absolute',
-                      top: EStyleSheet.value('25rem'),
+                      top: EStyleSheet.value('16rem'),
                       right: EStyleSheet.value('13rem'),
                     }}>
                     <Text style={{color: '#1161D8'}}> Chỉnh sửa </Text>
@@ -403,7 +404,7 @@ class CreateTripScreen extends Component {
                   }}
                   style={{
                     justifyContent: 'center',
-                    height: '80%',
+                    height: '90%',
                   }}>
                   <Text
                     style={{
@@ -486,7 +487,7 @@ class CreateTripScreen extends Component {
                   <View
                     style={{
                       position: 'absolute',
-                      top: EStyleSheet.value('25rem'),
+                      top: EStyleSheet.value('16rem'),
                       right: EStyleSheet.value('13rem'),
                     }}>
                     <Text style={{color: '#1161D8'}}> Chỉnh sửa </Text>
@@ -506,7 +507,7 @@ class CreateTripScreen extends Component {
                   }}
                   style={{
                     justifyContent: 'center',
-                    height: EStyleSheet.value('50rem'),
+                    height: '90%',
                   }}>
                   <Text
                     style={{
@@ -534,7 +535,7 @@ class CreateTripScreen extends Component {
             onPress={() => this.onPressConfirm()}>
             <Text
               style={{
-                fontSize: EStyleSheet.value('15rem'),
+                fontSize: EStyleSheet.value('16rem'),
                 fontFamily: constants.Fonts.medium,
                 color: 'white',
               }}>
@@ -573,25 +574,26 @@ const styles = EStyleSheet.create({
   footer: {
     backgroundColor: 'white',
     width: '100%',
-    height: '55rem',
+    height: '60rem',
     position: 'absolute',
-    top: '575rem',
+    // top: '575rem',
+    bottom: '20rem',
     borderColor: 'transparent', // Required to show shadows on Android for some reason !?!?
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: '5rem',
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 0,
+    // },
+    // shadowOpacity: 0.3,
+    // shadowRadius: '5rem',
 
-    elevation: '15rem',
+    // elevation: '15rem',
     justifyContent: 'center',
     alignItems: 'center',
   },
   confirmButton: {
     width: '300rem',
-    height: '35rem',
+    height: '40rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',
@@ -627,14 +629,14 @@ const styles = EStyleSheet.create({
   DateGroup: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    height: '80rem',
+    height: '65rem',
     borderBottomWidth: 0.5,
     borderColor: '#CFCFCF',
     width: '150rem',
     marginLeft: '10rem',
   },
   inputText: {
-    fontSize: constants.FontSizes.title,
+    fontSize: constants.FontSizes.regular,
     fontFamily: constants.Fonts.regular,
   },
   placeholder: {
@@ -642,7 +644,9 @@ const styles = EStyleSheet.create({
     fontFamily: constants.Fonts.light,
   },
   label: {
-    fontSize: constants.FontSizes.normal,
+    fontSize: '14rem',
+    fontFamily: constants.Fonts.regular,
+    color: '#404040',
   },
   loadingCompleted: {
     justifyContent: 'center',

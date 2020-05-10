@@ -67,7 +67,7 @@ export default class NewsFeedItem extends Component {
               width: '100%',
               borderTopLeftRadius: EStyleSheet.value('19rem'),
               borderTopRightRadius: EStyleSheet.value('19rem'),
-              marginBottom: EStyleSheet.value('5rem'),
+              marginBottom: EStyleSheet.value('7rem'),
             }}
           />
         </View>
@@ -96,7 +96,7 @@ export default class NewsFeedItem extends Component {
                   style={{
                     ...styles.text,
                     fontSize: EStyleSheet.value('14rem'),
-                    fontFamily: constants.Fonts.regular,
+                    fontFamily: constants.Fonts.medium,
                   }}>
                   {data.create_by.display_name}
                 </Text>
@@ -116,7 +116,7 @@ export default class NewsFeedItem extends Component {
                 style={{
                   ...styles.text,
                   fontFamily: constants.Fonts.light,
-                  fontSize: EStyleSheet.value('13rem'),
+                  fontSize: EStyleSheet.value('12rem'),
                   color: '#8E8E8E',
                 }}>
                 {moment(data.start_day).format('DD/MM/YYYY')}&nbsp;-&nbsp;
@@ -165,6 +165,7 @@ export default class NewsFeedItem extends Component {
                   ...styles.text,
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('13rem'),
+                  marginTop: EStyleSheet.value('2rem'),
                 }}>
                 {constants.currencyFormatter.format(data.price)}đ̲
               </Text>
@@ -180,6 +181,7 @@ export default class NewsFeedItem extends Component {
                     ...styles.text,
                     fontFamily: constants.Fonts.light,
                     fontSize: EStyleSheet.value('13rem'),
+                    marginTop: EStyleSheet.value('2rem'),
                   }}>
                   1234
                 </Text>
@@ -194,6 +196,7 @@ export default class NewsFeedItem extends Component {
                     ...styles.text,
                     fontFamily: constants.Fonts.light,
                     fontSize: EStyleSheet.value('13rem'),
+                    marginTop: EStyleSheet.value('2rem'),
                   }}>
                   1234
                 </Text>
@@ -257,8 +260,8 @@ const styles = EStyleSheet.create({
     marginRight: '5rem',
   },
   iconVector: {
-    width: '24rem',
-    height: '24rem',
+    width: '22rem',
+    height: '22rem',
     marginHorizontal: '5rem',
     resizeMode: 'contain',
   },

@@ -175,7 +175,7 @@ class AddMemberScreen extends Component {
           <TouchableOpacity
             style={styles.selectButton}
             onPress={() => this.onSelectItem(item)}>
-            <Text style={{color: 'white'}}>chọn</Text>
+            <Text style={{color: 'white'}}>Chọn</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -240,9 +240,22 @@ class AddMemberScreen extends Component {
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Text style={{...styles.textName}}>Danh sách bạn bè</Text>
+            <Text
+              style={{
+                ...styles.textName,
+                fontSize: EStyleSheet.value('18rem'),
+              }}>
+              Danh sách bạn bè
+            </Text>
             <TouchableOpacity onPress={() => this.onPressDone()}>
-              <Text style={{color: '#1161D8'}}>HOÀN TẤT</Text>
+              <Text
+                style={{
+                  color: '#1161D8',
+                  fontSize: EStyleSheet.value('15rem'),
+                  fontFamily: constants.Fonts.medium,
+                }}>
+                HOÀN TẤT
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.flatList}>
@@ -298,8 +311,7 @@ const styles = EStyleSheet.create({
   },
   content: {paddingTop: '10rem', paddingHorizontal: '23rem'},
   textName: {
-    letterSpacing: '1rem',
-    fontSize: constants.FontSizes.title,
+    fontSize: constants.FontSizes.regular,
     fontFamily: constants.Fonts.regular,
   },
   textemail: {
@@ -317,22 +329,22 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '65rem',
-    height: '25rem',
+    width: '75rem',
+    height: '35rem',
     backgroundColor: '#76B5FF',
     borderRadius: '17rem',
-    top: '15rem',
+    top: '10rem',
     right: '0rem',
   },
   selectedButton: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '65rem',
-    height: '25rem',
+    width: '75rem',
+    height: '35rem',
     backgroundColor: '#34D374',
     borderRadius: '17rem',
-    top: '15rem',
+    top: '10rem',
     right: '0rem',
   },
 });

@@ -114,9 +114,8 @@ export default class NotificationScreen extends Component {
           <View style={styles.title}>
             <Text
               style={{
-                fontSize: EStyleSheet.value('20rem'),
+                fontSize: EStyleSheet.value('22rem'),
                 fontFamily: constants.Fonts.regular,
-                letterSpacing: 2,
               }}>
               Thông báo
             </Text>
@@ -148,7 +147,7 @@ const styles = EStyleSheet.create({
   },
   header: {
     width: '100%',
-    height: '60rem',
+    height: '50rem',
     borderBottomWidth: 0.3,
     borderBottomColor: '#CDCDCD',
     paddingHorizontal: '13rem',

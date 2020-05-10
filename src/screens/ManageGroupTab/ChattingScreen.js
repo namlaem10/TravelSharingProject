@@ -7,6 +7,7 @@ import {
   Image,
   ActivityIndicator,
   Text,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {BASE_URL} from '../../services/URL';
@@ -17,6 +18,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 import HeaderBar from '../../components/HeaderBar';
 import database from '../../utils/fireBaseConfig';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 //fakedata
 let fakemessdata = [
@@ -208,6 +210,7 @@ class ChattingScreen extends Component {
               isKeyboardInternallyHandled={false}
               multiline={false}
               scrollToBottom={true}
+              bottomOffset={26}
             />
           </View>
         )}
@@ -228,7 +231,8 @@ const styles = EStyleSheet.create({
     backgroundColor: 'white',
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     padding: '13rem',
+    // backgroundColor: 'red',
   },
 });
