@@ -70,6 +70,9 @@ export default class NotificationScreen extends Component {
           style={{
             width: EStyleSheet.value('70rem'),
             height: EStyleSheet.value('70rem'),
+            borderRadius: EStyleSheet.value('35rem'),
+            alignSelf: 'center',
+            marginHorizontal: EStyleSheet.value('5rem'),
           }}
         />
         <View
@@ -78,7 +81,9 @@ export default class NotificationScreen extends Component {
             width: EStyleSheet.value('240rem'),
             paddingTop: EStyleSheet.value('5rem'),
           }}>
-          <Text style={styles.textTitle}>{item.title}</Text>
+          <Text numberOfLines={2} style={styles.textTitle}>
+            {item.title}
+          </Text>
         </View>
         <View style={{position: 'absolute', right: 0}}>
           <TouchableOpacity>
@@ -96,10 +101,10 @@ export default class NotificationScreen extends Component {
           style={{
             position: 'absolute',
             right: EStyleSheet.value('10rem'),
-            bottom: 2,
+            bottom: EStyleSheet.value('5rem'),
             flexDirection: 'row',
             justifyContent: 'space-between',
-            width: EStyleSheet.value('267rem'),
+            width: EStyleSheet.value('255rem'),
           }}>
           <Text style={styles.subText}>{item.time}</Text>
           <Text style={styles.subText}>Nhấn để xem chi tiết</Text>
@@ -129,6 +134,7 @@ export default class NotificationScreen extends Component {
                 flex: 0,
               }}
               data={data}
+              showsVerticalScrollIndicator={false}
               renderItem={({item}) => this._renderItem(item)}
               keyExtractor={item => item.id}
             />
@@ -162,19 +168,21 @@ const styles = EStyleSheet.create({
   itemView: {
     alignSelf: 'center',
     width: '98%',
-    height: '70rem',
+    height: '80rem',
     backgroundColor: 'white',
     marginVertical: '7rem',
     //shadow
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: '5rem',
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: '4rem',
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: '5rem',
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: '4rem',
 
-    elevation: '4rem',
+    // elevation: '4rem',
+    borderWidth: 1,
+    borderColor: '#DADDE1',
     borderRadius: '5rem',
     flexDirection: 'row',
   },
