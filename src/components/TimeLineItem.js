@@ -124,91 +124,237 @@ export default class TimeLineItem extends Component {
       onPressDeleteItem,
       keyDay,
       action,
+      onLongPress,
+      isActive,
+      isGone,
     } = this.props;
-    return (
-      <View style={styles.container}>
-        <View style={styles.Col1}>
-          <View>
-            <Text
-              style={{
-                fontFamily: constants.Fonts.medium,
-                fontSize: EStyleSheet.value('16rem'),
-                color: '#127138',
-              }}>
-              {timeText}
-            </Text>
+    if (isGone) {
+      return (
+        <View
+          style={{
+            height: EStyleSheet.value('105rem'),
+            flexDirection: 'row',
+          }}>
+          <View style={styles.Col1}>
+            <View>
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.medium,
+                  fontSize: EStyleSheet.value('16rem'),
+                  color: '#127138',
+                }}>
+                {timeText}
+              </Text>
+            </View>
+            {this.renderInfo()}
           </View>
-          {this.renderInfo()}
-        </View>
-        <View style={styles.Col2}>
-          <Image
-            source={constants.Images.IC_CAR}
-            style={{
-              height: EStyleSheet.value('30rem'),
-              width: EStyleSheet.value('30rem'),
-              resizeMode: 'contain',
-            }}
-          />
-          {this.props.lastPlace ? null : (
-            <Dash
-              style={{
-                width: EStyleSheet.value('1rem'),
-                height: EStyleSheet.value('72rem'),
-                flexDirection: 'column',
-              }}
-              dashGap={4}
-              dashLength={7}
-              dashThickness={0.8}
-              dashColor={'#34DC78'}
-            />
-          )}
-        </View>
-        <View style={styles.Col3}>
-          <View style={styles.pictureView}>
+          <View style={styles.Col2}>
             <Image
-              source={{
-                uri: data.tourist_destination_image,
-              }}
+              source={constants.Images.IC_CAR}
               style={{
-                width: '100%',
-                height: '100%',
-                borderRadius: EStyleSheet.value('20rem'),
+                height: EStyleSheet.value('30rem'),
+                width: EStyleSheet.value('30rem'),
+                resizeMode: 'contain',
               }}
             />
-            {isDelete ? (
-              this.props.isLeader || action === 'creating' ? (
-                <View style={styles.deleteButtonGroup}>
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => onPressDeleteItem(data._id, keyDay)}>
-                    <Text style={{color: 'white'}}>Xóa</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : null
-            ) : null}
+            {this.props.lastPlace ? null : (
+              <Dash
+                style={{
+                  width: EStyleSheet.value('1rem'),
+                  height: EStyleSheet.value('72rem'),
+                  flexDirection: 'column',
+                }}
+                dashGap={4}
+                dashLength={7}
+                dashThickness={0.8}
+                dashColor={'#34DC78'}
+              />
+            )}
           </View>
-          <View
-            style={{
-              flexDirection: 'column',
-              width: EStyleSheet.value('105rem'),
-              marginLeft: EStyleSheet.value('10rem'),
-            }}>
-            <Text
+          <View style={styles.Col3}>
+            <View style={styles.pictureView}>
+              <Image
+                source={{
+                  uri: data.tourist_destination_image,
+                }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: EStyleSheet.value('20rem'),
+                }}
+              />
+              {isDelete ? (
+                this.props.isLeader || action === 'creating' ? (
+                  <View style={styles.deleteButtonGroup}>
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => onPressDeleteItem(data._id, keyDay)}>
+                      <Text style={{color: 'white'}}>Xóa</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : null
+              ) : null}
+            </View>
+            <View
               style={{
-                fontFamily: constants.Fonts.medium,
-                fontSize: EStyleSheet.value('16rem'),
-                color: '#127138',
-                marginBottom: EStyleSheet.value('3rem'),
+                flexDirection: 'column',
+                width: EStyleSheet.value('105rem'),
+                marginLeft: EStyleSheet.value('10rem'),
               }}>
-              {data.tourist_destination_name}
-            </Text>
-            <Text style={{...styles.detailText}}>
-              {data.tourist_destination_address}
-            </Text>
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.medium,
+                  fontSize: EStyleSheet.value('16rem'),
+                  color: '#127138',
+                  marginBottom: EStyleSheet.value('3rem'),
+                }}>
+                {data.tourist_destination_name}
+              </Text>
+              <Text style={{...styles.detailText}}>
+                {data.tourist_destination_address}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
-    );
+      );
+    } else {
+      if (isActive) {
+        return (
+          <TouchableOpacity
+            style={{
+              height: EStyleSheet.value('105rem'),
+              flexDirection: 'row',
+              backgroundColor: isActive ? '#FFFFFF50' : null,
+            }}
+            onLongPress={onLongPress}>
+            <View style={styles.DragCol}>
+              <View style={styles.pictureView}>
+                <Image
+                  source={{
+                    uri: data.tourist_destination_image,
+                  }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: EStyleSheet.value('20rem'),
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: 'column',
+                  width: EStyleSheet.value('300rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
+                }}>
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.medium,
+                    fontSize: EStyleSheet.value('16rem'),
+                    color: '#127138',
+                    marginBottom: EStyleSheet.value('3rem'),
+                  }}>
+                  {data.tourist_destination_name}
+                </Text>
+                <Text style={{...styles.detailText}}>
+                  {data.tourist_destination_address}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        );
+      } else {
+        return (
+          <TouchableOpacity
+            style={{
+              height: EStyleSheet.value('105rem'),
+              flexDirection: 'row',
+              backgroundColor: isActive ? '#FFFFFF50' : null,
+            }}
+            onLongPress={onLongPress}>
+            <View style={styles.Col1}>
+              <View>
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.medium,
+                    fontSize: EStyleSheet.value('16rem'),
+                    color: '#127138',
+                  }}>
+                  {timeText}
+                </Text>
+              </View>
+              {this.renderInfo()}
+            </View>
+            <View style={styles.Col2}>
+              <Image
+                source={constants.Images.IC_CAR}
+                style={{
+                  height: EStyleSheet.value('30rem'),
+                  width: EStyleSheet.value('30rem'),
+                  resizeMode: 'contain',
+                }}
+              />
+              {this.props.lastPlace ? null : (
+                <Dash
+                  style={{
+                    width: EStyleSheet.value('1rem'),
+                    height: EStyleSheet.value('72rem'),
+                    flexDirection: 'column',
+                  }}
+                  dashGap={4}
+                  dashLength={7}
+                  dashThickness={0.8}
+                  dashColor={'#34DC78'}
+                />
+              )}
+            </View>
+            <View style={styles.Col3}>
+              <View style={styles.pictureView}>
+                <Image
+                  source={{
+                    uri: data.tourist_destination_image,
+                  }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: EStyleSheet.value('20rem'),
+                  }}
+                />
+                {isDelete ? (
+                  this.props.isLeader || action === 'creating' ? (
+                    <View style={styles.deleteButtonGroup}>
+                      <TouchableOpacity
+                        style={styles.deleteButton}
+                        onPress={() => onPressDeleteItem(data._id, keyDay)}>
+                        <Text style={{color: 'white'}}>Xóa</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : null
+                ) : null}
+              </View>
+              <View
+                style={{
+                  flexDirection: 'column',
+                  width: EStyleSheet.value('105rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
+                }}>
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.medium,
+                    fontSize: EStyleSheet.value('16rem'),
+                    color: '#127138',
+                    marginBottom: EStyleSheet.value('3rem'),
+                  }}>
+                  {data.tourist_destination_name}
+                </Text>
+                <Text style={{...styles.detailText}}>
+                  {data.tourist_destination_address}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        );
+      }
+    }
   }
 }
 
@@ -234,6 +380,15 @@ const styles = EStyleSheet.create({
     marginLeft: '5rem',
     marginRight: '5rem',
     flexDirection: 'row',
+  },
+  DragCol: {
+    height: '100%',
+    width: '100%',
+    marginLeft: '5rem',
+    marginRight: '5rem',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'white',
   },
   detailTextView: {
     flexDirection: 'row',

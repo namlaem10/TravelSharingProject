@@ -98,6 +98,14 @@ class ShareTimeLineDetailScreen extends Component {
       });
     }
   }
+  onDragEnd = (dataDay, keyday) => {
+    const data = this.props.navigation.getParam('data');
+    data[keyday] = dataDay;
+    this.setState({
+      schedule_detail: data,
+    });
+    this.props.get_location_info(data, this.state.totalDay);
+  };
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
@@ -160,6 +168,7 @@ class ShareTimeLineDetailScreen extends Component {
           onPressAddPlace={this.onPressAddPlace}
           onPressDeleteItem={this.onPressDeleteItem}
           action={action}
+          onDragEnd={this.onDragEnd}
         />,
       );
     }

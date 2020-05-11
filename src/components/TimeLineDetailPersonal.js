@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList} from 'react-native';
 
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -8,66 +8,98 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import TimeLineItem from './TimeLineItem';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import DraggableFlatList from 'react-native-draggable-flatlist';
+const exampleData = [...Array(20)].map((d, index) => ({
+  key: `item-${index}`, // For example only -- don't use index as your key!
+  label: index,
+  backgroundColor: `rgb(${Math.floor(Math.random() * 255)}, ${index *
+    5}, ${132})`,
+}));
 export default class TimelineDetailPersonal extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      data: exampleData,
+      routeData: null,
+      isGone: false,
+      keyDay: null,
+      action: null,
+      day: null,
+      isLeader: false,
+    };
   }
-  _renderItem() {
-    let viewData = [];
+  count = 0;
+  hour = 8;
+  minute = 0;
+  UNSAFE_componentWillReceiveProps(nextprops) {
+    this.count = 0;
+    this.hour = 8;
+    this.minute = 0;
+  }
+  renderItem = ({item, index, drag = null, isActive = false}) => {
     const {data, routeData, isGone, keyDay, action} = this.props;
-    let count = 0;
-    let hour = 8;
-    let minute = 0;
-    data.map(item => {
-      let lastPlace = false;
-      let timeText = '';
-      if (count === data.length - 1) {
-        lastPlace = true;
+    if (this.count === data.length) {
+      this.count = 0;
+    }
+    let lastPlace = false;
+    let timeText = '';
+    if (this.count === data.length - 1) {
+      lastPlace = true;
+    }
+    if (this.count > 0) {
+      var secs = routeData.leg[this.count - 1].travelTime + 5400;
+      let minutes = Math.floor(secs / 60);
+      if (minutes > 60) {
+        let hours = Math.floor(minutes / 60);
+        this.hour += hours;
+        minutes = minutes - hours * 60;
       }
-      if (count > 0) {
-        var secs = routeData.leg[count - 1].travelTime + 5400;
-        let minutes = Math.floor(secs / 60);
-        if (minutes > 60) {
-          let hours = Math.floor(minutes / 60);
-          hour += hours;
-          minutes = minutes - hours * 60;
+      this.minute += minutes;
+      if (this.minute > 60) {
+        this.hour = this.hour + Math.floor(this.minute / 60);
+        this.minute = this.minute - Math.floor(this.minute / 60) * 60;
+      }
+    }
+    if (this.hour <= 24) {
+      timeText = `${this.hour < 10 ? '0' + this.hour : this.hour}:${
+        this.minute < 10 ? '0' + this.minute : this.minute
+      }`;
+    } else {
+      timeText = 'Qua ngày';
+    }
+    this.count++;
+    return (
+      <TimeLineItem
+        data={item}
+        timeText={timeText}
+        key={this.count - 1}
+        lastPlace={lastPlace}
+        route={
+          this.count - 1 < routeData.leg.length
+            ? routeData.leg[this.count - 1]
+            : null
         }
-        minute += minutes;
-        if (minute > 60) {
-          hour = hour + Math.floor(minute / 60);
-          minute = minute - Math.floor(minute / 60) * 60;
-        }
-      }
-      if (hour <= 24) {
-        timeText = `${hour < 10 ? '0' + hour : hour}:${
-          minute < 10 ? '0' + minute : minute
-        }`;
-      } else {
-        timeText = 'Qua ngày';
-      }
-
-      viewData.push(
-        <TimeLineItem
-          data={item}
-          timeText={timeText}
-          key={count}
-          lastPlace={lastPlace}
-          route={count < routeData.leg.length ? routeData.leg[count] : null}
-          isDelete={isGone ? false : true}
-          onPressDeleteItem={this.props.onPressDeleteItem}
-          keyDay={keyDay}
-          isLeader={this.props.isLeader}
-          action={action}
-        />,
-      );
-      count++;
-    });
-    return viewData;
-  }
+        isDelete={isGone ? false : true}
+        onPressDeleteItem={this.props.onPressDeleteItem}
+        keyDay={keyDay}
+        isLeader={this.props.isLeader}
+        action={action}
+        onLongPress={drag}
+        isActive={isActive}
+        isGone={isGone}
+      />
+    );
+  };
   render() {
-    const {day, onPressAddPlace, isGone, keyDay, isLeader, action} = this.props;
+    const {
+      onPressAddPlace,
+      onDragEnd,
+      day,
+      isGone,
+      keyDay,
+      isLeader,
+      action,
+    } = this.props;
     return (
       <View style={isLeader ? styles.container : styles.containerSub}>
         <View style={styles.title}>
@@ -90,9 +122,33 @@ export default class TimelineDetailPersonal extends Component {
             </TouchableOpacity>
           ) : null}
         </View>
-        <ScrollView>
-          <View style={styles.content}>{this._renderItem()}</View>
-        </ScrollView>
+        <View style={styles.content}>
+          {isGone ? (
+            <FlatList
+              contentContainerStyle={{
+                paddingBottom: EStyleSheet.value('0rem'),
+              }}
+              data={this.props.data}
+              renderItem={this.renderItem}
+              keyExtractor={item => item._id}
+            />
+          ) : (
+            // <Flatlist
+            //   data={this.props.data}
+            //   renderItem={this.renderItem}
+            //   keyExtractor={(item, index) => item._id}
+            // />
+            <DraggableFlatList
+              data={this.props.data}
+              extraData={this.props}
+              renderItem={this.renderItem}
+              keyExtractor={(item, index) => `draggable-item-${item._id}`}
+              onDragEnd={({data}) => {
+                onDragEnd(data, keyDay);
+              }}
+            />
+          )}
+        </View>
       </View>
     );
   }
@@ -119,5 +175,6 @@ const styles = EStyleSheet.create({
   content: {
     marginTop: '10rem',
     marginLeft: '13rem',
+    flex: 1,
   },
 });

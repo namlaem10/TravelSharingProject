@@ -49,7 +49,6 @@ class TimeLineDetailScreen extends Component {
     const idHanhTrinh = this.props.navigation.getParam('idHanhTrinh');
     const isShare = this.props.navigation.getParam('isShare', false);
     const isLeader = this.props.navigation.getParam('isLeader');
-    console.log(isLeader);
     this.setState({
       routeData,
       schedule_detail: data,
@@ -137,6 +136,14 @@ class TimeLineDetailScreen extends Component {
       {cancelable: false},
     );
   };
+  onDragEnd = (dataDay, keyday) => {
+    const data = this.props.navigation.getParam('data');
+    data[keyday] = dataDay;
+    this.setState({
+      schedule_detail: data,
+    });
+    this.props.get_location_info(data, this.state.totalDay);
+  };
   _renderItem = () => {
     let array = [];
     let countday = 0;
@@ -169,6 +176,7 @@ class TimeLineDetailScreen extends Component {
           onPressAddPlace={this.onPressAddPlace}
           onPressDeleteItem={this.onPressDeleteItem}
           isLeader={this.state.isLeader}
+          onDragEnd={this.onDragEnd}
         />,
       );
     }
