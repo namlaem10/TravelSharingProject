@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
 
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -11,12 +11,16 @@ import moment from 'moment';
 export default class BlogDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      comment: false,
+      height: 0,
+      messageText: '',
+    };
   }
   //tạo rating hình ngôi sao theo điểm (point/5)
   createStars = () => {
-    const {data} = this.props;
-    let count = data.rating;
+    const {dataRating} = this.props;
+    let count = dataRating.rating;
     let leftstar = 5 - count;
     let starts = [];
     for (let i = 1; i <= count; i++) {
@@ -45,21 +49,23 @@ export default class BlogDetail extends Component {
     }
     return starts;
   };
-  RenderComment = () => {
-    let data = {
-      image: constants.Images.IC_AVATAR2,
-      username: 'Cô pé ngu ngốk',
-      date: '20/03/2020',
-      comment: 'Dễ thương quá anh chị ơi ♥',
-    };
-    let comments = [];
-    for (var i = 0; i < 3; i++) {
-      comments.push(<Comment data={data} />);
+  onPressSend = () => {
+    const {onPressSendComment} = this.props;
+    const {messageText} = this.state;
+    if (messageText.replace(/ /g, '+') !== '') {
+      this.setState({comment: false, height: 0, messageText: ''});
+      onPressSendComment(messageText);
+    } else {
+      this.setState({comment: false, height: 0, messageText: ''});
     }
-    return comments;
+  };
+  RenderComment = () => {
+    const {dataComment} = this.props;
+    return <Comment data={dataComment} />;
   };
   render() {
-    const {data} = this.props;
+    const {data, dataComment, dataRating, onPressRating} = this.props;
+    const {comment, messageText} = this.state;
     const User = data.create_by;
     let avatar = null;
     if (User) {
@@ -150,36 +156,87 @@ export default class BlogDetail extends Component {
           <View style={styles.likeAndCommentSmallIcon}>
             <View style={styles.icItem}>
               <Image
-                source={constants.Images.IC_HEART}
+                source={constants.Images.IC_GOLD_STAR}
                 style={styles.smallIcon}
               />
-              <Text>1234</Text>
+              <Text>{dataRating.rating_count}</Text>
             </View>
             <View style={styles.icItem}>
               <Image
                 source={constants.Images.IC_COMMENT}
                 style={styles.smallIcon}
               />
-              <Text>1234</Text>
+              <Text>{dataComment.length}</Text>
             </View>
           </View>
           <View style={styles.likeAndCommentBigIcon}>
-            <View style={styles.icItem}>
+            <TouchableOpacity
+              style={styles.icItem}
+              onPress={() => onPressRating(true)}>
               <Image
-                source={constants.Images.IC_HEART}
+                source={constants.Images.IC_GOLD_STAR}
                 style={styles.bigIcon}
               />
-              <Text>Yêu thích</Text>
-            </View>
-            <View style={styles.icItem}>
+              <Text>Đánh giá</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.icItem}
+              onPress={() => this.setState({comment: true})}>
               <Image
                 source={constants.Images.IC_COMMENT}
                 style={styles.bigIcon}
               />
               <Text>Bình luận</Text>
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.comment}>{this.RenderComment()}</View>
+          {comment && (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+              }}>
+              <View style={styles.viewInputPost}>
+                <TextInput
+                  multiline={true}
+                  ref={ref => {
+                    this.textInput = ref;
+                  }}
+                  autoFocus={true}
+                  returnKeyType="default"
+                  placeholder="Nhập bình luận của bạn ..."
+                  value={messageText}
+                  onChangeText={editedText =>
+                    this.setState({messageText: editedText})
+                  }
+                  onContentSizeChange={event =>
+                    this.setState({
+                      height: event.nativeEvent.contentSize.height,
+                    })
+                  }
+                  style={[
+                    styles.textInputStyle,
+                    {
+                      height: Math.min(
+                        EStyleSheet.value('120rem'),
+                        Math.max(EStyleSheet.value('45rem'), this.state.height),
+                      ),
+                    },
+                  ]}
+                />
+              </View>
+              <TouchableOpacity
+                style={styles.buttonSend}
+                onPress={() => this.onPressSend()}>
+                <Image
+                  source={constants.Images.IC_SEND}
+                  resizeMode="contain"
+                  style={styles.iconSend}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     );
@@ -222,8 +279,7 @@ const styles = EStyleSheet.create({
   smallIcon: {
     width: '18rem',
     height: '18rem',
-    marginBottom: '8rem',
-    marginRight: '10rem',
+    marginRight: '8rem',
     resizeMode: 'contain',
   },
   likeAndCommentBigIcon: {
@@ -236,14 +292,41 @@ const styles = EStyleSheet.create({
   bigIcon: {
     width: '24rem',
     height: '24rem',
-    marginBottom: '8rem',
     marginRight: '10rem',
     resizeMode: 'contain',
   },
   icItem: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '8rem',
   },
   comment: {
     flexDirection: 'column',
+  },
+  textInputStyle: {
+    paddingHorizontal: '10rem',
+    fontSize: '14rem',
+    color: '#979797',
+    // height: "160rem",
+    fontFamily: constants.Fonts.light,
+  },
+  viewInputPost: {
+    width: '280rem',
+    borderWidth: 0.5,
+    borderColor: '#979797',
+    borderRadius: 10,
+    // paddingBottom: "5rem",
+    marginTop: '7rem',
+  },
+  buttonSend: {
+    width: '50rem',
+    height: '50rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconSend: {
+    width: '50rem',
+    height: '50rem',
   },
 });

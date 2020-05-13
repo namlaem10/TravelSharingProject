@@ -53,4 +53,5 @@ export default {
   IC_ADD_MEMBER_WHITE: require('../assets/images/ic-add-member-white.png'),
   IC_TRACKING_LOCATION_WHITE: require('../assets/images/ic-tracking-location-white.png'),
   IC_COMMENT_WHITE: require('../assets/images/ic-comment-white.png'),
+  IC_NO_COMMENT: require('../assets/images/nocomments.png'),
 };

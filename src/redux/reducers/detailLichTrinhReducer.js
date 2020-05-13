@@ -17,6 +17,10 @@ export const types = {
   UPDATE_SCHEDULE_DETAIL_FAIL: 'UPDATE_SCHEDULE_DETAIL_FAIL',
   CREATE_POST: 'CREATE_POST',
   CREATE_POST_FAIL: 'CREATE_POST_FAIL',
+  POST_COMMENT: 'POST_COMMENT',
+  POST_COMMENT_FAIL: 'POST_COMMENT_FAIL',
+  POST_RATING: 'POST_RATING',
+  POST_RATING_FAIL: 'POST_RATING_FAIL',
   RESET: 'RESET',
 };
 async function getToken() {
@@ -271,6 +275,78 @@ export const actions = {
       }
     };
   },
+  post_comment: (id, content) => {
+    return async dispatch => {
+      try {
+        const url = `/api/travel/comment/${id}`;
+        const token = await getToken();
+        const contentType = 'application/x-www-form-urlencoded';
+        let params = new URLSearchParams();
+        params.append('content', content);
+        const result = await api.put(url, params, token, contentType);
+        if (result.status === 200) {
+          dispatch({
+            type: types.POST_COMMENT,
+            payload: {
+              data: result.data,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.POST_COMMENT_FAIL,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.POST_COMMENT_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
+  post_rating: (id, rating) => {
+    return async dispatch => {
+      try {
+        const url = `/api/travel/rating/${id}`;
+        const token = await getToken();
+        const contentType = 'application/x-www-form-urlencoded';
+        let params = new URLSearchParams();
+        params.append('rating', rating);
+        const result = await api.put(url, params, token, contentType);
+        if (result.status === 200) {
+          dispatch({
+            type: types.POST_RATING,
+            payload: {
+              data: result.data,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.POST_RATING_FAIL,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.POST_RATING_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
   reset: () => {
     return async dispatch => {
       console.log('reset State');
@@ -367,6 +443,32 @@ export const detailLichTrinhReducer = (state = initialState, action) => {
     case types.CREATE_POST_FAIL: {
       return {
         type: types.CREATE_POST_FAIL,
+        data: payload.data,
+        status: payload.status,
+      };
+    }
+    case types.POST_COMMENT: {
+      return {
+        type: types.POST_COMMENT,
+        data: payload.data,
+      };
+    }
+    case types.POST_COMMENT_FAIL: {
+      return {
+        type: types.POST_COMMENT_FAIL,
+        data: payload.data,
+        status: payload.status,
+      };
+    }
+    case types.POST_RATING: {
+      return {
+        type: types.POST_RATING,
+        data: payload.data,
+      };
+    }
+    case types.POST_RATING_FAIL: {
+      return {
+        type: types.POST_RATING_FAIL,
         data: payload.data,
         status: payload.status,
       };

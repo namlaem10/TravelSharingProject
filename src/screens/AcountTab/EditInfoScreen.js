@@ -160,7 +160,9 @@ class EditInfoScreen extends Component {
             alignItems: 'center',
             backgroundColor: 'white',
           }}>
-          <TouchableOpacity onPress={() => this.ChangeAvatar()}>
+          <TouchableOpacity
+            onPress={() => this.ChangeAvatar()}
+            style={{marginTop: EStyleSheet.value('15rem')}}>
             <Text style={styles.textTitle}>Đổi ảnh đại diện</Text>
           </TouchableOpacity>
         </View>
@@ -188,7 +190,7 @@ class EditInfoScreen extends Component {
             onPress={() => this.SaveChange()}>
             <Text
               style={{
-                fontSize: EStyleSheet.value('13rem'),
+                fontSize: EStyleSheet.value('18rem'),
                 fontFamily: constants.Fonts.medium,
                 color: 'white',
               }}>
@@ -246,8 +248,8 @@ const styles = EStyleSheet.create({
   },
   editButton: {
     marginTop: '20rem',
-    width: '100%',
-    height: '30rem',
+    width: '90%',
+    height: '50rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',
@@ -278,11 +280,13 @@ const styles = EStyleSheet.create({
   label: {
     fontSize: constants.FontSizes.regular,
     fontFamily: constants.Fonts.regular,
+    color: '#8E8E8E',
   },
-  placeHolder: {borderBottomWidth: 1, borderColor: 'black'},
+  placeHolder: {borderBottomWidth: 0.5, borderColor: '#797979'},
   textInput: {
-    borderBottomWidth: 1,
-    borderColor: 'black',
+    borderBottomWidth: 0.5,
+    paddingHorizontal: '5rem',
+    borderColor: '#797979',
     fontSize: constants.FontSizes.title,
     fontFamily: constants.Fonts.medium,
   },

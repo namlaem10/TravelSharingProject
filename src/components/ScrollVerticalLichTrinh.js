@@ -61,10 +61,14 @@ export default class ScrollVerticalLichTrinh extends Component {
       onPressAddMember,
       isBlog,
       data,
+      dataComment,
+      dataRating,
       isButton,
       routeInfo,
       isDetailLichTrinhReady,
       isGone,
+      onPressSendComment,
+      onPressRating,
     } = this.props;
     const {isLoading} = this.state;
     let Button = true;
@@ -148,7 +152,14 @@ export default class ScrollVerticalLichTrinh extends Component {
         </View>
         {isBlog ? (
           <View style={styles.blog}>
-            <BlogDetail key={data._id} data={data} />
+            <BlogDetail
+              key={data._id}
+              data={data}
+              dataComment={dataComment}
+              dataRating={dataRating}
+              onPressSendComment={onPressSendComment}
+              onPressRating={onPressRating}
+            />
           </View>
         ) : null}
       </View>

@@ -174,7 +174,7 @@ export default class NewsFeedItem extends Component {
               <View style={styles.heartComment}>
                 <Image
                   style={styles.iconVector}
-                  source={constants.Images.IC_HEART}
+                  source={constants.Images.IC_GOLD_STAR}
                 />
                 <Text
                   style={{
@@ -183,7 +183,7 @@ export default class NewsFeedItem extends Component {
                     fontSize: EStyleSheet.value('13rem'),
                     marginTop: EStyleSheet.value('2rem'),
                   }}>
-                  1234
+                  {data.rating_count}
                 </Text>
               </View>
               <View style={styles.heartComment}>
@@ -198,7 +198,7 @@ export default class NewsFeedItem extends Component {
                     fontSize: EStyleSheet.value('13rem'),
                     marginTop: EStyleSheet.value('2rem'),
                   }}>
-                  1234
+                  {this.props.data.comment.length}
                 </Text>
               </View>
             </View>
