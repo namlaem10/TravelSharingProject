@@ -127,11 +127,11 @@ class AccountScreen extends Component {
           <View style={styles.title}>
             <Text
               style={{
-                fontSize: EStyleSheet.value('20rem'),
+                fontSize: EStyleSheet.value('22rem'),
                 fontFamily: constants.Fonts.regular,
-                letterSpacing: 2,
+                // letterSpacing: 2,
               }}>
-              Thông báo
+              Khác
             </Text>
           </View>
         </View>
@@ -141,9 +141,9 @@ class AccountScreen extends Component {
               avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
             }
             style={{
-              width: EStyleSheet.value('60rem'),
-              height: EStyleSheet.value('60rem'),
-              borderRadius: EStyleSheet.value('30rem'),
+              width: EStyleSheet.value('50rem'),
+              height: EStyleSheet.value('50rem'),
+              borderRadius: EStyleSheet.value('25rem'),
             }}
           />
           <View
@@ -154,9 +154,20 @@ class AccountScreen extends Component {
               width: EStyleSheet.value('280rem'),
               marginLeft: EStyleSheet.value('15rem'),
             }}>
-            <Text style={styles.textTitle}>{user.display_name}</Text>
+            <Text
+              style={{
+                ...styles.textTitle,
+                fontSize: EStyleSheet.value('18rem'),
+              }}>
+              {user.display_name}
+            </Text>
             <TouchableOpacity onPress={() => this.seeMore()}>
-              <Text style={{...styles.textTitle, color: '#1161D8'}}>
+              <Text
+                style={{
+                  ...styles.textTitle,
+                  color: '#1161D8',
+                  fontSize: EStyleSheet.value('14rem'),
+                }}>
                 Xem thêm
               </Text>
             </TouchableOpacity>
@@ -193,8 +204,8 @@ class AccountScreen extends Component {
             <Image
               source={constants.Images.IC_SEARCH_BLUE}
               style={{
-                width: EStyleSheet.value('28rem'),
-                height: EStyleSheet.value('28rem'),
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
                 resizeMode: 'contain',
               }}
             />
@@ -221,7 +232,7 @@ class AccountScreen extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => this.logOut()}
-            style={styles.settingItem}>
+            style={{...styles.settingItem, borderBottomWidth: 0}}>
             <Image source={constants.Images.IC_KEY} style={styles.iconVector} />
             <Text
               style={{
@@ -256,9 +267,9 @@ const styles = EStyleSheet.create({
     backgroundColor: '#F9F9F9',
   },
   header: {
-    paddingTop: '20rem',
+    paddingTop: '40rem',
     width: '100%',
-    height: '90rem',
+    height: '89rem',
     borderBottomWidth: 0.3,
     borderBottomColor: '#CDCDCD',
     paddingHorizontal: '13rem',
@@ -294,18 +305,18 @@ const styles = EStyleSheet.create({
     paddingHorizontal: '13rem',
   },
   iconVectorRun: {
-    height: '30rem',
-    width: '20rem',
+    height: '25rem',
+    width: '30rem',
     resizeMode: 'contain',
   },
   iconVector: {
     height: '30rem',
-    width: '30rem',
+    width: '25rem',
     resizeMode: 'contain',
   },
   paddingText: {
     position: 'absolute',
-    left: '50rem',
+    left: '40rem',
   },
   settingItem: {
     width: '350rem',

@@ -33,7 +33,9 @@ export default class TravelItem extends Component {
             style={{
               flex: 1,
               width: '100%',
-              borderRadius: EStyleSheet.value('19rem'),
+              borderTopLeftRadius: EStyleSheet.value('19rem'),
+              borderTopRightRadius: EStyleSheet.value('19rem'),
+              marginBottom: EStyleSheet.value('7rem'),
             }}
           />
         </View>
@@ -79,21 +81,23 @@ const styles = EStyleSheet.create({
     borderRadius: '20rem',
     marginVertical: '10rem',
     flexDirection: 'column',
+    borderWidth: 1,
+    borderColor: '#DADDE1',
+    paddingBottom: '10rem',
     //shadow
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 8,
 
-    elevation: 4,
+    // elevation: 4,
   },
   header: {
-    height: '120rem',
-    borderRadius: '19rem',
-    margin: '6rem',
+    flex: 1,
+    borderRadius: '20rem',
   },
   content: {
     marginHorizontal: '11rem',
@@ -104,13 +108,13 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
   },
   textPlace: {
-    fontSize: constants.FontSizes.title,
+    fontSize: constants.FontSizes.regular,
     fontFamily: constants.Fonts.medium,
   },
   textDayLeft: {
     fontSize: constants.FontSizes.normal,
     fontFamily: constants.Fonts.light,
-    color: '#797979',
+    color: '#8E8E8E',
   },
   textItem: {
     flexDirection: 'row',
@@ -118,13 +122,14 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
   },
   iconVector: {
-    height: '30rem',
-    width: '30rem',
+    height: '22rem',
+    width: '22rem',
+    resizeMode: 'contain',
   },
   subText: {
-    fontSize: constants.FontSizes.title,
+    fontSize: constants.FontSizes.normal,
     fontFamily: constants.Fonts.light,
     color: '#686868',
-    marginLeft: '10rem',
+    marginLeft: '7rem',
   },
 });

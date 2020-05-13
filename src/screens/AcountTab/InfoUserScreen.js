@@ -60,7 +60,10 @@ class InfoUserScreen extends Component {
           <ImageBackground
             source={require('../../assets/images/vinhhalong.jpeg')}
             style={{width: '100%', height: '100%', resizeMode: 'contain'}}>
-            <TitleBarCustom onPress={this.onPressBack} />
+            <TitleBarCustom
+              onPress={this.onPressBack}
+              onPressMore={() => null}
+            />
           </ImageBackground>
         </View>
         <View
@@ -77,7 +80,7 @@ class InfoUserScreen extends Component {
             onPress={() => this.editInfo()}>
             <Text
               style={{
-                fontSize: EStyleSheet.value('13rem'),
+                fontSize: EStyleSheet.value('14rem'),
                 fontFamily: constants.Fonts.medium,
                 color: 'white',
               }}>
@@ -94,13 +97,25 @@ class InfoUserScreen extends Component {
             <Text style={{...styles.number, color: '#1161D8'}}>
               {total_travel}
             </Text>
-            <Text>Lịch trình</Text>
+            <Text
+              style={{
+                fontSize: EStyleSheet.value('14rem'),
+                fontFamily: constants.Fonts.regular,
+              }}>
+              Lịch trình
+            </Text>
           </View>
           <View style={styles.lastInfoItem}>
             <Text style={{...styles.number, color: '#34D374'}}>
               {travel_share}
             </Text>
-            <Text>Bài viết</Text>
+            <Text
+              style={{
+                fontSize: EStyleSheet.value('14rem'),
+                fontFamily: constants.Fonts.regular,
+              }}>
+              Bài viết
+            </Text>
           </View>
           <View style={styles.lastInfoItem}>
             <Text
@@ -111,7 +126,13 @@ class InfoUserScreen extends Component {
               {rating_point}
               <Text>/5</Text>
             </Text>
-            <Text>Đánh giá ({people_rating})</Text>
+            <Text
+              style={{
+                fontSize: EStyleSheet.value('14rem'),
+                fontFamily: constants.Fonts.regular,
+              }}>
+              Đánh giá ({people_rating})
+            </Text>
           </View>
         </View>
         <View
@@ -160,32 +181,34 @@ const styles = EStyleSheet.create({
     borderWidth: '1rem',
   },
   editButton: {
-    marginTop: '5rem',
+    marginTop: '15rem',
     width: '200rem',
-    height: '25rem',
+    height: '35rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',
     alignItems: 'center',
   },
   textTitle: {
-    fontSize: constants.FontSizes.regular,
-    fontFamily: constants.Fonts.regular,
+    fontSize: constants.FontSizes.title,
+    fontFamily: constants.Fonts.medium,
+    marginTop: '5rem',
   },
   subText: {
-    fontSize: constants.FontSizes.tabTitle,
+    fontSize: constants.FontSizes.normal,
     fontFamily: constants.Fonts.light,
     color: '#797979',
   },
   number: {
     fontSize: constants.FontSizes.startTitle,
     fontFamily: constants.Fonts.regular,
+    marginBottom: '10rem',
   },
   subInfo: {
     backgroundColor: 'white',
     width: '100%',
     height: '40rem',
-    paddingTop: '10rem',
+    paddingVertical: '10rem',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',

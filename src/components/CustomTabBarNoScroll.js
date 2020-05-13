@@ -25,7 +25,7 @@ export default class CustomTabBarNoScroll extends React.Component {
     const {activeTextColor, inactiveTextColor, textStyle} = this.props;
     const textColor = isTabActive ? activeTextColor : inactiveTextColor;
     const fontSizes = isTabActive
-      ? EStyleSheet.value('17rem')
+      ? EStyleSheet.value('16rem')
       : EStyleSheet.value('15rem');
     const fontFamily = isTabActive
       ? constants.Fonts.medium
@@ -42,8 +42,12 @@ export default class CustomTabBarNoScroll extends React.Component {
         borderTopRightRadius: EStyleSheet.value('5rem'),
         borderBottomRightRadius: EStyleSheet.value('5rem'),
       };
-    } else {
-      borderRadiusTab = null;
+    } else if (page === 1) {
+      borderRadiusTab = {
+        borderLeftWidth: EStyleSheet.value('1rem'),
+        borderRightWidth: EStyleSheet.value('1rem'),
+        borderColor: '#EDEDED',
+      };
     }
     return (
       <Button
@@ -124,17 +128,9 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginHorizontal: '13rem',
-    borderRadius: '5rem',
-    //shadow
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-
-    elevation: 3,
+    borderRadius: '6rem',
+    borderWidth: 1,
+    borderColor: '#EDEDED',
     marginBottom: '10rem',
   },
 });
