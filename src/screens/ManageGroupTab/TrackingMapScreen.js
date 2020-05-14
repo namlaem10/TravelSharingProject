@@ -18,8 +18,11 @@ import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {getDistance} from 'geolib';
 import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/notificationReducer';
 import {BASE_URL} from '../../services/URL';
 import HeaderBar from '../../components/HeaderBar';
+import moment from 'moment';
+
 const RADIUS = 1000;
 class TrackingMapScreen extends Component {
   constructor(props) {
@@ -75,26 +78,34 @@ class TrackingMapScreen extends Component {
     });
     if (distances.length > 0) {
       let warnMessage = 'Các thành viên sau đang quá xa nhóm trưởng: ';
+      let count = 1;
       distances.map(item => {
         let dis = Math.round((item.dis / 1000) * 10 + Number.EPSILON) / 10;
         dis += ' km';
         let name = item.user.name;
-        warnMessage += `${name} - ${dis},`;
+        if (count === distances.length) {
+          warnMessage += `${name} - ${dis}`;
+        } else {
+          warnMessage += `${name} - ${dis},`;
+        }
+        count++;
       });
       if (this.state.isAlert === false) {
-        Alert.alert(
-          'Cảnh báo',
-          warnMessage,
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                console.log('cancle');
-              },
-            },
-          ],
-          {cancelable: false},
-        );
+        let groupName = this.props.navigation.getParam('title');
+        console.log(this.state.groupData.background);
+        let data = {
+          idHanhTrinh: this.state.groupData._id,
+          title: 'Cảnh báo thành viên',
+          subTitle: 'Có thành viên cách xa nhóm trưởng!',
+          message: warnMessage,
+          groupName: groupName,
+          time:
+            moment(this.state.groupData.start_day).format('DD/MM/YYYY') +
+            '-' +
+            moment(this.state.groupData.end_day).format('DD/MM/YYYY'),
+          image: this.state.groupData.background,
+        };
+        this.props.push_noti(data);
         this.setState({isAlert: true});
       }
     }
@@ -314,13 +325,22 @@ class TrackingMapScreen extends Component {
     );
   }
 }
-const mapStateToProps = ({user, groupInfo}) => {
+const mapStateToProps = ({user, groupInfo, notification}) => {
   return {
     user: user,
     groupInfo: groupInfo,
+    notification: notification,
   };
 };
-export default connect(mapStateToProps)(TrackingMapScreen);
+const mapDispatchToProps = dispatch => {
+  return {
+    push_noti: data => dispatch(actions.push_noti(data)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TrackingMapScreen);
 const styles = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,

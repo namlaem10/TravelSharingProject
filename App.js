@@ -6,13 +6,23 @@ import {PersistGate} from 'redux-persist/es/integration/react';
 
 import AppContainer from './src/utils/Navigator';
 import configureStore from './src/redux/stores/configureStore';
+import notificationService from './src/services/Notification';
+import firebase from 'react-native-firebase';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+  async componentDidMount() {
+    await notificationService.init();
+  }
 
+  async componentWillUnmount() {
+    notificationService.release();
+    firebase.crashlytics().enableCrashlyticsCollection();
+    firebase.analytics().setAnalyticsCollectionEnabled(true);
+  }
   render() {
     const persistor = persistStore(configureStore);
     return (

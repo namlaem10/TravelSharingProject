@@ -13,6 +13,8 @@ import {
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/notificationReducer';
 //fake data
 const data = [
   {
@@ -21,49 +23,18 @@ const data = [
     time: '3 phút trước',
     image: constants.Images.IC_AVATAR3,
   },
-  {
-    id: 'noti2',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti3',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti4',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti5',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti6',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-  {
-    id: 'noti7',
-    title: 'Cảnh báo: Hoàn đang cách khá xa nhóm của bạn',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
 ];
-export default class NotificationScreen extends Component {
+class NotificationScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isRefreshing: false,
     };
+  }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.notification.type === types.PUSH_NOTI) {
+      console.log(nextProps.notification.data);
+    }
   }
   _renderItem = item => {
     return (
@@ -116,6 +87,13 @@ export default class NotificationScreen extends Component {
       this.setState({isRefreshing: false});
     }, 1000);
   };
+  onPressButtonNoti = () => {
+    let data = {
+      idHanhTrinh: 'HT01',
+      message: 'Out range!',
+    };
+    this.props.push_noti(data);
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -133,7 +111,14 @@ export default class NotificationScreen extends Component {
         </View>
         <View style={styles.content}>
           <View style={styles.flatList}>
-            <FlatList
+            <TouchableOpacity
+              style={styles.buttonPushNoti}
+              onPress={() => this.onPressButtonNoti()}>
+              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 15}}>
+                Push Noti
+              </Text>
+            </TouchableOpacity>
+            {/* <FlatList
               contentContainerStyle={{
                 paddingBottom: EStyleSheet.value('70rem'),
                 flex: 0,
@@ -147,19 +132,40 @@ export default class NotificationScreen extends Component {
                   onRefresh={this.onRefresh.bind(this)}
                 />
               }
-            />
+            /> */}
           </View>
         </View>
       </View>
     );
   }
 }
-
+const mapStateToProps = ({notification}) => {
+  return {
+    notification: notification,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    push_noti: data => dispatch(actions.push_noti(data)),
+  };
+};
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(NotificationScreen);
 const styles = EStyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: 'white',
+  },
+  buttonPushNoti: {
+    height: '40rem',
+    width: '150rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'blue',
   },
   header: {
     width: '100%',
@@ -174,7 +180,12 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  content: {paddingHorizontal: '13rem', paddingTop: '10rem'},
+  content: {
+    paddingHorizontal: '13rem',
+    paddingTop: '10rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   itemView: {
     alignSelf: 'center',
     width: '98%',
