@@ -24,8 +24,8 @@ class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: 'test@gmail.com',
-      password: '111111',
+      email: 'test1@gmail.com',
+      password: '123456',
       placeholderEmail: 'Email',
       placeholderPassword: 'Mật khẩu',
       show: false,
