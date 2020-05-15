@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "640743395282",
+    "firebase_url": "https://mytraveltrackingmap.firebaseio.com",
+    "project_id": "mytraveltrackingmap",
+    "storage_bucket": "mytraveltrackingmap.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640743395282:android:d98f05a5cdbd2678cdc20b",
+        "android_client_info": {
+          "package_name": "com.travelsharingproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "640743395282-5qr3skka31k02ff5cr8hqgqf8ojck227.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJKn6T1pP_QGIleKyxsFIUASH9K0gMQEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640743395282-5qr3skka31k02ff5cr8hqgqf8ojck227.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
