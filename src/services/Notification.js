@@ -10,6 +10,11 @@ class Notification {
     this.status = null;
     this.data = null;
   }
+
+  setNavigation = navigation => {
+    this.navigation = navigation;
+  };
+
   init() {
     this.checkPermission();
     this.createNotificationListeners();
@@ -107,15 +112,17 @@ class Notification {
       .onNotificationOpened(notificationOpen => {
         const {title, body, data} = notificationOpen.notification;
         if (this.status === 'app-running') {
-          Alert.alert(
-            this.data.title,
-            `${this.data.content}. ${this.data.groupName}. ${this.data.time}`,
-          );
+          // Alert.alert(
+          //   this.data.title,
+          //   `${this.data.content}. ${this.data.groupName}. ${this.data.time}`,
+          // );
+          this.navigation.navigate('TrackingMap');
         } else {
-          Alert.alert(
-            data.title,
-            `${data.content}. ${data.groupName}. ${data.time}`,
-          );
+          // Alert.alert(
+          //   data.title,
+          //   `${data.content}. ${data.groupName}. ${data.time}`,
+          // );
+          this.navigation.navigate('TrackingMap');
         }
       });
 

@@ -115,14 +115,14 @@ class NotificationScreen extends Component {
         </View>
         <View style={styles.content}>
           <View style={styles.flatList}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.buttonPushNoti}
               onPress={() => this.onPressButtonNoti()}>
               <Text style={{color: 'white', fontWeight: 'bold', fontSize: 15}}>
                 Push Noti
               </Text>
-            </TouchableOpacity>
-            {/* <FlatList
+            </TouchableOpacity> */}
+            <FlatList
               contentContainerStyle={{
                 paddingBottom: EStyleSheet.value('70rem'),
                 flex: 0,
@@ -137,7 +137,7 @@ class NotificationScreen extends Component {
                   onRefresh={this.onRefresh.bind(this)}
                 />
               }
-            /> */}
+            />
           </View>
         </View>
       </View>
@@ -165,13 +165,13 @@ const styles = EStyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  buttonPushNoti: {
-    height: '40rem',
-    width: '150rem',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'blue',
-  },
+  // buttonPushNoti: {
+  //   height: '40rem',
+  //   width: '150rem',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: 'blue',
+  // },
   header: {
     width: '100%',
     height: '50rem',
@@ -188,8 +188,8 @@ const styles = EStyleSheet.create({
   content: {
     paddingHorizontal: '13rem',
     paddingTop: '10rem',
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
   itemView: {
     alignSelf: 'center',
