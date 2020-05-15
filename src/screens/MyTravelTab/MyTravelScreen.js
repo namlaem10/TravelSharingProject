@@ -175,7 +175,10 @@ class MyTravelScreen extends Component {
       return (
         <View style={styles.scontentTabView} tabLabel="Sắp đi">
           <FlatList
-            style={{height: '100%'}}
+            style={{
+              height: '100%',
+              paddingTop: EStyleSheet.value('2rem'),
+            }}
             showsVerticalScrollIndicator={false}
             data={ownLichTrinh}
             renderItem={({item}) => {
@@ -212,8 +215,9 @@ class MyTravelScreen extends Component {
               <Image
                 source={constants.Images.IMAGE_ADD_CIRCLE_BUTTON}
                 style={{
-                  width: EStyleSheet.value('70rem'),
-                  height: EStyleSheet.value('70rem'),
+                  width: EStyleSheet.value('65rem'),
+                  height: EStyleSheet.value('65rem'),
+                  resizeMode: 'contain',
                 }}
               />
             </TouchableOpacity>
@@ -235,6 +239,10 @@ class MyTravelScreen extends Component {
     if (goin > 0) {
       return (
         <FlatList
+          style={{
+            height: '100%',
+            paddingTop: EStyleSheet.value('2rem'),
+          }}
           tabLabel="Đang đi"
           showsVerticalScrollIndicator={false}
           data={ownLichTrinh}
@@ -280,6 +288,10 @@ class MyTravelScreen extends Component {
     if (gone > 0) {
       return (
         <FlatList
+          style={{
+            height: '100%',
+            paddingTop: EStyleSheet.value('2rem'),
+          }}
           tabLabel="Đã đi"
           showsVerticalScrollIndicator={false}
           data={ownLichTrinh}
@@ -333,10 +345,11 @@ class MyTravelScreen extends Component {
           />
         </View>
         <ScrollableTabView
+          showsHorizontalScrollIndicator={false}
           renderTabBar={() => (
             <CustomTabBarNoScroll
               activeTextColor={'white'}
-              inactiveTextColor={'#B7B7B7'}
+              inactiveTextColor={'#797979'}
               tabStyle={tabStyle}
               backgroundColor={'white'}
             />
@@ -416,9 +429,12 @@ const styles = EStyleSheet.create({
   },
   header: {
     width: '100%',
-    height: '60rem',
+    height: '50rem',
     paddingHorizontal: '13rem',
     marginTop: '10rem',
+    borderBottomWidth: 0.3,
+    borderBottomColor: '#CDCDCD',
+    marginBottom: '10rem',
   },
   addButton: {
     width: '70rem',

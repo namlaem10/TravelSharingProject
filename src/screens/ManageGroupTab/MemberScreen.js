@@ -59,12 +59,12 @@ class MemberScreen extends Component {
     let members = data.member;
     Alert.alert(
       'Xóa thành viên ' + item.display_name,
-      'bạn có chắc muốn xóa ' + item.display_name,
+      'Bạn có chắc muốn xóa ' + item.display_name,
       [
         {
-          text: 'không',
+          text: 'Không',
           onPress: () => {
-            console.log('cancle');
+            console.log('cancel');
           },
         },
         {
@@ -80,7 +80,7 @@ class MemberScreen extends Component {
             });
             await this.props.put_update_member(idHanhTrinh, memberIds);
           },
-          style: 'cancle',
+          style: 'cancel',
         },
       ],
       {cancelable: false},
@@ -109,10 +109,18 @@ class MemberScreen extends Component {
                 borderRadius: EStyleSheet.value('42rem'),
               }}
             />
-            <Text>{item.display_name}</Text>
             <Text
               style={{
-                fontFamily: constants.Fonts.light,
+                fontSize: EStyleSheet.value('14rem'),
+                fontFamily: constants.Fonts.medium,
+              }}>
+              {item.display_name}
+            </Text>
+            <Text
+              style={{
+                fontSize: EStyleSheet.value('14rem'),
+                fontFamily: constants.Fonts.regular,
+                color: '#797979',
               }}>
               {item.phone}
             </Text>
@@ -140,10 +148,18 @@ class MemberScreen extends Component {
                 borderRadius: EStyleSheet.value('42rem'),
               }}
             />
-            <Text>{item.display_name}</Text>
             <Text
               style={{
-                fontFamily: constants.Fonts.light,
+                fontSize: EStyleSheet.value('14rem'),
+                fontFamily: constants.Fonts.medium,
+              }}>
+              {item.display_name}
+            </Text>
+            <Text
+              style={{
+                fontSize: EStyleSheet.value('14rem'),
+                fontFamily: constants.Fonts.regular,
+                color: '#797979',
               }}>
               {item.phone}
             </Text>
@@ -171,12 +187,14 @@ class MemberScreen extends Component {
                 justifyContent: 'flex-start',
                 alignItems: 'center',
                 paddingLeft: EStyleSheet.value('27rem'),
+                paddingTop: EStyleSheet.value('7rem'),
                 height: EStyleSheet.value('40rem'),
               }}>
               <Text
                 style={{
                   color: '#4285f4',
-                  fontSize: EStyleSheet.value('15rem'),
+                  fontSize: EStyleSheet.value('16rem'),
+                  fontFamily: constants.Fonts.medium,
                 }}>
                 Nhấn giữ thành viên để xóa
               </Text>

@@ -27,25 +27,27 @@ export default class MemberScrollItem extends Component {
                 avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
               }
               style={{
-                width: EStyleSheet.value('40rem'),
-                height: EStyleSheet.value('40rem'),
-                borderRadius: EStyleSheet.value('20rem'),
+                width: EStyleSheet.value('50rem'),
+                height: EStyleSheet.value('50rem'),
+                borderRadius: EStyleSheet.value('25rem'),
               }}
             />
             <Image
               source={constants.Images.IC_LEADER}
               style={{
-                width: EStyleSheet.value('15rem'),
-                height: EStyleSheet.value('15rem'),
+                width: EStyleSheet.value('20rem'),
+                height: EStyleSheet.value('20rem'),
+                resizeMode: 'contain',
               }}
             />
           </View>
           <Text
             style={{
-              fontSize: EStyleSheet.value('12rem'),
+              fontSize: EStyleSheet.value('14rem'),
               marginVertical: EStyleSheet.value('5rem'),
+              fontFamily: constants.Fonts.regular,
             }}>
-            Nam ngu si
+            {data.display_name}
           </Text>
         </View>
       );
@@ -58,16 +60,17 @@ export default class MemberScrollItem extends Component {
                 avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
               }
               style={{
-                width: EStyleSheet.value('40rem'),
-                height: EStyleSheet.value('40rem'),
-                borderRadius: EStyleSheet.value('20rem'),
+                width: EStyleSheet.value('50rem'),
+                height: EStyleSheet.value('50rem'),
+                borderRadius: EStyleSheet.value('25rem'),
               }}
             />
           </View>
           <Text
             style={{
-              fontSize: EStyleSheet.value('12rem'),
+              fontSize: EStyleSheet.value('14rem'),
               marginVertical: EStyleSheet.value('5rem'),
+              fontFamily: constants.Fonts.regular,
             }}>
             {data.display_name}
           </Text>
@@ -82,7 +85,7 @@ const styles = EStyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: '10rem',
+    paddingHorizontal: '10rem',
     marginTop: '10rem',
     width: '120rem',
     height: '80rem',

@@ -19,6 +19,7 @@ import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
 import {BASE_URL} from '../../services/URL';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 const HEADER_MAX_HEIGHT = EStyleSheet.value('290rem');
@@ -30,10 +31,14 @@ class PostDetailScreen extends Component {
     this.state = {
       scrollY: new Animated.Value(0), // animation
       data: null,
+      dataComment: null,
+      dataRating: null,
       isLoading: true,
       linkImage: null,
       routeData: [],
       isDetailLichTrinhReady: false,
+      showRating: false,
+      rating_choose: 0,
     };
   }
   componentDidMount = async () => {
@@ -46,6 +51,12 @@ class PostDetailScreen extends Component {
     this.setState({
       isLoading: false,
       data,
+      dataComment: data.comment,
+      dataRating: {
+        rating: data.rating || 0,
+        rating_count: data.rating_count || 0,
+        rating_history: data.rating_history || [],
+      },
       linkImage,
     });
     this.props.get_location_info(
@@ -54,10 +65,19 @@ class PostDetailScreen extends Component {
     );
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
     if (nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO) {
       this.setState({
         routeData: nextProps.detailLichTrinh.data,
         isDetailLichTrinhReady: true,
+      });
+    } else if (nextProps.detailLichTrinh.type === types.POST_COMMENT) {
+      this.setState({
+        dataComment: nextProps.detailLichTrinh.data.comment,
+      });
+    } else if (nextProps.detailLichTrinh.type === types.POST_RATING) {
+      this.setState({
+        dataRating: nextProps.detailLichTrinh.data,
       });
     }
   }
@@ -92,13 +112,88 @@ class PostDetailScreen extends Component {
       routeData: routeData,
     });
   };
+  onPressSendComment = comment => {
+    const {data} = this.state;
+    this.props.post_comment(data._id, comment);
+  };
+  renderStar = () => {
+    const {rating_choose} = this.state;
+    console.log('a', rating_choose);
+    const star = [];
+    for (let index = 1; index <= 5; index++) {
+      if (index <= rating_choose) {
+        star.push(
+          <TouchableOpacity
+            onPress={() =>
+              this.setState({
+                rating_choose: index,
+              })
+            }
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginHorizontal: EStyleSheet.value('5rem'),
+            }}>
+            <Image
+              source={constants.Images.IC_GOLD_STAR}
+              style={{
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
+                resizeMode: 'contain',
+              }}
+            />
+          </TouchableOpacity>,
+        );
+      } else {
+        star.push(
+          <TouchableOpacity
+            onPress={() =>
+              this.setState({
+                rating_choose: index,
+              })
+            }
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginHorizontal: EStyleSheet.value('5rem'),
+            }}>
+            <Image
+              onPress={() =>
+                this.setState({
+                  rating_choose: index,
+                })
+              }
+              source={constants.Images.IC_NORMAL_STAR}
+              style={{
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
+                resizeMode: 'contain',
+              }}
+            />
+          </TouchableOpacity>,
+        );
+      }
+    }
+    return star;
+  };
+  onPressRating = rating => {
+    this.setState({showRating: rating});
+  };
+  onSendRating = () => {
+    this.setState({showRating: false, rating_choose: 0});
+    const {data, rating_choose} = this.state;
+    this.props.post_rating(data._id, rating_choose);
+  };
   render() {
     const {
       data,
+      dataComment,
+      dataRating,
       isLoading,
       linkImage,
       routeData,
       isDetailLichTrinhReady,
+      showRating,
     } = this.state;
     let background = null;
     if (data !== null) {
@@ -124,9 +219,59 @@ class PostDetailScreen extends Component {
     });
     return !isLoading ? (
       <View style={styles.container}>
+        <Dialog visible={showRating}>
+          <DialogContent>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: EStyleSheet.value('25rem'),
+              }}>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('18rem'),
+                  fontFamily: constants.Fonts.medium,
+                }}>
+                Đánh giá của bạn
+              </Text>
+            </View>
+            <View
+              style={{
+                width: EStyleSheet.value('250rem'),
+                height: EStyleSheet.value('50rem'),
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {this.renderStar()}
+            </View>
+            <TouchableOpacity
+              style={{
+                alignSelf: 'center',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: EStyleSheet.value('120rem'),
+                height: EStyleSheet.value('40rem'),
+                backgroundColor: constants.Colors.primary,
+                borderRadius: EStyleSheet.value('10rem'),
+                marginTop: EStyleSheet.value('5rem'),
+              }}
+              onPress={() => this.onSendRating()}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: EStyleSheet.value('16rem'),
+                  fontFamily: constants.Fonts.regular,
+                }}>
+                Gửi đánh giá
+              </Text>
+            </TouchableOpacity>
+          </DialogContent>
+        </Dialog>
         <ScrollView
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps={'handled'}
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: this.state.scrollY}}},
           ])}>
@@ -135,8 +280,18 @@ class PostDetailScreen extends Component {
               routeInfo={routeData}
               isDetailLichTrinhReady={isDetailLichTrinhReady}
               data={data}
+              ref={ref => {
+                this.ScrollView = ref;
+              }}
+              onContentSizeChange={(contentWidth, contentHeight) => {
+                this.ScrollView.scrollToEnd({animated: true});
+              }}
+              dataComment={dataComment}
+              dataRating={dataRating}
               onPressDetailButton={this.onPressDetailButton}
               onPressTravelDay={this.onPressTravelDay}
+              onPressSendComment={this.onPressSendComment}
+              onPressRating={this.onPressRating}
               isBlog={true}
               isButton={false}
             />
@@ -258,6 +413,8 @@ const mapDispatchToProps = dispatch => {
   return {
     get_location_info: (params, number) =>
       dispatch(actions.get_location_info(params, number)),
+    post_comment: (id, param) => dispatch(actions.post_comment(id, param)),
+    post_rating: (id, param) => dispatch(actions.post_rating(id, param)),
     reset: () => dispatch(actions.reset()),
   };
 };

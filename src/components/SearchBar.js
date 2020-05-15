@@ -114,7 +114,12 @@ export default class SearchBar extends Component {
             placeholder={
               placeHolder ? placeHolder : 'Nhập địa điểm bạn tìm kiếm'
             }
-            style={styles.searchBar}
+            style={[
+              styles.searchBar,
+              this.props.isBack
+                ? {marginLeft: EStyleSheet.value('80rem')}
+                : null,
+            ]}
             onChangeText={text => onChangeText(text)}
             value={value}
             autoFocus={true}
