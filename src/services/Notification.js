@@ -70,7 +70,7 @@ class Notification {
       .notifications()
       .onNotification(notification => {
         const {title, body, data} = notification;
-        console.log('onNotification:', notification);
+        console.log('onNotification:');
         this.data = data;
         this.status = 'app-running';
         const localNotification = new firebase.notifications.Notification({
@@ -112,17 +112,21 @@ class Notification {
       .onNotificationOpened(notificationOpen => {
         const {title, body, data} = notificationOpen.notification;
         if (this.status === 'app-running') {
-          // Alert.alert(
-          //   this.data.title,
-          //   `${this.data.content}. ${this.data.groupName}. ${this.data.time}`,
-          // );
-          this.navigation.navigate('TrackingMap');
+          let member_away = JSON.parse(this.data.member_away);
+          this.navigation.navigate('TrackingMap', {
+            location: 'notificationService',
+            idHanhTrinh: this.data.idHanhTrinh,
+            member_away: member_away,
+            time: this.data.time,
+          });
         } else {
-          // Alert.alert(
-          //   data.title,
-          //   `${data.content}. ${data.groupName}. ${data.time}`,
-          // );
-          this.navigation.navigate('TrackingMap');
+          let member_away = JSON.parse(data.member_away);
+          this.navigation.navigate('TrackingMap', {
+            location: 'notificationService',
+            idHanhTrinh: data.idHanhTrinh,
+            member_away: member_away,
+            time: data.time,
+          });
         }
       });
 
@@ -134,11 +138,11 @@ class Notification {
       .getInitialNotification();
     if (notificationOpen) {
       const {title, body, data} = notificationOpen.notification;
-      console.log('getInitialNotification:', notificationOpen);
+      console.log('getInitialNotification:');
       this.status = 'app-closed';
       Alert.alert(
         data.title,
-        `${data.content}. ${data.groupName}. ${data.time}`,
+        `${data.content}. Vui lòng vào thông báo để xem chi tiết`,
       );
     }
     firebase

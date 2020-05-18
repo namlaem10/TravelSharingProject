@@ -98,7 +98,6 @@ class InfoGroupScreen extends Component {
     this.props.navigation.navigate('TrackingMap', {
       location: 'InfoGroup',
       data: data,
-      isLeader: this.state.isLeader,
       title: this.state.title,
     });
   };

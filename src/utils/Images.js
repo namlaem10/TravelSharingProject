@@ -54,4 +54,5 @@ export default {
   IC_TRACKING_LOCATION_WHITE: require('../assets/images/ic-tracking-location-white.png'),
   IC_COMMENT_WHITE: require('../assets/images/ic-comment-white.png'),
   IC_NO_COMMENT: require('../assets/images/nocomments.png'),
+  IC_RUNNING: require('../assets/images/running.jpg'),
 };

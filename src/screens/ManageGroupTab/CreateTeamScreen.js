@@ -37,7 +37,6 @@ class CreateTeamScreen extends Component {
   };
   onPressBack = () => {
     this.props.navigation.goBack();
-    console.log('back');
   };
   onPressMember = () => {
     this.props.navigation.navigate('AddMember');
