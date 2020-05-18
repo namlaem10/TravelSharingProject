@@ -46,12 +46,23 @@ class TrackingMapScreen extends Component {
   }
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
-    if (location !== '') {
-      this.props.navigation.navigate(location, {
-        data: this.props.navigation.getParam('data'),
-        isLeader: this.props.navigation.getParam('isLeader'),
-        title: this.props.navigation.getParam('title'),
-      });
+    if (location !== '' && location !== 'notificationService') {
+      if (location === 'Notification') {
+        this.props.navigation.navigate(location);
+      } else {
+        this.props.navigation.navigate(location, {
+          data: this.props.navigation.getParam('data'),
+          isLeader: this.state.isLeader,
+          title: this.props.navigation.getParam('title'),
+        });
+      }
+    } else if (location === 'notificationService') {
+      let data = this.state.groupData;
+      let title =
+        data.departure.destination_name +
+        ' - ' +
+        data.destination.destination_name;
+      this.props.navigation.navigate('InfoGroup', {data: data, title: title});
     } else {
       this.props.navigation.goBack();
     }
@@ -77,138 +88,255 @@ class TrackingMapScreen extends Component {
       }
     });
     if (distances.length > 0) {
-      let warnMessage = 'Các thành viên sau đang quá xa nhóm trưởng: ';
-      let count = 1;
+      let arrayMemAway = [];
       distances.map(item => {
         let dis = Math.round((item.dis / 1000) * 10 + Number.EPSILON) / 10;
-        dis += ' km';
-        let name = item.user.name;
-        if (count === distances.length) {
-          warnMessage += `${name} - ${dis}`;
-        } else {
-          warnMessage += `${name} - ${dis},`;
-        }
-        count++;
-      });
-      if (this.state.isAlert === false) {
-        let groupName = this.props.navigation.getParam('title');
-        console.log(this.state.groupData.background);
-        let data = {
-          idHanhTrinh: this.state.groupData._id,
-          title: 'Cảnh báo thành viên',
-          subTitle: 'Có thành viên cách xa nhóm trưởng!',
-          message: warnMessage,
-          groupName: groupName,
-          time:
-            moment(this.state.groupData.start_day).format('DD/MM/YYYY') +
-            '-' +
-            moment(this.state.groupData.end_day).format('DD/MM/YYYY'),
-          image: this.state.groupData.background,
+        let name = item.user.id;
+        let mem = {
+          name: name,
+          dis: dis,
         };
-        this.props.push_noti(data);
-        this.setState({isAlert: true});
+        arrayMemAway.push(mem);
+      });
+      if (
+        this.state.isAlert === false &&
+        this.props.navigation.getParam('location') !== 'Notification'
+      ) {
+        this.props.push_noti(
+          this.state.groupData._id,
+          arrayMemAway,
+          this.state.groupData.member,
+        );
       }
     }
   };
   componentDidMount() {
-    let groupData = this.props.navigation.getParam('data');
-    const user = this.props.user.data;
-    let isLeader = this.props.navigation.getParam('isLeader');
-
-    Geolocation.getCurrentPosition(position => {
-      const {longitude, latitude} = position.coords;
-      database
-        .ref('groups/' + groupData._id + '/members/' + user.user_info._id)
-        .update({
-          id: user.user_info._id,
-          location: {
-            latitude: latitude,
-            longitude: longitude,
-          },
-          name: user.user_info.display_name,
-          rank: isLeader ? 'leader' : 'member',
-          avatar: user.user_info.avatar,
-        });
-      this.setState({
-        region: {
-          latitude: latitude,
-          longitude: longitude,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.015,
-        },
-        lastPosition: {
-          latitude: latitude,
-          longitude: longitude,
-        },
-      });
-    });
-
-    Geolocation.watchPosition(position => {
-      const {longitude, latitude} = position.coords;
-      database
-        .ref('groups/' + groupData._id + '/members/' + user.user_info._id)
-        .update({
-          id: user.user_info._id,
-          location: {
-            latitude: latitude,
-            longitude: longitude,
-          },
-          name: user.user_info.display_name,
-          rank: isLeader ? 'leader' : 'member',
-          avatar: user.user_info.avatar,
-        });
-      this.setState({
-        region: {
-          latitude: latitude,
-          longitude: longitude,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.015,
-        },
-        lastPosition: {
-          latitude: latitude,
-          longitude: longitude,
-        },
-      });
-    });
-  }
-  UNSAFE_componentWillMount = async () => {
-    let groupData = this.props.navigation.getParam('data');
-    let user = this.props.user.data;
-    let isLeader = this.props.navigation.getParam('isLeader');
-    const GroupRef = database.ref('groups/' + groupData._id);
-    const snapshot = await GroupRef.once('value');
-    let arrayMem = [];
-    let array = snapshot.val();
-    if (array === null) {
-      GroupRef.set({
-        members: [],
-      });
+    const location = this.props.navigation.getParam('location', '');
+    if (location === 'notificationService') {
+      this.props.get_travel_by_id(
+        this.props.navigation.getParam('idHanhTrinh'),
+      );
     } else {
-      Object.keys(array.members).forEach((key, index) => {
-        arrayMem.push(array.members[key]);
+      let groupData = this.props.navigation.getParam('data');
+      const user = this.props.user.data;
+      let isLeader = false;
+      if (user.user_info._id === groupData.create_by._id) {
+        isLeader = true;
+      }
+      Geolocation.getCurrentPosition(position => {
+        const {longitude, latitude} = position.coords;
+        database
+          .ref('groups/' + groupData._id + '/members/' + user.user_info._id)
+          .update({
+            id: user.user_info._id,
+            location: {
+              latitude: latitude,
+              longitude: longitude,
+            },
+            name: user.user_info.display_name,
+            rank: isLeader ? 'leader' : 'member',
+            avatar: user.user_info.avatar,
+          });
+        this.setState({
+          region: {
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.015,
+          },
+          lastPosition: {
+            latitude: latitude,
+            longitude: longitude,
+          },
+        });
+      });
+
+      Geolocation.watchPosition(position => {
+        const {longitude, latitude} = position.coords;
+        database
+          .ref('groups/' + groupData._id + '/members/' + user.user_info._id)
+          .update({
+            id: user.user_info._id,
+            location: {
+              latitude: latitude,
+              longitude: longitude,
+            },
+            name: user.user_info.display_name,
+            rank: isLeader ? 'leader' : 'member',
+            avatar: user.user_info.avatar,
+          });
+        this.setState({
+          region: {
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.015,
+          },
+          lastPosition: {
+            latitude: latitude,
+            longitude: longitude,
+          },
+        });
       });
     }
-    this.setState({
-      arrayMem,
-      user: user,
-      isLoading: false,
-      groupData: groupData,
-      isLeader: isLeader,
-    });
-    GroupRef.on(
-      'child_changed',
-      function(data) {
-        arrayMem = [];
-        let changeArray = data.val();
-        Object.keys(changeArray).forEach((key, index) => {
-          arrayMem.push(changeArray[key]);
+  }
+  async UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.notification.type === types.GET_TRAVEL_BY_ID) {
+      const {notification} = nextProps;
+      let groupData = notification.data;
+      let user = this.props.user.data;
+      let isLeader = false;
+      if (user.user_info._id === groupData.create_by._id) {
+        isLeader = true;
+      }
+      const GroupRef = database.ref('groups/' + groupData._id);
+      const snapshot = await GroupRef.once('value');
+      let arrayMem = [];
+      let array = snapshot.val();
+      if (array === null) {
+        GroupRef.set({
+          members: [],
         });
+      } else {
+        Object.keys(array.members).forEach((key, index) => {
+          arrayMem.push(array.members[key]);
+        });
+      }
+      this.setState({
+        arrayMem,
+        user: user,
+        isLoading: false,
+        groupData: groupData,
+        isLeader: isLeader,
+      });
+      GroupRef.on(
+        'child_changed',
+        function(data) {
+          arrayMem = [];
+          let changeArray = data.val();
+          Object.keys(changeArray).forEach((key, index) => {
+            arrayMem.push(changeArray[key]);
+          });
+          this.setState({
+            arrayMem,
+          });
+        }.bind(this),
+      );
+
+      Geolocation.getCurrentPosition(position => {
+        const {longitude, latitude} = position.coords;
+        database
+          .ref('groups/' + groupData._id + '/members/' + user.user_info._id)
+          .update({
+            id: user.user_info._id,
+            location: {
+              latitude: latitude,
+              longitude: longitude,
+            },
+            name: user.user_info.display_name,
+            rank: isLeader ? 'leader' : 'member',
+            avatar: user.user_info.avatar,
+          });
         this.setState({
-          arrayMem,
+          region: {
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.015,
+          },
+          lastPosition: {
+            latitude: latitude,
+            longitude: longitude,
+          },
         });
-      }.bind(this),
-    );
-    this.DistanceCalculation(arrayMem);
+      });
+
+      Geolocation.watchPosition(position => {
+        const {longitude, latitude} = position.coords;
+        database
+          .ref('groups/' + groupData._id + '/members/' + user.user_info._id)
+          .update({
+            id: user.user_info._id,
+            location: {
+              latitude: latitude,
+              longitude: longitude,
+            },
+            name: user.user_info.display_name,
+            rank: isLeader ? 'leader' : 'member',
+            avatar: user.user_info.avatar,
+          });
+        this.setState({
+          region: {
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.015,
+          },
+          lastPosition: {
+            latitude: latitude,
+            longitude: longitude,
+          },
+        });
+      });
+      let warmMess = 'Thành viên ngoài phạm vi cho phép: ';
+      const array_away = this.props.navigation.getParam('member_away');
+      array_away.map(item => {
+        warmMess += ` ${item.name} - ${item.distance}km `;
+      });
+      if (this.state.isAlert === false) {
+        Alert.alert('Cảnh báo', warmMess);
+        this.setState({isAlert: true});
+      }
+    }
+  }
+  UNSAFE_componentWillMount = async () => {
+    const location = this.props.navigation.getParam('location', '');
+    if (location === 'notificationService') {
+      this.props.get_travel_by_id(
+        this.props.navigation.getParam('idHanhTrinh'),
+      );
+    } else {
+      let groupData = this.props.navigation.getParam('data');
+      let user = this.props.user.data;
+      let isLeader = false;
+      if (user.user_info._id === groupData.create_by._id) {
+        isLeader = true;
+      }
+      const GroupRef = database.ref('groups/' + groupData._id);
+      const snapshot = await GroupRef.once('value');
+      let arrayMem = [];
+      let array = snapshot.val();
+      if (array === null) {
+        GroupRef.set({
+          members: [],
+        });
+      } else {
+        Object.keys(array.members).forEach((key, index) => {
+          arrayMem.push(array.members[key]);
+        });
+      }
+      this.setState({
+        arrayMem,
+        user: user,
+        isLoading: false,
+        groupData: groupData,
+        isLeader: isLeader,
+      });
+      GroupRef.on(
+        'child_changed',
+        function(data) {
+          arrayMem = [];
+          let changeArray = data.val();
+          Object.keys(changeArray).forEach((key, index) => {
+            arrayMem.push(changeArray[key]);
+          });
+          this.setState({
+            arrayMem,
+          });
+        }.bind(this),
+      );
+      this.DistanceCalculation(arrayMem);
+    }
   };
   render() {
     const {
@@ -334,7 +462,10 @@ const mapStateToProps = ({user, groupInfo, notification}) => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    push_noti: data => dispatch(actions.push_noti(data)),
+    push_noti: (idHanhTrinh, data, arrayMember) =>
+      dispatch(actions.push_noti(idHanhTrinh, data, arrayMember)),
+    get_travel_by_id: idHanhTrinh =>
+      dispatch(actions.get_travel_by_id(idHanhTrinh)),
   };
 };
 export default connect(

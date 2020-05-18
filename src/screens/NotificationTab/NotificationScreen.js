@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   FlatList,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -16,31 +17,37 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/notificationReducer';
 //fake data
-const data = [
-  {
-    id: 'noti1',
-    title: 'Hoàn đã gửi 1 tin nhắn trong nhóm du lịch',
-    time: '3 phút trước',
-    image: constants.Images.IC_AVATAR3,
-  },
-];
 class NotificationScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isRefreshing: false,
+      data: null,
+      isLoading: true,
     };
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.notification.type === types.PUSH_NOTI) {
-      console.log(nextProps.notification.data);
+    if (nextProps.notification.type === types.GET_NOTI) {
+      this.setState({data: nextProps.notification.data, isLoading: false});
     }
   }
+  UNSAFE_componentWillMount() {
+    this.props.get_noti();
+  }
+  onPressItem = item => {
+    this.props.navigation.navigate('TrackingMap', {
+      location: 'Notification',
+      data: item.travel,
+      member_away: item.member_away,
+    });
+  };
   _renderItem = item => {
     return (
-      <TouchableOpacity style={styles.itemView}>
+      <TouchableOpacity
+        style={styles.itemView}
+        onPress={() => this.onPressItem(item)}>
         <Image
-          source={item.image}
+          source={constants.Images.IC_RUNNING}
           style={{
             width: EStyleSheet.value('70rem'),
             height: EStyleSheet.value('70rem'),
@@ -56,20 +63,10 @@ class NotificationScreen extends Component {
             paddingTop: EStyleSheet.value('5rem'),
           }}>
           <Text numberOfLines={2} style={styles.textTitle}>
-            {item.title}
+            Nhóm {item.travel.departure.destination_name} -{' '}
+            {item.travel.destination.destination_name} có thành viên ở ngoài
+            phạm vi
           </Text>
-        </View>
-        <View style={{position: 'absolute', right: 0}}>
-          <TouchableOpacity>
-            <Image
-              style={{
-                width: EStyleSheet.value('30rem'),
-                height: EStyleSheet.value('30rem'),
-                resizeMode: 'contain',
-              }}
-              source={constants.Images.IC_DIFFERENCE_ACTIVE}
-            />
-          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -80,7 +77,7 @@ class NotificationScreen extends Component {
             justifyContent: 'space-between',
             width: EStyleSheet.value('255rem'),
           }}>
-          <Text style={styles.subText}>{item.time}</Text>
+          <Text style={styles.subText}>thời gian</Text>
           <Text style={styles.subText}>Nhấn để xem chi tiết</Text>
         </View>
       </TouchableOpacity>
@@ -88,18 +85,13 @@ class NotificationScreen extends Component {
   };
   onRefresh = () => {
     this.setState({isRefreshing: true});
+    this.props.get_noti();
     setTimeout(() => {
       this.setState({isRefreshing: false});
     }, 1000);
   };
-  onPressButtonNoti = () => {
-    let data = {
-      idHanhTrinh: 'HT01',
-      message: 'Out range!',
-    };
-    this.props.push_noti(data);
-  };
   render() {
+    const {isLoading, data} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -114,31 +106,31 @@ class NotificationScreen extends Component {
           </View>
         </View>
         <View style={styles.content}>
-          <View style={styles.flatList}>
-            {/* <TouchableOpacity
-              style={styles.buttonPushNoti}
-              onPress={() => this.onPressButtonNoti()}>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 15}}>
-                Push Noti
-              </Text>
-            </TouchableOpacity> */}
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: EStyleSheet.value('70rem'),
-                flex: 0,
-              }}
-              data={data}
-              showsVerticalScrollIndicator={false}
-              renderItem={({item}) => this._renderItem(item)}
-              keyExtractor={item => item.id}
-              refreshControl={
-                <RefreshControl
-                  refreshing={this.state.isRefreshing}
-                  onRefresh={this.onRefresh.bind(this)}
-                />
-              }
+          {isLoading ? (
+            <ActivityIndicator
+              size={EStyleSheet.value('60rem')}
+              color="#34D374"
             />
-          </View>
+          ) : (
+            <View style={styles.flatList}>
+              <FlatList
+                contentContainerStyle={{
+                  paddingBottom: EStyleSheet.value('70rem'),
+                  flex: 0,
+                }}
+                data={data}
+                showsVerticalScrollIndicator={false}
+                renderItem={({item}) => this._renderItem(item)}
+                keyExtractor={item => item._id}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={this.state.isRefreshing}
+                    onRefresh={this.onRefresh.bind(this)}
+                  />
+                }
+              />
+            </View>
+          )}
         </View>
       </View>
     );
@@ -151,7 +143,7 @@ const mapStateToProps = ({notification}) => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    push_noti: data => dispatch(actions.push_noti(data)),
+    get_noti: () => dispatch(actions.get_noti()),
   };
 };
 // eslint-disable-next-line prettier/prettier

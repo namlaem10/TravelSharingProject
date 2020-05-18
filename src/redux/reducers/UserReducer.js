@@ -22,6 +22,18 @@ async function getToken() {
     console.log('get token has error');
   }
 }
+async function getFcmToken() {
+  try {
+    const value = await AsyncStorage.getItem('fcmToken');
+    if (value) {
+      return value;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.log('get fcm token has error');
+  }
+}
 export const actions = {
   login: user => {
     return async dispatch => {
@@ -29,8 +41,13 @@ export const actions = {
         const url = '/api/user/login';
         const contentType = 'application/x-www-form-urlencoded';
         const data = user;
+        const fcmToken = await getFcmToken();
         const result = await api.post(url, data, null, contentType);
         if (result.status === 200) {
+          const urlFcm = '/api/user/fcm';
+          let params = new URLSearchParams();
+          params.append('fcm', fcmToken);
+          api.put(urlFcm, params, result.data.token, contentType);
           dispatch({
             type: types.LOGIN,
             payload: {
