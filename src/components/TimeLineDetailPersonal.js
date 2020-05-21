@@ -9,17 +9,12 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import TimeLineItem from './TimeLineItem';
 import DraggableFlatList from 'react-native-draggable-flatlist';
-const exampleData = [...Array(20)].map((d, index) => ({
-  key: `item-${index}`, // For example only -- don't use index as your key!
-  label: index,
-  backgroundColor: `rgb(${Math.floor(Math.random() * 255)}, ${index *
-    5}, ${132})`,
-}));
+
 export default class TimelineDetailPersonal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: exampleData,
+      data: null,
       routeData: null,
       isGone: false,
       keyDay: null,
@@ -99,6 +94,9 @@ export default class TimelineDetailPersonal extends Component {
       keyDay,
       isLeader,
       action,
+      onPressMap,
+      routeData,
+      data,
     } = this.props;
     return (
       <View style={isLeader ? styles.container : styles.containerSub}>
@@ -110,6 +108,15 @@ export default class TimelineDetailPersonal extends Component {
             }}>
             Ngày {day}
           </Text>
+          <TouchableOpacity onPress={() => onPressMap(routeData, data)}>
+            <Text
+              style={{
+                ...styles.titleText,
+                color: '#259CDF',
+              }}>
+              Bản đồ
+            </Text>
+          </TouchableOpacity>
           {isGone ? null : isLeader || action === 'creating' ? (
             <TouchableOpacity onPress={() => onPressAddPlace(keyDay)}>
               <Text
@@ -117,7 +124,7 @@ export default class TimelineDetailPersonal extends Component {
                   ...styles.titleText,
                   color: '#259CDF',
                 }}>
-                Thêm địa điểm
+                Thêm điểm
               </Text>
             </TouchableOpacity>
           ) : null}

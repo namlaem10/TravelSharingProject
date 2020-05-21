@@ -136,6 +136,23 @@ class TimeLineDetailScreen extends Component {
       {cancelable: false},
     );
   };
+  onPressMap = (routeData, data) => {
+    let routing = [];
+    let points = [];
+    routeData.leg.map(item => {
+      item.maneuver.map(subItem => {
+        routing.push(subItem.position);
+      });
+    });
+    data.map(item => {
+      points.push(item.location);
+    });
+    this.props.navigation.navigate('Map', {
+      routing: routing,
+      data: data,
+      points: points,
+    });
+  };
   onDragEnd = (dataDay, keyday) => {
     const data = this.props.navigation.getParam('data');
     data[keyday] = dataDay;
@@ -177,6 +194,7 @@ class TimeLineDetailScreen extends Component {
           onPressDeleteItem={this.onPressDeleteItem}
           isLeader={this.state.isLeader}
           onDragEnd={this.onDragEnd}
+          onPressMap={this.onPressMap}
         />,
       );
     }
@@ -203,6 +221,7 @@ class TimeLineDetailScreen extends Component {
       totalDay: this.props.navigation.getParam('totalDay'),
     });
   };
+
   render() {
     const page = this.props.navigation.getParam('page', 1) - 1;
     const isGone = this.props.navigation.getParam('isGone', false);

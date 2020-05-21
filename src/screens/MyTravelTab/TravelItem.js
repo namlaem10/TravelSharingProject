@@ -5,6 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import moment from 'moment';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 import {BASE_URL} from '../../services/URL';
+import 'moment/locale/vi';
 
 export default class TravelItem extends Component {
   constructor(props) {

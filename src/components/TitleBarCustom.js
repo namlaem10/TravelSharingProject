@@ -21,9 +21,6 @@ export default class TitleBarCustom extends Component {
               source={constants.Images.IC_ARROW_BACK}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => onPressMore()}>
-            <Image style={styles.icon} source={constants.Images.IC_3DOT} />
-          </TouchableOpacity>
         </View>
       );
     } else {
