@@ -16,6 +16,9 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/notificationReducer';
+import moment from 'moment';
+import 'moment/locale/vi';
+
 //fake data
 class NotificationScreen extends Component {
   constructor(props) {
@@ -77,8 +80,10 @@ class NotificationScreen extends Component {
             justifyContent: 'space-between',
             width: EStyleSheet.value('255rem'),
           }}>
-          <Text style={styles.subText}>thời gian</Text>
-          <Text style={styles.subText}>Nhấn để xem chi tiết</Text>
+          <Text style={styles.subText}>{moment(item.create_at).fromNow()}</Text>
+          <Text style={{...styles.subText, color: '#34D374'}}>
+            Nhấn để xem chi tiết
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -92,6 +97,7 @@ class NotificationScreen extends Component {
   };
   render() {
     const {isLoading, data} = this.state;
+    moment.locale('vi');
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -210,7 +216,6 @@ const styles = EStyleSheet.create({
   },
   subText: {
     fontSize: constants.FontSizes.smalltext,
-    fontFamily: constants.Fonts.light,
-    color: '#4A4A4A',
+    fontFamily: constants.Fonts.regular,
   },
 });

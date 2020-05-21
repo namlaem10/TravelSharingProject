@@ -4,6 +4,8 @@ import * as constants from '../../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import moment from 'moment';
 import {BASE_URL} from '../../../services/URL';
+import 'moment/locale/vi';
+
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 export default class NewsFeedItem extends Component {
