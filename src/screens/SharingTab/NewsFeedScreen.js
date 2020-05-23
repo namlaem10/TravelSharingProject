@@ -37,7 +37,8 @@ class NewsFeedScreen extends Component {
           payload.action.type === 'Navigation/NAVIGATE' ||
           payload.action.type === 'Navigation/BACK'
         ) {
-          this.setState({searchText: ''});
+          this.setState({searchText: '', isLoading: true});
+          await this.props.get_all();
         }
       },
     );
