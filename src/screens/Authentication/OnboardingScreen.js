@@ -12,23 +12,23 @@ const sildeData = [
   {
     key: 'slide1',
     title: 'Chia sẻ chuyến hành trình',
-    image: Images.IC_MANAGEGROUP_DEACTIVE,
+    image: Images.IMG_ONBOARDING1,
     description:
-      'Một dòng description dài thòn lòn gì đó về nội dung này từ từ viết sau chứ giờ nghĩ chưa ra nha',
+      'Kỉ niệm, kinh nghiệm, niềm vui từ chuyến du lịch của bạn và bạn muốn chia sẻ nó đến mọi người',
   },
   {
     key: 'slide2',
     title: 'Tham khảo lên kế hoạch',
-    image: Images.IC_MANAGEGROUP_DEACTIVE,
+    image: Images.IMG_ONBOARDING2,
     description:
-      'Một dòng description dài thòn lòn gì đó về nội dung này từ từ viết sau chứ giờ nghĩ chưa ra nha',
+      'Tham khảo hành trình đang HOT. Gợi ý, tự động tạo hành trình dành riêng cho bạn',
   },
   {
     key: 'slide3',
     title: 'Quản lý nhóm du lịch',
-    image: Images.IC_MANAGEGROUP_DEACTIVE,
+    image: Images.IMG_ONBOARDING3,
     description:
-      'Một dòng description dài thòn lòn gì đó về nội dung này từ từ viết sau chứ giờ nghĩ chưa ra nha',
+      'Hỗ trợ tạo nhóm, liên lạc và theo dõi vị trí các thành viên một cách hiệu quả',
   },
 ];
 
@@ -151,7 +151,7 @@ const styles = EStyleSheet.create({
   },
   imageOnboard: {
     width: WIDTH - 40,
-    height: '150rem',
+    height: '280rem',
   },
   viewTitle: {
     flex: 0.1,
@@ -167,7 +167,7 @@ const styles = EStyleSheet.create({
   },
   viewDescription: {
     flex: 0.38,
-    paddingHorizontal: '45rem',
+    paddingHorizontal: '40rem',
   },
   textDescription: {
     fontFamily: Fonts.regular,

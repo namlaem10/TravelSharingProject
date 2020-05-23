@@ -50,6 +50,15 @@ class AccountScreen extends Component {
       }, 2000);
     }
   };
+  onPressMyTravel = () => {
+    this.props.navigation.navigate('MyTravel');
+  };
+  onPressManagerGroup = () => {
+    this.props.navigation.navigate('ManageGroup');
+  };
+  onPressFindFriends = () => {
+    console.log('chưa làm');
+  };
   _renderItem = item => {
     return (
       <TouchableOpacity style={styles.itemView}>
@@ -174,7 +183,9 @@ class AccountScreen extends Component {
           </View>
         </View>
         <View style={styles.settingGroup}>
-          <TouchableOpacity style={styles.settingItem}>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => this.onPressMyTravel()}>
             <Image
               source={constants.Images.IC_MYTRAVEL_ACTIVE}
               style={styles.iconVectorRun}
@@ -187,7 +198,9 @@ class AccountScreen extends Component {
               Lịch trình của tôi
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.settingItem}>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => this.onPressManagerGroup()}>
             <Image
               source={constants.Images.IC_MANAGEGROUP_RED}
               style={styles.iconVector}
@@ -200,7 +213,9 @@ class AccountScreen extends Component {
               Quản lý nhóm
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.settingItem}>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => this.onPressFindFriends()}>
             <Image
               source={constants.Images.IC_SEARCH_BLUE}
               style={{
@@ -217,7 +232,7 @@ class AccountScreen extends Component {
               Tìm bạn bè
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.settingItem}>
+          {/* <TouchableOpacity style={styles.settingItem}>
             <Image
               source={constants.Images.IC_SETTING}
               style={styles.iconVector}
@@ -229,7 +244,7 @@ class AccountScreen extends Component {
               }}>
               Cài đặt
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             onPress={() => this.logOut()}
             style={{...styles.settingItem, borderBottomWidth: 0}}>
@@ -320,7 +335,7 @@ const styles = EStyleSheet.create({
   },
   settingItem: {
     width: '350rem',
-    height: '40rem',
+    height: '80rem',
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 0.3,

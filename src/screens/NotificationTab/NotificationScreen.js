@@ -28,6 +28,18 @@ class NotificationScreen extends Component {
       data: null,
       isLoading: true,
     };
+    this.didFocusSubscription = props.navigation.addListener(
+      'willFocus',
+      async payload => {
+        if (
+          payload.action.type === 'Navigation/NAVIGATE' ||
+          payload.action.type === 'Navigation/BACK'
+        ) {
+          this.setState({isLoading: true});
+          await this.props.get_noti();
+        }
+      },
+    );
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.notification.type === types.GET_NOTI) {

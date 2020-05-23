@@ -55,4 +55,7 @@ export default {
   IC_COMMENT_WHITE: require('../assets/images/ic-comment-white.png'),
   IC_NO_COMMENT: require('../assets/images/nocomments.png'),
   IC_RUNNING: require('../assets/images/running.jpg'),
+  IMG_ONBOARDING1: require('../assets/images/onBoarding1.png'),
+  IMG_ONBOARDING2: require('../assets/images/onBoarding2.png'),
+  IMG_ONBOARDING3: require('../assets/images/onBoarding3.png'),
 };

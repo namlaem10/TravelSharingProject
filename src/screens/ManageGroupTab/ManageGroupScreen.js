@@ -38,12 +38,8 @@ class ManageGroupScreen extends Component {
           payload.action.type === 'Navigation/NAVIGATE' ||
           payload.action.type === 'Navigation/BACK'
         ) {
-          if (payload.action.type === 'Navigation/BACK') {
-            this.setState({searchText: '', isLoading: true});
-            await this.props.get_own();
-          } else {
-            this.setState({searchText: ''});
-          }
+          this.setState({searchText: '', isLoading: true});
+          await this.props.get_own();
         }
       },
     );
