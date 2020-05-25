@@ -9,6 +9,10 @@ export const types = {
   SIGN_UP: 'SIGN_UP',
   SIGN_UP_FAIL: 'SIGN_UP_FAIL',
   RESET: 'RESET',
+  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
+  FORGOT_PASSWORD_FAIL: 'FORGOT_PASSWORD_FAIL',
+  CHANGE_PASSWORD: 'CHANGE_PASSWORD',
+  CHANGE_PASSWORD_FAIL: 'CHANGE_PASSWORD_FAIL',
 };
 async function getToken() {
   try {
@@ -109,6 +113,43 @@ export const actions = {
       }
     };
   },
+  change_password: (password, newpassword) => {
+    return async dispatch => {
+      try {
+        const url = '/api/user/changepassword';
+        const contentType = 'application/x-www-form-urlencoded';
+        let params = new URLSearchParams();
+        params.append('password', password);
+        params.append('newpassword', newpassword);
+        const token = await getToken();
+        const result = await api.put(url, params, token, contentType);
+        if (result.status === 200) {
+          dispatch({
+            type: types.CHANGE_PASSWORD,
+            payload: {
+              data: result.data,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.CHANGE_PASSWORD_FAIL,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.CHANGE_PASSWORD_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
   sign_up: params => {
     return async dispatch => {
       try {
@@ -154,6 +195,41 @@ export const actions = {
     type: type,
     payload: {error: status},
   }),
+  forgot_password: email => {
+    return async dispatch => {
+      try {
+        const url = '/api/user/forgotpassword';
+        const contentType = 'application/x-www-form-urlencoded';
+        let params = new URLSearchParams();
+        params.append('email', email);
+        const result = await api.post(url, params, null, contentType);
+        if (result.status === 200) {
+          dispatch({
+            type: types.FORGOT_PASSWORD,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.FORGOT_PASSWORD_FAIL,
+            payload: {
+              data: result.data.data,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.FORGOT_PASSWORD_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
 };
 const initialState = {
   data: null,
@@ -192,6 +268,20 @@ export const userReducer = (state = initialState, action) => {
         status: payload.status,
       };
     }
+    case types.CHANGE_PASSWORD: {
+      return {
+        type: types.CHANGE_PASSWORD,
+        data: state.data,
+      };
+    }
+    case types.CHANGE_PASSWORD_FAIL: {
+      return {
+        type: types.CHANGE_PASSWORD_FAIL,
+        message: payload.data.message,
+        data: state.data,
+        status: payload.status,
+      };
+    }
     case types.SIGN_UP: {
       return {
         type: types.SIGN_UP,
@@ -201,6 +291,19 @@ export const userReducer = (state = initialState, action) => {
     case types.SIGN_UP_FAIL: {
       return {
         type: types.SIGN_UP_FAIL,
+        data: payload.data,
+        status: payload.status,
+      };
+    }
+    case types.FORGOT_PASSWORD: {
+      return {
+        type: types.FORGOT_PASSWORD,
+        data: payload.data,
+      };
+    }
+    case types.FORGOT_PASSWORD_FAIL: {
+      return {
+        type: types.FORGOT_PASSWORD_FAIL,
         data: payload.data,
         status: payload.status,
       };
