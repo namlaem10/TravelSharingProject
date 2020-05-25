@@ -31,9 +31,13 @@ class SignUpScreen extends Component {
       email: '',
       password: '',
       confirm: '',
+      phone: '',
+      display_name: '',
       placeholderEmail: 'Email',
       placeholderPassword: 'Mật khẩu',
       placeholderConfirm: 'Nhập lại mật khẩu',
+      placeholderPhone: 'Nhập số điện thoại',
+      placeholderDisplayName: 'Nhập tên hiển thị',
       showPassword: false,
       showConfirm: false,
       error: '',
@@ -46,11 +50,20 @@ class SignUpScreen extends Component {
     let email = this.state.email;
     let password = this.state.password;
     let confirmPass = this.state.confirm;
+    let phone = this.state.phone;
+    let display_name = this.state.display_name;
     let checkEmptyEmail = validateEmpty(email);
     let checkEmptyPass = validateEmpty(password);
-    if (!checkEmptyEmail || !checkEmptyPass) {
+    let checkEmptyPhone = validateEmpty(phone);
+    let checkEmptyDisplayName = validateEmpty(display_name);
+    if (
+      !checkEmptyEmail ||
+      !checkEmptyPass ||
+      !checkEmptyPhone ||
+      !checkEmptyDisplayName
+    ) {
       this.setState({
-        error: 'Tài khoản hoặc mật khẩu không được bỏ trống!',
+        error: 'Cần điền đầy đủ thông tin',
       });
     } else {
       if (!validateEmail(email)) {
@@ -64,7 +77,8 @@ class SignUpScreen extends Component {
         let params = new URLSearchParams();
         params.append('email', email);
         params.append('password', password);
-        params.append('display_name', 'Test Name');
+        params.append('display_name', display_name);
+        params.append('phone', phone);
         await this.props.sign_up(params);
         if (this.props.user.status) {
           this.setState({
@@ -87,9 +101,13 @@ class SignUpScreen extends Component {
       email,
       password,
       confirm,
+      phone,
+      display_name,
       placeholderEmail,
       placeholderPassword,
       placeholderConfirm,
+      placeholderPhone,
+      placeholderDisplayName,
       showPassword,
       showConfirm,
       error,
@@ -98,7 +116,7 @@ class SignUpScreen extends Component {
       <KeyboardAwareScrollView
         // enableOnAndroid={false}
         keyboardShouldPersistTaps="handled"
-        scrollEnabled={false}
+        scrollEnabled={true}
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: Colors.backgroundColor,
@@ -185,7 +203,7 @@ class SignUpScreen extends Component {
                 autoCapitalize="none"
                 keyboardType="email-address"
                 placeholderTextColor={Colors.deactive}
-                onSubmitEditing={() => this.passRef.focus()}
+                onSubmitEditing={() => this.displayNameRef.focus()}
                 blurOnSubmit={false}
                 value={email}
                 style={styles.textEmail}
@@ -199,6 +217,88 @@ class SignUpScreen extends Component {
               <TouchableOpacity
                 style={styles.buttonClear}
                 onPress={() => this.setState({email: ''})}>
+                <Image
+                  source={Images.IC_CLEAR}
+                  resizeMode="contain"
+                  style={{
+                    width: EStyleSheet.value('18rem'),
+                    height: EStyleSheet.value('18rem'),
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={[
+                styles.viewInput,
+                {marginBottom: EStyleSheet.value('10rem')},
+              ]}>
+              {placeholderDisplayName === '' && (
+                <Text style={[styles.textEmail, {color: Colors.primary}]}>
+                  Tên hiển thị
+                </Text>
+              )}
+              <TextInput
+                placeholder={placeholderDisplayName}
+                selectionColor={Colors.primary}
+                onChangeText={text => this.setState({display_name: text})}
+                autoCapitalize="none"
+                ref={ref => (this.displayNameRef = ref)}
+                placeholderTextColor={Colors.deactive}
+                onSubmitEditing={() => this.phoneRef.focus()}
+                blurOnSubmit={false}
+                value={display_name}
+                style={styles.textEmail}
+                onFocus={() => this.setState({placeholderDisplayName: ''})}
+                onEndEditing={() =>
+                  email === ''
+                    ? this.setState({placeholderDisplayName: 'Tên hiển thị'})
+                    : null
+                }
+              />
+              <TouchableOpacity
+                style={styles.buttonClear}
+                onPress={() => this.setState({display_name: ''})}>
+                <Image
+                  source={Images.IC_CLEAR}
+                  resizeMode="contain"
+                  style={{
+                    width: EStyleSheet.value('18rem'),
+                    height: EStyleSheet.value('18rem'),
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={[
+                styles.viewInput,
+                {marginBottom: EStyleSheet.value('10rem')},
+              ]}>
+              {placeholderPhone === '' && (
+                <Text style={[styles.textPassword, {color: Colors.primary}]}>
+                  Số điện thoại
+                </Text>
+              )}
+              <TextInput
+                placeholder={placeholderPhone}
+                selectionColor={Colors.primary}
+                onChangeText={text => this.setState({phone: text})}
+                autoCapitalize="none"
+                keyboardType="number-pad"
+                placeholderTextColor={Colors.deactive}
+                ref={ref => (this.phoneRef = ref)}
+                value={phone}
+                onSubmitEditing={() => this.passRef.focus()}
+                style={styles.textPassword}
+                onFocus={() => this.setState({placeholderPhone: ''})}
+                onEndEditing={() =>
+                  phone === ''
+                    ? this.setState({placeholderPhone: 'Số điện thoại'})
+                    : null
+                }
+              />
+              <TouchableOpacity
+                style={styles.buttonClear}
+                onPress={() => this.setState({phone: ''})}>
                 <Image
                   source={Images.IC_CLEAR}
                   resizeMode="contain"
@@ -254,7 +354,11 @@ class SignUpScreen extends Component {
                 />
               </TouchableOpacity>
             </View>
-            <View style={styles.viewInput}>
+            <View
+              style={[
+                styles.viewInput,
+                {marginBottom: EStyleSheet.value('10rem')},
+              ]}>
               {placeholderConfirm === '' && (
                 <Text style={[styles.textPassword, {color: Colors.primary}]}>
                   Nhập lại mật khẩu
@@ -274,7 +378,9 @@ class SignUpScreen extends Component {
                 onFocus={() => this.setState({placeholderConfirm: ''})}
                 onEndEditing={() =>
                   confirm === ''
-                    ? this.setState({placeholderConfirm: 'Mật khẩu'})
+                    ? this.setState({
+                        placeholderConfirm: 'Nhập lại mật khẩu',
+                      })
                     : null
                 }
               />
@@ -348,14 +454,14 @@ const styles = EStyleSheet.create({
     backgroundColor: Colors.white,
   },
   viewLogo: {
-    flex: 3,
-    justifyContent: 'center',
+    height: '200rem',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    // backgroundColor: 'red',
+    paddingBottom: '10rem',
   },
   image: {
-    width: '130rem',
-    height: '130rem',
+    width: '110rem',
+    height: '110rem',
     backgroundColor: 'transparent',
   },
   buttonClear: {
@@ -368,12 +474,12 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
   },
   viewTextInput: {
-    flex: 0.5,
     justifyContent: 'space-around',
     alignItems: 'center',
-    margin: '5rem',
+    marginTop: '35rem',
   },
   viewInput: {
+    height: '60rem',
     width: '315rem',
     borderBottomWidth: 0.5,
     borderColor: Colors.primary,
@@ -382,7 +488,7 @@ const styles = EStyleSheet.create({
     width: '285rem',
     position: 'absolute',
     left: '32rem',
-    bottom: '-20rem',
+    bottom: '-40rem',
   },
   textEmail: {
     color: Colors.deactive,
@@ -401,7 +507,7 @@ const styles = EStyleSheet.create({
     fontFamily: Fonts.light,
   },
   viewButton: {
-    flex: 3,
+    flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
@@ -416,7 +522,7 @@ const styles = EStyleSheet.create({
   },
   textSignIn: {
     color: Colors.white,
-    fontSize: FontSizes.title,
+    fontSize: FontSizes.regular,
     fontFamily: Fonts.medium,
   },
   textForgotPass: {
