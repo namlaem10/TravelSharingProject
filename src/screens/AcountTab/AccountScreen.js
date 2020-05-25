@@ -59,6 +59,9 @@ class AccountScreen extends Component {
   onPressFindFriends = () => {
     console.log('chưa làm');
   };
+  onPressChangePassWord = () => {
+    this.props.navigation.navigate('ChangePassword');
+  };
   _renderItem = item => {
     return (
       <TouchableOpacity style={styles.itemView}>
@@ -202,7 +205,7 @@ class AccountScreen extends Component {
             style={styles.settingItem}
             onPress={() => this.onPressManagerGroup()}>
             <Image
-              source={constants.Images.IC_MANAGEGROUP_RED}
+              source={constants.Images.IC_MANAGEGROUP_ACTIVE}
               style={styles.iconVector}
             />
             <Text
@@ -217,7 +220,7 @@ class AccountScreen extends Component {
             style={styles.settingItem}
             onPress={() => this.onPressFindFriends()}>
             <Image
-              source={constants.Images.IC_SEARCH_BLUE}
+              source={constants.Images.IC_SEARCH}
               style={{
                 width: EStyleSheet.value('25rem'),
                 height: EStyleSheet.value('25rem'),
@@ -232,23 +235,28 @@ class AccountScreen extends Component {
               Tìm bạn bè
             </Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.settingItem}>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => this.onPressChangePassWord()}>
             <Image
-              source={constants.Images.IC_SETTING}
-              style={styles.iconVector}
+              source={constants.Images.IC_PASSWORD_ACTIVE}
+              style={styles.iconVectorBig}
             />
             <Text
               style={{
                 ...styles.textTitle,
                 ...styles.paddingText,
               }}>
-              Cài đặt
+              Đổi mật khẩu
             </Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => this.logOut()}
             style={{...styles.settingItem, borderBottomWidth: 0}}>
-            <Image source={constants.Images.IC_KEY} style={styles.iconVector} />
+            <Image
+              source={constants.Images.IC_KEY_ACTIVE}
+              style={styles.iconVectorBig}
+            />
             <Text
               style={{
                 ...styles.textTitle,
@@ -329,13 +337,18 @@ const styles = EStyleSheet.create({
     width: '25rem',
     resizeMode: 'contain',
   },
+  iconVectorBig: {
+    height: '22rem',
+    width: '22rem',
+    resizeMode: 'contain',
+  },
   paddingText: {
     position: 'absolute',
     left: '40rem',
   },
   settingItem: {
     width: '350rem',
-    height: '80rem',
+    height: '60rem',
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 0.3,

@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
   Alert,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -12,32 +13,64 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
 import {validateEmail, validateEmpty} from '../../utils/Validate';
 import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
+import Dialog, {
+  DialogContent,
+  DialogFooter,
+  DialogButton,
+} from 'react-native-popup-dialog';
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/UserReducer';
+import * as constants from '../../utils/Constants';
 
 EStyleSheet.build({$rem: WIDTH / 380});
 
-export default class SignInScreen extends Component {
+class ForgotPassword extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: '',
-      password: '',
-      placeholderEmail: 'Email',
-      placeholderPassword: 'Mật khẩu',
+      placeholderEmail: 'Nhập địa chỉ Email',
       error: '',
+      isLoadingVisible: false,
+      isCompletedVisible: false,
+      message: '',
     };
   }
-
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.user.type === types.FORGOT_PASSWORD ||
+      nextProps.user.type === types.FORGOT_PASSWORD_FAIL
+    ) {
+      if (nextProps.user.status) {
+        this.setState({isLoadingVisible: false, error: 'Email không tồn tại'});
+      } else {
+        this.setState({
+          isLoadingVisible: false,
+          isCompletedVisible: true,
+        });
+      }
+    }
+  }
+  onPressCompletedDialog = () => {
+    this.setState({
+      isCompletedVisible: false,
+    });
+    this.props.navigation.navigate('SignIn');
+  };
   onPressSignIn = () => {
     let email = this.state.email;
     let checkEmptyEmail = validateEmpty(email);
     if (!checkEmptyEmail) {
-      this.setState({error: 'Tài khoản hoặc mật khẩu không được bỏ trống!'});
+      this.setState({error: 'Email không được bỏ trống!'});
     } else {
       if (!validateEmail(email)) {
         this.setState({error: 'Email không hợp lệ'});
       } else {
-        Alert.alert('Success', 'Chuyển kênh');
+        this.setState({
+          isLoadingVisible: true,
+        });
       }
+      this.props.forgot_password(email);
     }
   };
 
@@ -53,6 +86,57 @@ export default class SignInScreen extends Component {
           backgroundColor: Colors.backgroundColor,
         }}>
         <View style={styles.container}>
+          <Dialog visible={this.state.isLoadingVisible}>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <ActivityIndicator
+                  size={EStyleSheet.value('60rem')}
+                  color="#34D374"
+                />
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                    letterSpacing: 1,
+                    marginLeft: EStyleSheet.value('5rem'),
+                  }}>
+                  Vui lòng chờ...
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            visible={this.state.isCompletedVisible}
+            footer={
+              <DialogFooter>
+                <DialogButton
+                  text="Đăng nhập"
+                  onPress={() => this.onPressCompletedDialog()}
+                />
+              </DialogFooter>
+            }>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <Image
+                  source={constants.Images.IC_EMAIL}
+                  style={{
+                    width: EStyleSheet.value('60rem'),
+                    height: EStyleSheet.value('60rem'),
+                  }}
+                />
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                    letterSpacing: 1,
+                    marginLeft: EStyleSheet.value('5rem'),
+                    textAlign: 'center',
+                  }}>
+                  Mật khẩu mới đã gửi đến email của bạn.
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
           <View style={styles.viewLogo}>
             <Image
               source={Images.IC_LOGO}
@@ -122,7 +206,7 @@ export default class SignInScreen extends Component {
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('ForgotPassword')}>
+              onPress={() => this.props.navigation.navigate('SignIn')}>
               <Text style={styles.textForgotPass}>Đăng nhập</Text>
             </TouchableOpacity>
             <View
@@ -145,7 +229,21 @@ export default class SignInScreen extends Component {
     );
   }
 }
-
+const mapStateToProps = ({user}) => {
+  return {
+    user: user,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    forgot_password: email => dispatch(actions.forgot_password(email)),
+  };
+};
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ForgotPassword);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -233,5 +331,13 @@ const styles = EStyleSheet.create({
     color: Colors.deactive,
     fontFamily: Fonts.light,
     marginRight: 5,
+  },
+  loadingDialog: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    height: EStyleSheet.value('95rem'),
+    width: EStyleSheet.value('250rem'),
+    backgroundColor: 'white',
   },
 });
