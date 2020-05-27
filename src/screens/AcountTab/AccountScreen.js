@@ -21,14 +21,17 @@ class AccountScreen extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      user: this.props.user.data.user_info || null,
+      user: this.props.user.data || null,
     };
   }
   seeMore = () => {
-    this.props.navigation.navigate('InfoUser', {user: this.props.user.data});
+    this.props.navigation.navigate('InfoUser', {user: this.state.user});
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.user.type === types.UPDATE_INFO) {
+      this.setState({user: nextProps.user.data});
+    }
+    if (nextProps.user.type === types.ADD_FRIEND) {
       this.setState({user: nextProps.user.data});
     }
   }
@@ -57,7 +60,7 @@ class AccountScreen extends Component {
     this.props.navigation.navigate('ManageGroup');
   };
   onPressFindFriends = () => {
-    console.log('chưa làm');
+    this.props.navigation.navigate('AddFriend');
   };
   onPressChangePassWord = () => {
     this.props.navigation.navigate('ChangePassword');
@@ -109,7 +112,7 @@ class AccountScreen extends Component {
     );
   };
   render() {
-    const {user} = this.state;
+    const user = this.state.user.user_info;
     let avatar = null;
     if (user.avatar) {
       avatar = BASE_URL + '/' + user.avatar;

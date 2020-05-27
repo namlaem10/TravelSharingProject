@@ -30,6 +30,7 @@ import Account from '../screens/AcountTab/AccountScreen';
 import InfoUser from '../screens/AcountTab/InfoUserScreen';
 import EditInfo from '../screens/AcountTab/EditInfoScreen';
 import ChangePassword from '../screens/AcountTab/ChangePasswordScreen';
+import AddFriend from '../screens/AcountTab/AddFriendScreen';
 
 import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
 import TimeLineDetail from '../screens/MyTravelTab/TimeLineDetailScreen';
@@ -63,7 +64,7 @@ const AuthStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'SignIn',
+    initialRouteName: 'Start',
     defaultNavigationOptions: {
       header: null,
     },
@@ -155,6 +156,9 @@ const AccountStack = createStackNavigator(
     },
     ChangePassword: {
       screen: ChangePassword,
+    },
+    AddFriend: {
+      screen: AddFriend,
     },
   },
   {
