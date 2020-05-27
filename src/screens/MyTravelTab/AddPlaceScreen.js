@@ -17,9 +17,6 @@ import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/myTravelPlaceReducer';
 import SearchBar from '../../components/SearchBar';
 
-//fake data
-import {Places} from '../../utils/fakedata';
-
 class AddPlaceScreen extends Component {
   constructor(props) {
     super(props);

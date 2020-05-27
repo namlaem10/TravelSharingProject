@@ -30,6 +30,9 @@ class InfoUserScreen extends Component {
     if (nextProps.user.type === types.UPDATE_INFO) {
       this.setState({user: nextProps.user.data});
     }
+    if (nextProps.user.type === types.ADD_FRIEND) {
+      this.setState({user: nextProps.user.data});
+    }
   }
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
@@ -54,6 +57,7 @@ class InfoUserScreen extends Component {
     if (user.avatar) {
       avatar = BASE_URL + '/' + user.avatar;
     }
+    console.log('hello', rating_point, people_rating);
     return (
       <View style={styles.container}>
         <View style={styles.backgroundHeader}>
@@ -87,15 +91,11 @@ class InfoUserScreen extends Component {
               Chỉnh sửa thông tin
             </Text>
           </TouchableOpacity>
-          <View style={styles.subInfo}>
-            <Text style={styles.subText}>Email: {user.email}</Text>
-            <Text style={styles.subText}>Điện thoại: {user.phone}</Text>
-          </View>
         </View>
         <View style={styles.lastInfoGroup}>
           <View style={styles.lastInfoItem}>
             <Text style={{...styles.number, color: '#1161D8'}}>
-              {total_travel}
+              {total_travel === null ? 0 : total_travel}
             </Text>
             <Text
               style={{
@@ -107,7 +107,7 @@ class InfoUserScreen extends Component {
           </View>
           <View style={styles.lastInfoItem}>
             <Text style={{...styles.number, color: '#34D374'}}>
-              {travel_share}
+              {travel_share === null ? 0 : travel_share}
             </Text>
             <Text
               style={{
@@ -123,7 +123,7 @@ class InfoUserScreen extends Component {
                 ...styles.number,
                 color: 'rgba(255,0,0,0.54)',
               }}>
-              {rating_point}
+              {rating_point === null ? 0 : rating_point}
               <Text>/5</Text>
             </Text>
             <Text
@@ -131,7 +131,7 @@ class InfoUserScreen extends Component {
                 fontSize: EStyleSheet.value('14rem'),
                 fontFamily: constants.Fonts.regular,
               }}>
-              Đánh giá ({people_rating})
+              Đánh giá ({people_rating === null ? 0 : people_rating})
             </Text>
           </View>
         </View>
@@ -209,7 +209,7 @@ const styles = EStyleSheet.create({
     width: '100%',
     height: '40rem',
     paddingVertical: '10rem',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginTop: EStyleSheet.value('10rem'),

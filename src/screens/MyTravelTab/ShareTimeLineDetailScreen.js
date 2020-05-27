@@ -139,6 +139,23 @@ class ShareTimeLineDetailScreen extends Component {
       {cancelable: false},
     );
   };
+  onPressMap = (routeData, data) => {
+    let routing = [];
+    let points = [];
+    routeData.leg.map(item => {
+      item.maneuver.map(subItem => {
+        routing.push(subItem.position);
+      });
+    });
+    data.map(item => {
+      points.push(item.location);
+    });
+    this.props.navigation.navigate('Map', {
+      routing: routing,
+      data: data,
+      points: points,
+    });
+  };
   _renderItem = () => {
     let array = [];
     let countday = 0;
@@ -169,6 +186,7 @@ class ShareTimeLineDetailScreen extends Component {
           onPressDeleteItem={this.onPressDeleteItem}
           action={action}
           onDragEnd={this.onDragEnd}
+          onPressMap={this.onPressMap}
         />,
       );
     }

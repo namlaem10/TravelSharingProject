@@ -13,6 +13,8 @@ export const types = {
   FORGOT_PASSWORD_FAIL: 'FORGOT_PASSWORD_FAIL',
   CHANGE_PASSWORD: 'CHANGE_PASSWORD',
   CHANGE_PASSWORD_FAIL: 'CHANGE_PASSWORD_FAIL',
+  ADD_FRIEND: 'ADD_FRIEND',
+  ADD_FRIEND_FAIL: 'ADD_FRIEND_FAIL',
 };
 async function getToken() {
   try {
@@ -230,6 +232,51 @@ export const actions = {
       }
     };
   },
+  add_friend: (user, friend) => {
+    return async dispatch => {
+      try {
+        const url = '/api/user/addfriend';
+        const contentType = 'application/x-www-form-urlencoded';
+        let token = await getToken();
+        let params = new URLSearchParams();
+        params.append('friend', friend._id);
+
+        const result = await api.put(url, params, token, contentType);
+        if (result.status === 200) {
+          let newFriend = {
+            _id: friend._id,
+            email: friend.email,
+            display_name: friend.display_name,
+            phone: friend.phone,
+            avatar: friend.avatar,
+          };
+          let User = user;
+          User.user_info.friend.push(newFriend);
+          dispatch({
+            type: types.ADD_FRIEND,
+            payload: {
+              data: User,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.ADD_FRIEND_FAIL,
+            payload: {
+              data: result.data.data,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.ADD_FRIEND_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
 };
 const initialState = {
   data: null,
@@ -304,6 +351,19 @@ export const userReducer = (state = initialState, action) => {
     case types.FORGOT_PASSWORD_FAIL: {
       return {
         type: types.FORGOT_PASSWORD_FAIL,
+        data: payload.data,
+        status: payload.status,
+      };
+    }
+    case types.ADD_FRIEND: {
+      return {
+        type: types.ADD_FRIEND,
+        data: payload.data,
+      };
+    }
+    case types.ADD_FRIEND_FAIL: {
+      return {
+        type: types.ADD_FRIEND_FAIL,
         data: payload.data,
         status: payload.status,
       };
