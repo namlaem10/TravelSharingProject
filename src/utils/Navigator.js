@@ -41,6 +41,7 @@ import AddPlace from '../screens/MyTravelTab/AddPlaceScreen';
 import TripDetail from '../screens/MyTravelTab/TripDetailScreen';
 import AddPlaceDetail from '../screens/MyTravelTab/AddPlaceDetailScreen';
 import Map from '../screens/MyTravelTab/MapScreen';
+import Rating from '../screens/MyTravelTab/RatingScreen';
 
 import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
@@ -210,6 +211,9 @@ const MyTravelStack = createStackNavigator(
     },
     Map: {
       screen: Map,
+    },
+    Rating: {
+      screen: Rating,
     },
   },
   {

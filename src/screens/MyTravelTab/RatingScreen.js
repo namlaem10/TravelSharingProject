@@ -1,0 +1,365 @@
+/* eslint-disable prettier/prettier */
+import React, {Component} from 'react';
+import {
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import * as constants from '../../utils/Constants';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import moment from 'moment';
+import TitleBarCustom from '../../components/TitleBarCustom';
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
+import {BASE_URL} from '../../services/URL';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
+import MapView, {Marker, Polyline} from 'react-native-maps';
+import * as Progress from 'react-native-progress';
+
+EStyleSheet.build({$rem: constants.WIDTH / 380});
+
+export default class RatingScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: null,
+      isLoading: true,
+      region: {
+        latitude: 12.284453612548909,
+        longitude: 107.5169186666079,
+        latitudeDelta: 21,
+        longitudeDelta: 21,
+      },
+      point: null,
+      rating_choose: 0,
+    };
+  }
+  UNSAFE_componentWillMount() {
+    let data = this.props.navigation.getParam('data');
+    if (data.rating_history !== []) {
+      let array = constants.groupBy(data.list_rating, 'rating');
+      console.log(array);
+    }
+    let region = {
+      latitude: data.location.latitude,
+      longitude: data.location.longitude,
+      latitudeDelta: 0.0065,
+      longitudeDelta: 0.000025,
+    };
+    let point = data.location;
+    this.setState({
+      region,
+      point,
+      isLoading: false,
+      data,
+    });
+  }
+  onPressBack = () => {
+    const location = this.props.navigation.getParam('location', '');
+    if (location !== '') {
+      this.props.navigation.navigate(location);
+    } else {
+      this.props.navigation.goBack();
+    }
+  };
+  renderStar = () => {
+    const {rating_choose} = this.state;
+    const star = [];
+    for (let index = 1; index <= 5; index++) {
+      if (index <= rating_choose) {
+        star.push(
+          <TouchableOpacity
+            onPress={() =>
+              this.setState({
+                rating_choose: index,
+              })
+            }
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginHorizontal: EStyleSheet.value('5rem'),
+            }}>
+            <Image
+              source={constants.Images.IC_GOLD_STAR}
+              style={{
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
+                resizeMode: 'contain',
+              }}
+            />
+          </TouchableOpacity>,
+        );
+      } else {
+        star.push(
+          <TouchableOpacity
+            onPress={() =>
+              this.setState({
+                rating_choose: index,
+              })
+            }
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginHorizontal: EStyleSheet.value('5rem'),
+            }}>
+            <Image
+              onPress={() =>
+                this.setState({
+                  rating_choose: index,
+                })
+              }
+              source={constants.Images.IC_NORMAL_STAR}
+              style={{
+                width: EStyleSheet.value('25rem'),
+                height: EStyleSheet.value('25rem'),
+                resizeMode: 'contain',
+              }}
+            />
+          </TouchableOpacity>,
+        );
+      }
+    }
+    return star;
+  };
+  renderStarLittleStart = () => {
+    const rating_poin = 4;
+    const star = [];
+    for (let index = 1; index <= 5; index++) {
+      if (index <= rating_poin) {
+        star.push(
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginHorizontal: EStyleSheet.value('2rem'),
+            }}>
+            <Image
+              source={constants.Images.IC_GOLD_STAR}
+              style={{
+                width: EStyleSheet.value('15rem'),
+                height: EStyleSheet.value('15rem'),
+                resizeMode: 'contain',
+              }}
+            />
+          </View>,
+        );
+      } else {
+        star.push(
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginHorizontal: EStyleSheet.value('2rem'),
+            }}>
+            <Image
+              source={constants.Images.IC_NORMAL_STAR}
+              style={{
+                width: EStyleSheet.value('15rem'),
+                height: EStyleSheet.value('15rem'),
+                resizeMode: 'contain',
+              }}
+            />
+          </View>,
+        );
+      }
+    }
+    return star;
+  };
+  renderProcessRating = () => {
+    let array = [];
+    for (let i = 5; i > 0; i--) {
+      array.push(
+        <View style={styles.bar}>
+          <Text style={{fontSize: 10, marginRight: EStyleSheet.value('5rem')}}>
+            {i}
+          </Text>
+          <Progress.Bar
+            progress={0.7}
+            width={EStyleSheet.value('170rem')}
+            height={EStyleSheet.value('11rem')}
+            color={'#34D374'}
+          />
+        </View>,
+      );
+    }
+    return array;
+  };
+  render() {
+    const {data, isLoading, region, point} = this.state;
+    return !isLoading ? (
+      <View style={styles.container}>
+        <View style={styles.backgroundHeader}>
+          <ImageBackground
+            source={{uri: data.tourist_destination_image}}
+            style={{
+              width: '100%',
+              height: '100%',
+              resizeMode: 'contain',
+            }}>
+            <TitleBarCustom onPress={this.onPressBack} />
+          </ImageBackground>
+        </View>
+        <ScrollView>
+          <View style={styles.content}>
+            <View style={styles.infoCard}>
+              <MapView style={styles.mapView} region={region}>
+                {point !== null ? (
+                  <Marker coordinate={point} title={'Hầm Đất Sét'} />
+                ) : null}
+              </MapView>
+              <Text style={styles.title}>{data.tourist_destination_name}</Text>
+              <Text style={styles.address}>
+                {data.tourist_destination_address}
+              </Text>
+            </View>
+            <View style={styles.RatingGroup}>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: EStyleSheet.value('18rem'),
+                    fontFamily: constants.Fonts.medium,
+                  }}>
+                  Đánh giá của bạn
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: EStyleSheet.value('250rem'),
+                  height: EStyleSheet.value('50rem'),
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                {this.renderStar()}
+              </View>
+              <TouchableOpacity
+                style={styles.sendRatingButton}
+                onPress={() => this.onSendRating()}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: EStyleSheet.value('16rem'),
+                    fontFamily: constants.Fonts.regular,
+                  }}>
+                  Gửi đánh giá
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.ShowRatingGroup}>
+              <View style={styles.showColLeft}>
+                <Text style={styles.bigPoint}>{data.rating}</Text>
+                <View style={{flexDirection: 'row'}}>
+                  {this.renderStarLittleStart()}
+                </View>
+                <Text style={{color: 'gray'}}>{data.rating_count}</Text>
+              </View>
+              <View style={styles.showColRight}>
+                {this.renderProcessRating()}
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    ) : (
+      <View style={styles.container}>
+        <ActivityIndicator size={EStyleSheet.value('60rem')} color="#34D374" />
+      </View>
+    );
+  }
+}
+const styles = EStyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  header: {
+    height: '287rem',
+    overflow: 'hidden',
+  },
+  scrollViewContent: {
+    marginTop: '90rem',
+  },
+  backgroundHeader: {
+    height: '195rem',
+  },
+  content: {
+    marginHorizontal: '11rem',
+    paddingBottom: '11rem',
+  },
+  infoCard: {
+    marginTop: '11rem',
+    height: '180rem',
+    borderRadius: '20rem',
+    marginVertical: '10rem',
+    flexDirection: 'column',
+    borderWidth: 1,
+    borderColor: '#DADDE1',
+    overflow: 'hidden',
+  },
+  mapView: {
+    height: '60%',
+    width: '100%',
+    borderTopLeftRadius: '20rem',
+    borderTopRightRadius: '20rem',
+  },
+  title: {
+    fontFamily: constants.Fonts.medium,
+    fontSize: constants.FontSizes.title,
+    marginVertical: '5rem',
+    marginLeft: '10rem',
+  },
+  address: {
+    fontFamily: constants.Fonts.light,
+    fontSize: constants.FontSizes.light,
+    marginLeft: '10rem',
+  },
+  RatingGroup: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sendRatingButton: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: EStyleSheet.value('120rem'),
+    height: EStyleSheet.value('40rem'),
+    backgroundColor: constants.Colors.primary,
+    borderRadius: EStyleSheet.value('10rem'),
+    marginTop: EStyleSheet.value('5rem'),
+  },
+  ShowRatingGroup: {
+    width: '100%',
+    height: '120rem',
+    flexDirection: 'row',
+    marginTop: '11rem',
+  },
+  showColLeft: {
+    flex: 0.4,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  showColRight: {
+    flex: 0.6,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bigPoint: {
+    fontFamily: constants.Fonts.light,
+    fontSize: '50rem',
+    color: '#34D374',
+  },
+  bar: {
+    flexDirection: 'row',
+    marginVertical: '6rem',
+  },
+});

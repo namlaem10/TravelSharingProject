@@ -161,6 +161,9 @@ class TimeLineDetailScreen extends Component {
     });
     this.props.get_location_info(data, this.state.totalDay);
   };
+  onPressRating = data => {
+    this.props.navigation.navigate('Rating', {data});
+  };
   _renderItem = () => {
     let array = [];
     let countday = 0;
@@ -195,6 +198,7 @@ class TimeLineDetailScreen extends Component {
           isLeader={this.state.isLeader}
           onDragEnd={this.onDragEnd}
           onPressMap={this.onPressMap}
+          onPressRating={this.onPressRating}
         />,
       );
     }
