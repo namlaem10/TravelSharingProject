@@ -8,13 +8,14 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import moment from 'moment';
 import TitleBarCustom from '../../components/TitleBarCustom';
 import {connect} from 'react-redux';
-import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
+import {actions, types} from '../../redux/reducers/myTravelPlaceReducer.js';
 import {BASE_URL} from '../../services/URL';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import MapView, {Marker, Polyline} from 'react-native-maps';
@@ -22,7 +23,7 @@ import * as Progress from 'react-native-progress';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
-export default class RatingScreen extends Component {
+class RatingScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -73,6 +74,53 @@ export default class RatingScreen extends Component {
       rating_list: newRating_list,
     });
   }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.createTrip.type === types.RATING_TOURISTL ||
+      nextProps.createTrip.type === types.RATING_TOURISTL_FAIL
+    ) {
+      if (nextProps.createTrip.type === types.RATING_TOURISTL) {
+        let array = [];
+        if (nextProps.createTrip.data.rating_history !== []) {
+          array = constants.groupBy(
+            nextProps.createTrip.data.rating_list,
+            'rating',
+          );
+        }
+        let newRating_list = {
+          1: array['1'] ? array['1'].length : 0,
+          2: array['2'] ? array['2'].length : 0,
+          3: array['3'] ? array['3'].length : 0,
+          4: array['4'] ? array['4'].length : 0,
+          5: array['5'] ? array['5'].length : 0,
+        };
+        this.setState({
+          data: nextProps.createTrip.data,
+          isLoading: false,
+          rating_list: newRating_list,
+        });
+        Alert.alert(
+          'Đánh giá thành công',
+          'Cám ơn bạn đã đánh giá địa điểm này',
+          [
+            {
+              text: 'Xong',
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+      } else {
+        this.setState({
+          isLoading: false,
+        });
+      }
+    }
+  }
+  onSendRating = () => {
+    const {data, rating_choose} = this.state;
+    this.props.rating_tourist(data, rating_choose);
+  };
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
@@ -88,6 +136,7 @@ export default class RatingScreen extends Component {
       if (index <= rating_choose) {
         star.push(
           <TouchableOpacity
+            key={index}
             onPress={() =>
               this.setState({
                 rating_choose: index,
@@ -111,6 +160,7 @@ export default class RatingScreen extends Component {
       } else {
         star.push(
           <TouchableOpacity
+            key={index}
             onPress={() =>
               this.setState({
                 rating_choose: index,
@@ -297,6 +347,22 @@ export default class RatingScreen extends Component {
     );
   }
 }
+const mapStateToProps = ({createTrip}) => {
+  return {
+    createTrip: createTrip,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    rating_tourist: (data, rating) =>
+      dispatch(actions.rating_tourist(data, rating)),
+  };
+};
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RatingScreen);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
