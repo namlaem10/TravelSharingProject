@@ -36,14 +36,28 @@ export default class RatingScreen extends Component {
       },
       point: null,
       rating_choose: 0,
+      rating_list: {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+      },
     };
   }
   UNSAFE_componentWillMount() {
     let data = this.props.navigation.getParam('data');
+    let array = [];
     if (data.rating_history !== []) {
-      let array = constants.groupBy(data.list_rating, 'rating');
-      console.log(array);
+      array = constants.groupBy(data.rating_list, 'rating');
     }
+    let newRating_list = {
+      1: array['1'] ? array['1'].length : 0,
+      2: array['2'] ? array['2'].length : 0,
+      3: array['3'] ? array['3'].length : 0,
+      4: array['4'] ? array['4'].length : 0,
+      5: array['5'] ? array['5'].length : 0,
+    };
     let region = {
       latitude: data.location.latitude,
       longitude: data.location.longitude,
@@ -56,6 +70,7 @@ export default class RatingScreen extends Component {
       point,
       isLoading: false,
       data,
+      rating_list: newRating_list,
     });
   }
   onPressBack = () => {
@@ -126,7 +141,7 @@ export default class RatingScreen extends Component {
     return star;
   };
   renderStarLittleStart = () => {
-    const rating_poin = 4;
+    const rating_poin = this.state.data.rating;
     const star = [];
     for (let index = 1; index <= 5; index++) {
       if (index <= rating_poin) {
@@ -171,14 +186,21 @@ export default class RatingScreen extends Component {
   };
   renderProcessRating = () => {
     let array = [];
+    const {rating_list, data} = this.state;
+    let rating_count = data.rating_count;
     for (let i = 5; i > 0; i--) {
+      let percent = rating_list[i] / rating_count;
       array.push(
         <View style={styles.bar}>
-          <Text style={{fontSize: 10, marginRight: EStyleSheet.value('5rem')}}>
+          <Text
+            style={{
+              fontSize: 10,
+              marginRight: EStyleSheet.value('5rem'),
+            }}>
             {i}
           </Text>
           <Progress.Bar
-            progress={0.7}
+            progress={percent}
             width={EStyleSheet.value('170rem')}
             height={EStyleSheet.value('11rem')}
             color={'#34D374'}
