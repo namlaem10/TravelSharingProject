@@ -49,7 +49,7 @@ class RatingScreen extends Component {
   UNSAFE_componentWillMount() {
     let data = this.props.navigation.getParam('data');
     let array = [];
-    if (data.rating_history !== []) {
+    if (data.rating_list !== []) {
       array = constants.groupBy(data.rating_list, 'rating');
     }
     let newRating_list = {
@@ -81,7 +81,7 @@ class RatingScreen extends Component {
     ) {
       if (nextProps.createTrip.type === types.RATING_TOURISTL) {
         let array = [];
-        if (nextProps.createTrip.data.rating_history !== []) {
+        if (nextProps.createTrip.data.rating_list !== []) {
           array = constants.groupBy(
             nextProps.createTrip.data.rating_list,
             'rating',
@@ -190,8 +190,8 @@ class RatingScreen extends Component {
     }
     return star;
   };
-  renderStarLittleStart = () => {
-    const rating_poin = this.state.data.rating;
+  renderStarLittleStart = (point = null) => {
+    const rating_poin = point === null ? this.state.data.rating : point;
     const star = [];
     for (let index = 1; index <= 5; index++) {
       if (index <= rating_poin) {
@@ -259,6 +259,40 @@ class RatingScreen extends Component {
       );
     }
     return array;
+  };
+  renderRatingHistory = () => {
+    const {data} = this.state;
+    let arrayComponent = [];
+    var userHistoryCheck = [];
+    data.rating_history.map(item => {
+      console.log(userHistoryCheck);
+      const found = userHistoryCheck.find(element => element === item.user);
+      if (found === undefined) {
+        arrayComponent.push(
+          <View style={styles.historyItem}>
+            <View style={{flexDirection: 'row'}}>
+              <Text>{item.user}</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              {this.renderStarLittleStart(item.raing)}
+            </View>
+          </View>,
+        );
+        userHistoryCheck.push(item.user);
+      } else {
+        arrayComponent.push(
+          <View style={styles.historyItem}>
+            <View style={{flexDirection: 'row'}}>
+              <Text>{item.user} - Đã chỉnh sửa</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              {this.renderStarLittleStart(item.raing)}
+            </View>
+          </View>,
+        );
+      }
+    });
+    return arrayComponent;
   };
   render() {
     const {data, isLoading, region, point} = this.state;
@@ -336,6 +370,17 @@ class RatingScreen extends Component {
               <View style={styles.showColRight}>
                 {this.renderProcessRating()}
               </View>
+            </View>
+            <View style={styles.ratingHistoryGroup}>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('18rem'),
+                  fontFamily: constants.Fonts.medium,
+                  alignSelf: 'center',
+                }}>
+                Lịch sử đánh giá
+              </Text>
+              {this.renderRatingHistory()}
             </View>
           </View>
         </ScrollView>
@@ -449,5 +494,14 @@ const styles = EStyleSheet.create({
   bar: {
     flexDirection: 'row',
     marginVertical: '6rem',
+  },
+  ratingHistoryGroup: {
+    marginVertical: '11rem',
+  },
+  historyItem: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    marginVertical: '5rem',
   },
 });

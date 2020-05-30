@@ -48,12 +48,6 @@ export default class ScrollVerticalLichTrinh extends Component {
     });
     return Items;
   };
-  onPressAddMember = () => {
-    console.log('member');
-  };
-  onPressChat = () => {
-    console.log('chat');
-  };
   render() {
     const {
       onPressDetailButton,
@@ -69,12 +63,13 @@ export default class ScrollVerticalLichTrinh extends Component {
       isGone,
       onPressSendComment,
       onPressRating,
+      isLoading,
     } = this.props;
-    const {isLoading} = this.state;
     let Button = true;
     if (isButton === false) {
       Button = isButton;
     }
+    console.log(isLoading);
     return (
       <View style={styles.container}>
         <View
@@ -91,7 +86,7 @@ export default class ScrollVerticalLichTrinh extends Component {
             }}>
             Lịch trình
           </Text>
-          {isLoading ? null : (
+          {!isDetailLichTrinhReady ? null : (
             <TouchableOpacity onPress={() => onPressDetailButton()}>
               <Text
                 style={{

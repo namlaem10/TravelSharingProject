@@ -388,6 +388,7 @@ class TripDetailScreen extends Component {
               isBlog={isShare ? true : false}
               isLeader={this.props.navigation.getParam('isLeader')}
               isGone={isGone}
+              isLoading={this.state.isLoading}
             />
           </View>
           {isGone ? null : (
