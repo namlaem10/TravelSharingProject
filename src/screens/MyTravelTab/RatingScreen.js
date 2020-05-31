@@ -190,8 +190,8 @@ class RatingScreen extends Component {
     }
     return star;
   };
-  renderStarLittleStart = (point = null) => {
-    const rating_poin = point === null ? this.state.data.rating : point;
+  renderStarLittleStart = point => {
+    const rating_poin = point === undefined ? this.state.data.rating : point;
     const star = [];
     for (let index = 1; index <= 5; index++) {
       if (index <= rating_poin) {
@@ -264,17 +264,36 @@ class RatingScreen extends Component {
     const {data} = this.state;
     let arrayComponent = [];
     var userHistoryCheck = [];
-    data.rating_history.map(item => {
-      console.log(userHistoryCheck);
+    let arrayRatingHistory = data.rating_history;
+    arrayRatingHistory.map(item => {
+      console.log(item.user);
       const found = userHistoryCheck.find(element => element === item.user);
       if (found === undefined) {
         arrayComponent.push(
           <View style={styles.historyItem}>
-            <View style={{flexDirection: 'row'}}>
-              <Text>{item.user}</Text>
+            <View style={styles.avarGroup}>
+              <Image
+                source={
+                  item.user.avatar !== null
+                    ? {uri: BASE_URL + '/' + item.user.avatar}
+                    : constants.Images.IC_AVATAR1
+                }
+                style={{
+                  height: EStyleSheet.value('40rem'),
+                  width: EStyleSheet.value('40rem'),
+                  resizeMode: 'contain',
+                }}
+              />
             </View>
-            <View style={{flexDirection: 'row'}}>
-              {this.renderStarLittleStart(item.raing)}
+            <View style={{flexDirection: 'column'}}>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={{marginLeft: EStyleSheet.value('3rem')}}>
+                  {item.user} - {moment(item.create_at).format('DD/MM/YYYY')}
+                </Text>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                {this.renderStarLittleStart(item.rating)}
+              </View>
             </View>
           </View>,
         );
@@ -282,17 +301,36 @@ class RatingScreen extends Component {
       } else {
         arrayComponent.push(
           <View style={styles.historyItem}>
-            <View style={{flexDirection: 'row'}}>
-              <Text>{item.user} - Đã chỉnh sửa</Text>
+            <View style={styles.avarGroup}>
+              <Image
+                source={
+                  item.user.avatar === null
+                    ? {uri: BASE_URL + '/' + item.user.avatar}
+                    : constants.Images.IC_AVATAR1
+                }
+                style={{
+                  height: EStyleSheet.value('40rem'),
+                  width: EStyleSheet.value('40rem'),
+                  resizeMode: 'contain',
+                }}
+              />
             </View>
-            <View style={{flexDirection: 'row'}}>
-              {this.renderStarLittleStart(item.raing)}
+            <View style={{flexDirection: 'column'}}>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={{marginLeft: EStyleSheet.value('3rem')}}>
+                  {item.user} - {moment(item.create_at).format('DD/MM/YYYY')} -
+                  Đã chỉnh sửa
+                </Text>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                {this.renderStarLittleStart(item.rating)}
+              </View>
             </View>
           </View>,
         );
       }
     });
-    return arrayComponent;
+    return arrayComponent.reverse().slice(0, 10);
   };
   render() {
     const {data, isLoading, region, point} = this.state;
@@ -499,9 +537,15 @@ const styles = EStyleSheet.create({
     marginVertical: '11rem',
   },
   historyItem: {
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     marginVertical: '5rem',
+  },
+  avarGroup: {
+    backgroundColor: 'red',
+    borderRadius: '20rem',
+    marginRight: '7rem',
+    overflow: 'hidden',
   },
 });
