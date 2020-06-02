@@ -266,8 +266,7 @@ class RatingScreen extends Component {
     var userHistoryCheck = [];
     let arrayRatingHistory = data.rating_history;
     arrayRatingHistory.map(item => {
-      console.log(item.user);
-      const found = userHistoryCheck.find(element => element === item.user);
+      const found = userHistoryCheck.find(element => element === item.user._id);
       if (found === undefined) {
         arrayComponent.push(
           <View style={styles.historyItem}>
@@ -276,7 +275,7 @@ class RatingScreen extends Component {
                 source={
                   item.user.avatar !== null
                     ? {uri: BASE_URL + '/' + item.user.avatar}
-                    : constants.Images.IC_AVATAR1
+                    : constants.Images.IC_AVATAR2
                 }
                 style={{
                   height: EStyleSheet.value('40rem'),
@@ -288,7 +287,8 @@ class RatingScreen extends Component {
             <View style={{flexDirection: 'column'}}>
               <View style={{flexDirection: 'row'}}>
                 <Text style={{marginLeft: EStyleSheet.value('3rem')}}>
-                  {item.user} - {moment(item.create_at).format('DD/MM/YYYY')}
+                  {item.user.display_name} -{' '}
+                  {moment(item.create_at).format('DD/MM/YYYY')}
                 </Text>
               </View>
               <View style={{flexDirection: 'row'}}>
@@ -297,16 +297,16 @@ class RatingScreen extends Component {
             </View>
           </View>,
         );
-        userHistoryCheck.push(item.user);
+        userHistoryCheck.push(item.user._id);
       } else {
         arrayComponent.push(
           <View style={styles.historyItem}>
             <View style={styles.avarGroup}>
               <Image
                 source={
-                  item.user.avatar === null
+                  item.user.avatar !== null
                     ? {uri: BASE_URL + '/' + item.user.avatar}
-                    : constants.Images.IC_AVATAR1
+                    : constants.Images.IC_AVATAR2
                 }
                 style={{
                   height: EStyleSheet.value('40rem'),
@@ -318,8 +318,8 @@ class RatingScreen extends Component {
             <View style={{flexDirection: 'column'}}>
               <View style={{flexDirection: 'row'}}>
                 <Text style={{marginLeft: EStyleSheet.value('3rem')}}>
-                  {item.user} - {moment(item.create_at).format('DD/MM/YYYY')} -
-                  Đã chỉnh sửa
+                  {item.user.display_name} -{' '}
+                  {moment(item.create_at).format('DD/MM/YYYY')} - Đã chỉnh sửa
                 </Text>
               </View>
               <View style={{flexDirection: 'row'}}>
