@@ -4,6 +4,13 @@ export const validateEmail = email => {
   return re.test(String(email).toLowerCase());
 };
 
+export const validateEmpty = string => {
+  if (string === '') {
+    return false;
+  }
+  return true;
+};
+
 export const isValid = item => {
   if (!item) {
     return false;
@@ -30,6 +37,12 @@ export const validateCode = code => {
 };
 
 export const validatePassword = password => {
-  const re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+  const re = /^\w{6,}$/;
   return re.test(password);
+};
+export const validateReTypePassword = (password, retype) => {
+  if (password !== retype) {
+    return false;
+  }
+  return true;
 };

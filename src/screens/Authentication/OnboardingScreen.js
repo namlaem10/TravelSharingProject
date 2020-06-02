@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Image, AsyncStorage} from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Contants';
+import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
 
 EStyleSheet.build({$rem: WIDTH / 380});
 
@@ -12,23 +12,23 @@ const sildeData = [
   {
     key: 'slide1',
     title: 'Chia sẻ chuyến hành trình',
-    image: Images.IC_MANAGEGROUP_DEACTIVE,
+    image: Images.IMG_ONBOARDING1,
     description:
-      'Một dòng description dài thòn lòn gì đó về nội dung này từ từ viết sau chứ giờ nghĩ chưa ra nha',
+      'Kỉ niệm, kinh nghiệm, niềm vui từ chuyến du lịch của bạn và bạn muốn chia sẻ nó đến mọi người',
   },
   {
     key: 'slide2',
     title: 'Tham khảo lên kế hoạch',
-    image: Images.IC_MANAGEGROUP_DEACTIVE,
+    image: Images.IMG_ONBOARDING2,
     description:
-      'Một dòng description dài thòn lòn gì đó về nội dung này từ từ viết sau chứ giờ nghĩ chưa ra nha',
+      'Tham khảo hành trình đang HOT. Gợi ý, tự động tạo hành trình dành riêng cho bạn',
   },
   {
     key: 'slide3',
     title: 'Quản lý nhóm du lịch',
-    image: Images.IC_MANAGEGROUP_DEACTIVE,
+    image: Images.IMG_ONBOARDING3,
     description:
-      'Một dòng description dài thòn lòn gì đó về nội dung này từ từ viết sau chứ giờ nghĩ chưa ra nha',
+      'Hỗ trợ tạo nhóm, liên lạc và theo dõi vị trí các thành viên một cách hiệu quả',
   },
 ];
 
@@ -39,6 +39,14 @@ export default class OnboardingScreen extends Component {
       activeSlide: 0,
     };
   }
+
+  storeToken = async () => {
+    try {
+      await AsyncStorage.setItem('oldUser', 'Old user');
+    } catch (e) {
+      // saving error
+    }
+  };
 
   renderItem = ({item}) => {
     return (
@@ -63,6 +71,7 @@ export default class OnboardingScreen extends Component {
   };
 
   skipSlider = () => {
+    this.storeToken();
     this.props.navigation.navigate('SignIn');
   };
 
@@ -142,7 +151,7 @@ const styles = EStyleSheet.create({
   },
   imageOnboard: {
     width: WIDTH - 40,
-    height: '150rem',
+    height: '280rem',
   },
   viewTitle: {
     flex: 0.1,
@@ -158,7 +167,7 @@ const styles = EStyleSheet.create({
   },
   viewDescription: {
     flex: 0.38,
-    paddingHorizontal: '45rem',
+    paddingHorizontal: '40rem',
   },
   textDescription: {
     fontFamily: Fonts.regular,

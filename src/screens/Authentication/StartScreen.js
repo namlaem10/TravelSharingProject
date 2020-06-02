@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {View, Text, StatusBar, Image} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';
-
-import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Contants';
+import AsyncStorage from '@react-native-community/async-storage';
+import notificationService from '../../services/Notification';
+import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
 
 EStyleSheet.build({$rem: WIDTH / 380});
 
@@ -12,10 +13,52 @@ export default class StartScreen extends Component {
     super(props);
     this.state = {};
   }
-  componentDidMount = () => {
-    setTimeout(() => {
-      this.props.navigation.navigate('Onboarding');
-    }, 1500);
+  getToken = async () => {
+    try {
+      const value = await AsyncStorage.getItem('token');
+      if (value) {
+        return value;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.log('get token has error');
+    }
+  };
+
+  getOldUser = async () => {
+    try {
+      const value = await AsyncStorage.getItem('oldUser');
+      if (value) {
+        return value;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.log('get token has error');
+    }
+  };
+
+  componentDidMount = async () => {
+    let token = await this.getToken();
+    let oldUser = await this.getOldUser();
+    const {navigation} = this.props;
+    notificationService.setNavigation(navigation);
+    if (oldUser === null) {
+      setTimeout(() => {
+        this.props.navigation.navigate('Onboarding');
+      }, 1500);
+    } else {
+      if (token !== null) {
+        setTimeout(() => {
+          this.props.navigation.navigate('NewsFeed');
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          this.props.navigation.navigate('SignIn');
+        }, 1500);
+      }
+    }
   };
   render() {
     return (

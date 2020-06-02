@@ -12,13 +12,38 @@ import Onboarding from '../screens/Authentication/OnboardingScreen';
 import SignIn from '../screens/Authentication/SignInScreen';
 import SignUp from '../screens/Authentication/SignUpScreen';
 import ForgotPassword from '../screens/Authentication/ForgotPasswordScreen';
-import NewsFeed from '../screens/SharingTab/NewsFeedScreen';
-import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
 import ManageGroup from '../screens/ManageGroupTab/ManageGroupScreen';
 import Notification from '../screens/NotificationTab/NotificationScreen';
-import Account from '../screens/AcountTab/AccountScreen';
 
-import {Images, FontSizes, Fonts, Colors, WIDTH} from './Contants';
+import NewsFeed from '../screens/SharingTab/NewsFeedScreen';
+import PostDetail from '../screens/SharingTab/PostDetailScreen';
+import TravelTimelineDetail from '../screens/SharingTab/TravelTimelineDetailScreen';
+import CreateTeam from '../screens/ManageGroupTab/CreateTeamScreen';
+import AddTrip from '../screens/ManageGroupTab/AddTripScreen';
+import AddMember from '../screens/ManageGroupTab/AddMemberScreen';
+import Chatting from '../screens/ManageGroupTab/ChattingScreen';
+import TrackingMap from '../screens/ManageGroupTab/TrackingMapScreen';
+import InfoGroup from '../screens/ManageGroupTab/InfoGroupScreen';
+import Member from '../screens/ManageGroupTab/MemberScreen';
+
+import Account from '../screens/AcountTab/AccountScreen';
+import InfoUser from '../screens/AcountTab/InfoUserScreen';
+import EditInfo from '../screens/AcountTab/EditInfoScreen';
+import ChangePassword from '../screens/AcountTab/ChangePasswordScreen';
+import AddFriend from '../screens/AcountTab/AddFriendScreen';
+
+import MyTravel from '../screens/MyTravelTab/MyTravelScreen';
+import TimeLineDetail from '../screens/MyTravelTab/TimeLineDetailScreen';
+import ShareTimeLineDetail from '../screens/MyTravelTab/ShareTimeLineDetailScreen';
+import CreatePost from '../screens/MyTravelTab/CreatePostScreen';
+import CreateTrip from '../screens/MyTravelTab/CreateTripScreen';
+import AddPlace from '../screens/MyTravelTab/AddPlaceScreen';
+import TripDetail from '../screens/MyTravelTab/TripDetailScreen';
+import AddPlaceDetail from '../screens/MyTravelTab/AddPlaceDetailScreen';
+import Map from '../screens/MyTravelTab/MapScreen';
+import Rating from '../screens/MyTravelTab/RatingScreen';
+
+import {Images, FontSizes, Fonts, Colors, WIDTH} from './Constants';
 EStyleSheet.build({$rem: WIDTH / 380});
 
 const AuthStack = createStackNavigator(
@@ -47,10 +72,215 @@ const AuthStack = createStackNavigator(
   },
 );
 
+const SharingStack = createStackNavigator(
+  {
+    NewsFeed: {
+      screen: NewsFeed,
+    },
+    PostDetail: {
+      screen: PostDetail,
+    },
+    TravelTimelineDetail: {
+      screen: TravelTimelineDetail,
+    },
+  },
+  {
+    initialRouteName: 'NewsFeed',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+//hide Bottom tab navigation
+SharingStack.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+
+  let routeName = navigation.state.routes[navigation.state.index].routeName;
+
+  if (routeName !== 'NewsFeed') {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+const ManageGroupStack = createStackNavigator(
+  {
+    ManageGroup: {
+      screen: ManageGroup,
+    },
+    CreateTeam: {
+      screen: CreateTeam,
+    },
+    AddTrip: {
+      screen: AddTrip,
+    },
+    InfoGroup: {
+      screen: InfoGroup,
+    },
+    Member: {
+      screen: Member,
+    },
+  },
+  {
+    initialRouteName: 'ManageGroup',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+//hide Bottom tab navigation
+ManageGroupStack.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+
+  let routeName = navigation.state.routes[navigation.state.index].routeName;
+
+  if (routeName !== 'ManageGroup') {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+const AccountStack = createStackNavigator(
+  {
+    Account: {
+      screen: Account,
+    },
+    InfoUser: {
+      screen: InfoUser,
+    },
+    EditInfo: {
+      screen: EditInfo,
+    },
+    ChangePassword: {
+      screen: ChangePassword,
+    },
+    AddFriend: {
+      screen: AddFriend,
+    },
+  },
+  {
+    initialRouteName: 'Account',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+//hide Bottom tab navigation
+AccountStack.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+
+  let routeName = navigation.state.routes[navigation.state.index].routeName;
+
+  if (routeName !== 'Account') {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+const MyTravelStack = createStackNavigator(
+  {
+    MyTravel: {
+      screen: MyTravel,
+    },
+    TimeLineDetail: {
+      screen: TimeLineDetail,
+    },
+    CreatePost: {
+      screen: CreatePost,
+    },
+    ShareTimeLineDetail: {
+      screen: ShareTimeLineDetail,
+    },
+    CreateTrip: {
+      screen: CreateTrip,
+    },
+    AddPlace: {
+      screen: AddPlace,
+    },
+    TripDetail: {
+      screen: TripDetail,
+    },
+    AddPlaceDetail: {
+      screen: AddPlaceDetail,
+    },
+    Map: {
+      screen: Map,
+    },
+    Rating: {
+      screen: Rating,
+    },
+  },
+  {
+    initialRouteName: 'MyTravel',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+//hide Bottom tab navigation
+MyTravelStack.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+
+  let routeName = navigation.state.routes[navigation.state.index].routeName;
+
+  if (routeName !== 'MyTravel') {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+
+const ChattingStack = createStackNavigator(
+  {
+    Chatting: {
+      screen: Chatting,
+    },
+  },
+  {
+    initialRouteName: 'Chatting',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+const AddMemberStack = createStackNavigator(
+  {
+    AddMember: {
+      screen: AddMember,
+    },
+  },
+  {
+    initialRouteName: 'AddMember',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
+const TrackingMapStack = createStackNavigator(
+  {
+    TrackingMap: {
+      screen: TrackingMap,
+    },
+  },
+  {
+    initialRouteName: 'TrackingMap',
+    defaultNavigationOptions: {
+      header: null,
+    },
+  },
+);
 const MainStack = createBottomTabNavigator(
   {
     Sharing: {
-      screen: NewsFeed,
+      screen: SharingStack,
       navigationOptions: {
         title: 'Bài viết',
         tabBarIcon: ({focused}) =>
@@ -76,7 +306,7 @@ const MainStack = createBottomTabNavigator(
       },
     },
     MyTravel: {
-      screen: MyTravel,
+      screen: MyTravelStack,
       navigationOptions: {
         title: 'Lịch trình của tôi',
         tabBarIcon: ({focused}) =>
@@ -102,7 +332,7 @@ const MainStack = createBottomTabNavigator(
       },
     },
     ManageGroup: {
-      screen: ManageGroup,
+      screen: ManageGroupStack,
       navigationOptions: {
         title: 'Quản lý nhóm',
         tabBarIcon: ({focused}) =>
@@ -154,7 +384,7 @@ const MainStack = createBottomTabNavigator(
       },
     },
     Account: {
-      screen: Account,
+      screen: AccountStack,
       navigationOptions: {
         title: 'Khác',
         tabBarIcon: ({focused}) =>
@@ -183,6 +413,7 @@ const MainStack = createBottomTabNavigator(
   {
     initialRouteName: 'Sharing',
     tabBarOptions: {
+      keyboardHidesTabBar: true,
       inactiveTintColor: Colors.deactive,
       inactiveBackgroundColor: Colors.white,
       activeBackgroundColor: Colors.white,
@@ -195,8 +426,8 @@ const MainStack = createBottomTabNavigator(
         height: EStyleSheet.value('50rem'),
       },
       tabStyle: {
-        borderTopWidth: 0.5,
-        borderTopColor: Colors.deactive,
+        borderTopWidth: 0.3,
+        borderTopColor: '#CDCDCD',
       },
     },
   },
@@ -208,6 +439,15 @@ const AppStack = createSwitchNavigator({
   },
   Main: {
     screen: MainStack,
+  },
+  Chat: {
+    screen: ChattingStack,
+  },
+  Member: {
+    screen: AddMemberStack,
+  },
+  Tracking: {
+    screen: TrackingMapStack,
   },
 });
 
