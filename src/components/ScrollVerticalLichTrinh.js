@@ -82,7 +82,7 @@ export default class ScrollVerticalLichTrinh extends Component {
           <Text
             style={{
               fontFamily: constants.Fonts.medium,
-              fontSize: EStyleSheet.value('15rem'),
+              fontSize: EStyleSheet.value('16rem'),
             }}>
             Lịch trình
           </Text>
@@ -116,7 +116,7 @@ export default class ScrollVerticalLichTrinh extends Component {
             <Text
               style={{
                 fontFamily: constants.Fonts.medium,
-                fontSize: EStyleSheet.value('15rem'),
+                fontSize: EStyleSheet.value('16rem'),
               }}>
               Thành viên
             </Text>

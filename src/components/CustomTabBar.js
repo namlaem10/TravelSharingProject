@@ -138,7 +138,7 @@ export default class ScrollableTabBar extends Component {
     const {activeTextColor, inactiveTextColor} = this.props;
     const textColor = isTabActive ? activeTextColor : inactiveTextColor;
     const fontSizes = isTabActive
-      ? EStyleSheet.value('20rem')
+      ? EStyleSheet.value('18rem')
       : EStyleSheet.value('14rem');
 
     return (
@@ -155,6 +155,7 @@ export default class ScrollableTabBar extends Component {
               ...styles.textStyle,
               color: textColor,
               fontSize: fontSizes,
+              fontFamily: constants.Fonts.medium,
             }}>
             {name}
           </Text>
@@ -172,7 +173,7 @@ export default class ScrollableTabBar extends Component {
   render() {
     const tabUnderlineStyle = {
       position: 'absolute',
-      height: 4,
+      height: 2,
       backgroundColor: 'rgba(52,220,120,0.98)',
       bottom: 0,
     };
@@ -199,7 +200,6 @@ export default class ScrollableTabBar extends Component {
           }}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
           directionalLockEnabled={true}
           onScroll={this.props.onScroll}
           bounces={false}
@@ -240,7 +240,7 @@ export default class ScrollableTabBar extends Component {
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // If the tabs change, force the width of the tabs container to be recalculated
     if (
       JSON.stringify(this.props.tabs) !== JSON.stringify(nextProps.tabs) &&
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   },
   container: {
     height: 50,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,

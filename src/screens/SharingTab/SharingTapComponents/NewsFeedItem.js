@@ -21,6 +21,7 @@ export default class NewsFeedItem extends Component {
     for (let i = 1; i <= count; i++) {
       starts.push(
         <Image
+          key={i}
           source={constants.Images.IC_GOLD_STAR}
           style={{
             width: EStyleSheet.value('16rem'),
@@ -33,6 +34,7 @@ export default class NewsFeedItem extends Component {
     for (let i = 1; i <= leftstar; i++) {
       starts.push(
         <Image
+          key={`${i}+10`}
           source={constants.Images.IC_NORMAL_STAR}
           style={{
             width: EStyleSheet.value('16rem'),
@@ -213,22 +215,17 @@ export default class NewsFeedItem extends Component {
 
 const styles = EStyleSheet.create({
   container: {
-    height: constants.HEIGHT / 2.2,
+    height: '330rem',
     marginHorizontal: '15rem',
     borderRadius: '20rem',
     marginVertical: '10rem',
     flexDirection: 'column',
     borderWidth: 1,
     borderColor: '#DADDE1',
-    // backgroundColor: '#CDCDCD',
   },
-  // text: {
-  //   letterSpacing: 0.8,
-  // },
   header: {
     flex: 1,
     borderRadius: '20rem',
-    // margin: '6rem',
   },
   content: {
     flex: 1.3,

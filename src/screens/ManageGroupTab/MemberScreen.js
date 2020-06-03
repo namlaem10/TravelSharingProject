@@ -90,13 +90,14 @@ class MemberScreen extends Component {
     const {isLeader} = this.state;
     let render = [];
     if (isLeader) {
-      array.map(item => {
+      array.map((item, index) => {
         let avatar = item.avatar;
         if (avatar !== null) {
           avatar = BASE_URL + '/' + avatar;
         }
         let renderItem = (
           <TouchableOpacity
+            key={index}
             style={styles.memberItem}
             onLongPress={() => this.onLongPressItem(item)}>
             <Image
@@ -129,13 +130,14 @@ class MemberScreen extends Component {
         render.push(renderItem);
       });
     } else {
-      array.map(item => {
+      array.map((item, index) => {
         let avatar = item.avatar;
         if (avatar !== null) {
           avatar = BASE_URL + '/' + avatar;
         }
         let renderItem = (
           <View
+            key={index}
             style={styles.memberItem}
             onLongPress={() => this.onLongPressItem(item)}>
             <Image

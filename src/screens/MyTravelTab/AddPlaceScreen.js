@@ -125,7 +125,6 @@ class AddPlaceScreen extends Component {
               style={{
                 fontFamily: constants.Fonts.medium,
                 fontSize: EStyleSheet.value('18rem'),
-                marginBottom: EStyleSheet.value('10rem'),
               }}>
               Địa điểm phổ biến
             </Text>
@@ -142,6 +141,7 @@ class AddPlaceScreen extends Component {
                   contentContainerStyle={{
                     paddingBottom: EStyleSheet.value('0rem'),
                   }}
+                  showsVerticalScrollIndicator={false}
                   data={desitnationArray}
                   renderItem={({item}) => this._renderGoingItem(item)}
                   keyExtractor={item => item._id}
@@ -189,8 +189,15 @@ const styles = EStyleSheet.create({
     marginTop: '10rem',
     justifyContent: 'center',
   },
-  content: {paddingTop: '10rem', paddingHorizontal: '23rem'},
-  flatList: {height: '495rem'},
+  content: {
+    flex: 1,
+    paddingTop: '10rem',
+    paddingHorizontal: '23rem',
+  },
+  flatList: {
+    height: '100%',
+    paddingTop: '10rem',
+  },
   flatListItem: {
     flexDirection: 'row',
     justifyContent: 'flex-start',

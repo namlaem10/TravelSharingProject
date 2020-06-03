@@ -49,6 +49,9 @@ class NotificationScreen extends Component {
   UNSAFE_componentWillMount() {
     this.props.get_noti();
   }
+  componentWillUnmount() {
+    this.setState({isLoading: false});
+  }
   onPressItem = item => {
     this.props.navigation.navigate('TrackingMap', {
       location: 'Notification',

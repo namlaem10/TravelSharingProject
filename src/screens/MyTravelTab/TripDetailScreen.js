@@ -162,6 +162,7 @@ class TripDetailScreen extends Component {
       if (index <= rating_choose) {
         star.push(
           <TouchableOpacity
+            key={index}
             onPress={() =>
               this.setState({
                 rating_choose: index,
@@ -185,6 +186,7 @@ class TripDetailScreen extends Component {
       } else {
         star.push(
           <TouchableOpacity
+            key={`${index} + 1`}
             onPress={() =>
               this.setState({
                 rating_choose: index,
@@ -242,7 +244,7 @@ class TripDetailScreen extends Component {
           ? BASE_URL + '/' + data.background
           : BASE_URL + '/' + data.destination.destination_image;
     }
-    return !isLoading ? (
+    return isDetailLichTrinhReady ? (
       <View style={isGone ? styles.container1 : styles.container}>
         <Dialog visible={showRating}>
           <DialogContent>
@@ -318,8 +320,8 @@ class TripDetailScreen extends Component {
                   <Text
                     style={{
                       ...styles.text,
-                      fontSize: EStyleSheet.value('18rem'),
-                      fontFamily: constants.Fonts.regular,
+                      fontSize: EStyleSheet.value('16rem'),
+                      fontFamily: constants.Fonts.medium,
                     }}>
                     {data.destination.destination_name}
                   </Text>
@@ -329,7 +331,11 @@ class TripDetailScreen extends Component {
                     source={constants.Images.IC_TIME}
                     style={styles.infoBoxIcon}
                   />
-                  <Text style={{...styles.text}}>
+                  <Text
+                    style={{
+                      ...styles.text,
+                      fontSize: EStyleSheet.value('14rem'),
+                    }}>
                     {moment(data.start_day).format('DD/MM/YYYY')}
                     &nbsp;-&nbsp;
                     {moment(data.end_day).format('DD/MM/YYYY')}
@@ -340,16 +346,27 @@ class TripDetailScreen extends Component {
                     source={constants.Images.IC_MONEY_GRAY}
                     style={styles.infoBoxIcon}
                   />
-                  <Text style={{...styles.text}}>
+                  <Text
+                    style={{
+                      ...styles.text,
+                      fontSize: EStyleSheet.value('14rem'),
+                    }}>
                     {constants.currencyFormatter.format(data.price)}đ̲
                   </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
-                  <Text style={{...styles.text}}>Tạo bởi: &nbsp;&nbsp;</Text>
                   <Text
                     style={{
                       ...styles.text,
-                      fontFamily: constants.Fonts.regular,
+                      fontSize: EStyleSheet.value('14rem'),
+                    }}>
+                    Tạo bởi: &nbsp;&nbsp;
+                  </Text>
+                  <Text
+                    style={{
+                      ...styles.text,
+                      fontSize: EStyleSheet.value('14rem'),
+                      fontFamily: constants.Fonts.medium,
                     }}>
                     {data.create_by.display_name}
                   </Text>
@@ -403,8 +420,7 @@ class TripDetailScreen extends Component {
                 <Text
                   style={{
                     fontSize: EStyleSheet.value('15rem'),
-                    fontFamily: constants.Fonts.light,
-                    letterSpacing: 0.5,
+                    fontFamily: constants.Fonts.medium,
                     color: 'white',
                   }}>
                   Theo dõi nhóm
@@ -451,6 +467,8 @@ const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     height: '287rem',
@@ -504,19 +522,20 @@ const styles = EStyleSheet.create({
   },
   infoPlace: {
     flex: 2.5,
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    paddingVertical: '5rem',
   },
   miniMap: {
     backgroundColor: 'blue',
     flex: 1.5,
   },
   text: {
-    marginVertical: '3rem',
-    letterSpacing: '1rem',
     fontFamily: constants.Fonts.light,
   },
   infoBoxIcon: {
-    width: '15rem',
-    height: '15rem',
+    width: '22rem',
+    height: '22rem',
     marginRight: '7rem',
     resizeMode: 'contain',
   },
@@ -526,7 +545,7 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
   },
   trackingButton: {
-    height: '35rem',
+    height: '40rem',
     width: '350rem',
     justifyContent: 'center',
     alignItems: 'center',

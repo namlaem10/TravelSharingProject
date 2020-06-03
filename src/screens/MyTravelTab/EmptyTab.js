@@ -43,7 +43,7 @@ export default class EmptyTab extends Component {
           onPress={() => onPressAddButton()}>
           <Text
             style={{
-              fontSize: EStyleSheet.value('15rem'),
+              fontSize: EStyleSheet.value('16rem'),
               fontFamily: constants.Fonts.medium,
               color: 'white',
             }}>
@@ -64,7 +64,7 @@ const styles = EStyleSheet.create({
   },
   confirmButton: {
     width: '300rem',
-    height: '35rem',
+    height: '40rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',

@@ -34,10 +34,10 @@ export default class MemberScrollItem extends Component {
             />
             <Image
               source={constants.Images.IC_LEADER}
+              resizeMode="contain"
               style={{
                 width: EStyleSheet.value('20rem'),
                 height: EStyleSheet.value('20rem'),
-                resizeMode: 'contain',
               }}
             />
           </View>
@@ -45,7 +45,7 @@ export default class MemberScrollItem extends Component {
             style={{
               fontSize: EStyleSheet.value('14rem'),
               marginVertical: EStyleSheet.value('5rem'),
-              fontFamily: constants.Fonts.regular,
+              fontFamily: constants.Fonts.light,
             }}>
             {data.display_name}
           </Text>
@@ -70,7 +70,7 @@ export default class MemberScrollItem extends Component {
             style={{
               fontSize: EStyleSheet.value('14rem'),
               marginVertical: EStyleSheet.value('5rem'),
-              fontFamily: constants.Fonts.regular,
+              fontFamily: constants.Fonts.light,
             }}>
             {data.display_name}
           </Text>

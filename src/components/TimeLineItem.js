@@ -34,8 +34,8 @@ export default class TimeLineItem extends Component {
       return (
         <View
           style={{
-            flexDirection: 'column',
-            marginBottom: EStyleSheet.value('10rem'),
+            justifyContent: 'space-around',
+            flex: 1,
           }}>
           <View style={styles.detailTextView}>
             <Text
@@ -91,10 +91,10 @@ export default class TimeLineItem extends Component {
       return (
         <View
           style={{
-            flexDirection: 'column',
             justifyContent: 'flex-start',
             position: 'absolute',
-            top: EStyleSheet.value('28rem'),
+            top: EStyleSheet.value('32rem'),
+            width: '100%',
           }}>
           <View style={styles.detailTextView}>
             <Text
@@ -133,7 +133,7 @@ export default class TimeLineItem extends Component {
       return (
         <View
           style={{
-            height: EStyleSheet.value('105rem'),
+            height: EStyleSheet.value('125rem'),
             flexDirection: 'row',
           }}>
           <View style={styles.Col1}>
@@ -190,7 +190,14 @@ export default class TimeLineItem extends Component {
                     <TouchableOpacity
                       style={styles.deleteButton}
                       onPress={() => onPressDeleteItem(data._id, keyDay)}>
-                      <Text style={{color: 'white'}}>Xóa</Text>
+                      <Text
+                        style={{
+                          fontFamily: constants.Fonts.light,
+                          color: 'white',
+                          fontSize: EStyleSheet.value('14rem'),
+                        }}>
+                        Xóa
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 ) : null
@@ -207,19 +214,26 @@ export default class TimeLineItem extends Component {
             <View
               style={{
                 flexDirection: 'column',
-                width: EStyleSheet.value('105rem'),
-                marginLeft: EStyleSheet.value('10rem'),
+                width: EStyleSheet.value('110rem'),
+                marginLeft: EStyleSheet.value('5rem'),
               }}>
               <Text
+                numberOfLines={2}
                 style={{
                   fontFamily: constants.Fonts.medium,
-                  fontSize: EStyleSheet.value('16rem'),
+                  fontSize: EStyleSheet.value('14rem'),
                   color: '#127138',
                   marginBottom: EStyleSheet.value('3rem'),
                 }}>
                 {data.tourist_destination_name}
               </Text>
-              <Text style={{...styles.detailText}}>
+              <Text
+                numberOfLines={3}
+                style={{
+                  ...styles.detailText,
+                  fontFamily: constants.Fonts.light,
+                  fontSize: EStyleSheet.value('14rem'),
+                }}>
                 {data.tourist_destination_address}
               </Text>
             </View>
@@ -231,7 +245,7 @@ export default class TimeLineItem extends Component {
         return (
           <TouchableOpacity
             style={{
-              height: EStyleSheet.value('105rem'),
+              height: EStyleSheet.value('125rem'),
               flexDirection: 'row',
               backgroundColor: isActive ? '#FFFFFF50' : null,
             }}
@@ -275,7 +289,7 @@ export default class TimeLineItem extends Component {
         return (
           <TouchableOpacity
             style={{
-              height: EStyleSheet.value('105rem'),
+              height: EStyleSheet.value('125rem'),
               flexDirection: 'row',
               backgroundColor: isActive ? '#FFFFFF50' : null,
             }}
@@ -334,7 +348,14 @@ export default class TimeLineItem extends Component {
                       <TouchableOpacity
                         style={styles.deleteButton}
                         onPress={() => onPressDeleteItem(data._id, keyDay)}>
-                        <Text style={{color: 'white'}}>Xóa</Text>
+                        <Text
+                          style={{
+                            fontFamily: constants.Fonts.light,
+                            color: 'white',
+                            fontSize: EStyleSheet.value('14rem'),
+                          }}>
+                          Xóa
+                        </Text>
                       </TouchableOpacity>
                     </View>
                   ) : null
@@ -343,19 +364,26 @@ export default class TimeLineItem extends Component {
               <View
                 style={{
                   flexDirection: 'column',
-                  width: EStyleSheet.value('105rem'),
-                  marginLeft: EStyleSheet.value('10rem'),
+                  width: EStyleSheet.value('110rem'),
+                  marginLeft: EStyleSheet.value('5rem'),
                 }}>
                 <Text
+                  numberOfLines={2}
                   style={{
                     fontFamily: constants.Fonts.medium,
-                    fontSize: EStyleSheet.value('16rem'),
+                    fontSize: EStyleSheet.value('14rem'),
                     color: '#127138',
                     marginBottom: EStyleSheet.value('3rem'),
                   }}>
                   {data.tourist_destination_name}
                 </Text>
-                <Text style={{...styles.detailText}}>
+                <Text
+                  numberOfLines={3}
+                  style={{
+                    ...styles.detailText,
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('14rem'),
+                  }}>
                   {data.tourist_destination_address}
                 </Text>
               </View>
@@ -369,14 +397,14 @@ export default class TimeLineItem extends Component {
 
 const styles = EStyleSheet.create({
   container: {
-    height: '105rem',
+    height: '125rem',
     flexDirection: 'row',
   },
   Col1: {
     height: '100%',
     width: '135rem',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    paddingVertical: '8rem',
   },
   Col2: {
     height: '100%',
@@ -404,7 +432,8 @@ const styles = EStyleSheet.create({
     marginVertical: '3rem',
   },
   text: {
-    fontSize: constants.FontSizes.smalltext,
+    fontSize: '13rem',
+    fontFamily: constants.Fonts.light,
   },
   timeDetailText: {
     color: '#0BAC4C',
@@ -415,18 +444,18 @@ const styles = EStyleSheet.create({
   },
   pictureView: {
     width: '82rem',
-    height: '82rem',
+    height: '110rem',
     borderRadius: '20rem',
     //shadow
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 4,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 16,
 
-    elevation: 6,
+    // elevation: 6,
   },
   deleteButtonGroup: {
     flexDirection: 'row',

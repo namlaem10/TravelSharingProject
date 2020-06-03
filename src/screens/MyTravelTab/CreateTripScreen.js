@@ -7,7 +7,6 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
-  TextInput,
   ActivityIndicator,
   Alert,
 } from 'react-native';
@@ -15,7 +14,6 @@ import {connect} from 'react-redux';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {actions, types} from '../../redux/reducers/myTravelPlaceReducer';
-import {types as groupType} from '../../redux/reducers/managerGroupReducer';
 import DatePicker from 'react-native-date-picker';
 import Dialog, {
   DialogFooter,
@@ -45,6 +43,7 @@ class CreateTripScreen extends Component {
       schedule_detail: null,
     };
   }
+
   UNSAFE_componentWillMount = () => {
     this.props.reset();
     let startDate = this.props.navigation.getParam('startDate', null);
@@ -147,7 +146,17 @@ class CreateTripScreen extends Component {
     this.setState({isStartDate: isStart, visible: true});
   };
   choseStartDate = value => {
-    this.setState({startDate: value, endDate: moment(value).add(2, 'day')});
+    if (value < new Date()) {
+      this.setState({
+        startDate: new Date(),
+        endDate: moment(value).add(2, 'day'),
+      });
+    } else {
+      this.setState({
+        startDate: value,
+        endDate: moment(value).add(2, 'day'),
+      });
+    }
   };
   choseEndDate = value => {
     const {startDate} = this.state;
@@ -309,16 +318,21 @@ class CreateTripScreen extends Component {
             this.setState({visible: false});
           }}>
           <DialogContent>
-            <DatePicker
-              locale={'vi'}
-              date={isStartDate ? startDate : endDate}
-              mode="date"
-              onDateChange={value => {
-                isStartDate
-                  ? this.choseStartDate(value)
-                  : this.choseEndDate(value);
-              }}
-            />
+            <View
+              style={{
+                marginTop: EStyleSheet.value('25rem'),
+              }}>
+              <DatePicker
+                locale={'vi'}
+                date={isStartDate ? startDate : endDate}
+                mode="date"
+                onDateChange={value => {
+                  isStartDate
+                    ? this.choseStartDate(value)
+                    : this.choseEndDate(value);
+                }}
+              />
+            </View>
           </DialogContent>
         </Dialog>
         <HeaderBar title={title} onPressBack={this.onPressBack} />
@@ -336,9 +350,7 @@ class CreateTripScreen extends Component {
               <View style={styles.TouchGroup}>
                 <Text style={styles.label}>Điểm xuất phát</Text>
                 <TouchableOpacity
-                  onPress={() => {
-                    this.onPressStartPlace();
-                  }}
+                  onPress={() => this.onPressStartPlace()}
                   style={{
                     justifyContent: 'center',
                     height: '80%',
@@ -364,9 +376,7 @@ class CreateTripScreen extends Component {
               <View style={styles.TouchGroup}>
                 <Text style={styles.label}>Điểm xuất phát</Text>
                 <TouchableOpacity
-                  onPress={() => {
-                    this.onPressStartPlace();
-                  }}
+                  onPress={() => this.onPressStartPlace()}
                   style={{
                     justifyContent: 'center',
                     height: '90%',
@@ -571,10 +581,9 @@ class CreateTripScreen extends Component {
     );
   }
 }
-const mapStateToProps = ({createTrip, groupInfo}) => {
+const mapStateToProps = ({createTrip}) => {
   return {
     createTrip: createTrip,
-    groupInfo: groupInfo,
   };
 };
 const mapDispatchToProps = dispatch => {

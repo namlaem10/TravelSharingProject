@@ -6,7 +6,7 @@ import {reactotronRedux as reduxPlugin} from 'reactotron-redux';
 
 import ReduxThunk from 'redux-thunk';
 import appReducers from '../reducers';
-import {AsyncStorage} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const composeEnhancers =
   (__DEV__ &&

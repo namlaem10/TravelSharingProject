@@ -185,6 +185,7 @@ export const actions = {
     return async dispatch => {
       dispatch({
         type: types.RESET,
+        payload: {data: initialState},
       });
     };
   },
@@ -258,7 +259,7 @@ export const createTripReducer = (state = initialState, action) => {
     case types.RESET: {
       return {
         type: types.RESET,
-        data: null,
+        data: payload.data,
       };
     }
     default: {
