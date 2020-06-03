@@ -52,7 +52,7 @@ export default class CustomTabBarNoScroll extends React.Component {
     return (
       <Button
         style={styles.flexOne}
-        key={name}
+        key={page}
         accessible={true}
         accessibilityLabel={name}
         accessibilityTraits="button"

@@ -70,9 +70,10 @@ export default class TravelTimelineDetailScreen extends Component {
         </View>
         <ScrollableTabView
           initialPage={page}
+          showsHorizontalScrollIndicator={false}
           renderTabBar={() => (
             <CustomTabBar
-              activeTextColor={'black'}
+              activeTextColor={'#34D374'}
               inactiveTextColor={'#B7B7B7'}
               tabStyle={tabStyle}
               backgroundColor={'white'}

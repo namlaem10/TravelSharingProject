@@ -132,9 +132,7 @@ export default class TimelineDetailPersonal extends Component {
         <View style={styles.content}>
           {isGone ? (
             <FlatList
-              contentContainerStyle={{
-                paddingBottom: EStyleSheet.value('0rem'),
-              }}
+              showsVerticalScrollIndicator={false}
               data={this.props.data}
               renderItem={this.renderItem}
               keyExtractor={item => item._id}
@@ -149,6 +147,7 @@ export default class TimelineDetailPersonal extends Component {
               data={this.props.data}
               extraData={this.props}
               renderItem={this.renderItem}
+              showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => `draggable-item-${item._id}`}
               onDragEnd={({data}) => {
                 onDragEnd(data, keyDay);
@@ -162,26 +161,26 @@ export default class TimelineDetailPersonal extends Component {
 }
 const styles = EStyleSheet.create({
   container: {
-    height: '420rem',
+    flex: 1,
   },
   containerSub: {
-    height: '470rem',
+    flex: 1,
   },
   title: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: '5rem',
-    marginHorizontal: '13rem',
+    marginVertical: '10rem',
+    paddingHorizontal: '6.5rem',
   },
   text: {
     color: '#127138',
   },
   titleText: {
     fontSize: constants.FontSizes.regular,
+    fontFamily: constants.Fonts.medium,
   },
   content: {
-    marginTop: '10rem',
-    marginLeft: '13rem',
+    paddingHorizontal: '6.5rem',
     flex: 1,
   },
 });

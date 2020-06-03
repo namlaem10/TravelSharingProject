@@ -303,9 +303,10 @@ class AddMemberScreen extends Component {
                 paddingBottom: EStyleSheet.value('40rem'),
                 flex: 0,
               }}
+              showsVerticalScrollIndicator={false}
               data={friend}
               renderItem={({item}) => this._renderItem(item)}
-              keyExtractor={item => item.id}
+              keyExtractor={(item, index) => index.toString()}
             />
           </View>
         </View>
@@ -351,7 +352,7 @@ const styles = EStyleSheet.create({
   content: {paddingTop: '10rem', paddingHorizontal: '23rem'},
   textName: {
     fontSize: constants.FontSizes.regular,
-    fontFamily: constants.Fonts.regular,
+    fontFamily: constants.Fonts.medium,
   },
   textemail: {
     fontSize: constants.FontSizes.regular,

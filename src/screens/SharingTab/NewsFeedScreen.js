@@ -193,29 +193,6 @@ const styles = EStyleSheet.create({
     paddingHorizontal: '15rem',
     width: constants.WIDTH,
   },
-  userInfo: {
-    flex: 3,
-    flexDirection: 'row',
-    paddingHorizontal: '15rem',
-  },
-  avatar: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  infoText: {
-    flex: 1.2,
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    paddingVertical: '10rem',
-  },
-  shareButtonGroup: {
-    flex: 1.4,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.25,
-    shadowRadius: 2,
-    elevation: 4,
-  },
   Text: {
     fontSize: '13rem',
     letterSpacing: 0.1,

@@ -52,7 +52,6 @@ export default class Comment extends Component {
               style={{
                 fontSize: EStyleSheet.value('14rem'),
                 fontFamily: constants.Fonts.light,
-                marginLeft: EStyleSheet.value('5rem'),
               }}>
               {item.content}
             </Text>
@@ -98,11 +97,14 @@ export default class Comment extends Component {
 
 const styles = EStyleSheet.create({
   container: {
-    marginVertical: '10rem',
+    marginVertical: '15rem',
     flexDirection: 'column',
   },
   Userinfo: {
     flexDirection: 'row',
     marginBottom: '5rem',
+  },
+  comment: {
+    marginLeft: '40rem',
   },
 });

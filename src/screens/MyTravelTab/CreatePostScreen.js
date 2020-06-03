@@ -217,13 +217,14 @@ class CreatePostScreen extends Component {
           <HeaderBar title={title} onPressBack={this.onPressBack} />
           <View style={styles.userInfo}>
             <Image
+              resizeMode="contain"
               source={
                 avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
               }
               style={{
-                width: EStyleSheet.value('40rem'),
-                height: EStyleSheet.value('40rem'),
-                borderRadius: EStyleSheet.value('20rem'),
+                width: EStyleSheet.value('50rem'),
+                height: EStyleSheet.value('50rem'),
+                borderRadius: EStyleSheet.value('25rem'),
               }}
             />
             <Text
@@ -299,7 +300,7 @@ class CreatePostScreen extends Component {
               onPress={() => this.onPressConfirm()}>
               <Text
                 style={{
-                  fontSize: EStyleSheet.value('15rem'),
+                  fontSize: EStyleSheet.value('16rem'),
                   fontFamily: constants.Fonts.medium,
                   color: 'white',
                 }}>
@@ -340,6 +341,7 @@ const styles = EStyleSheet.create({
   },
   textAreaContainer: {
     paddingHorizontal: '13rem',
+    // backgroundColor: 'red',
   },
   textArea: {
     height: '160rem',
@@ -348,30 +350,34 @@ const styles = EStyleSheet.create({
     textAlignVertical: 'top',
     color: 'black',
     fontSize: constants.FontSizes.regular,
+    borderWidth: 0.3,
+    borderRadius: '10rem',
+    paddingHorizontal: '15rem',
   },
   textTitle: {
     textAlignVertical: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '40rem',
+    height: '60rem',
     color: 'black',
     fontSize: constants.FontSizes.title,
     fontFamily: constants.Fonts.bold,
   },
   userInfo: {
     flexDirection: 'row',
-    marginTop: '5rem',
+    marginTop: '10rem',
     justifyContent: 'flex-start',
+    alignItems: 'center',
     paddingHorizontal: '13rem',
   },
   uploadPictureGroup: {
     flexDirection: 'column',
     paddingHorizontal: '13rem',
+    marginVertical: '8rem',
   },
   titleText: {
     fontFamily: constants.Fonts.medium,
-    fontSize: EStyleSheet.value('15rem'),
-    marginTop: EStyleSheet.value('5rem'),
+    fontSize: EStyleSheet.value('16rem'),
   },
   imageArena: {
     marginTop: '5rem',
@@ -383,17 +389,16 @@ const styles = EStyleSheet.create({
   },
   confirmButton: {
     width: '300rem',
-    height: '35rem',
+    height: '40rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',
     alignItems: 'center',
   },
   footer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: '40rem',
-    marginTop: '25rem',
   },
   changeBackgroundText: {
     backgroundColor: 'rgba(0,0,0,0.5)',

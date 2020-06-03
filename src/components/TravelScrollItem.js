@@ -37,7 +37,7 @@ export default class TravelScrollItem extends Component {
                 fontFamily: constants.Fonts.light,
                 color: 'white',
                 fontSize: EStyleSheet.value('11rem'),
-                marginLeft: EStyleSheet.value('7rem'),
+                marginLeft: EStyleSheet.value('5rem'),
               }}>
               {/* FakeDate */}
               Ngày {page}
@@ -46,18 +46,41 @@ export default class TravelScrollItem extends Component {
         </TouchableOpacity>
         <View style={styles.infoTravelItem}>
           <View style={styles.infoText}>
-            <Image source={constants.Images.IC_LOCATION} style={styles.icon} />
-            <Text>{data.length} địa điểm</Text>
+            <Image
+              resizeMode="contain"
+              source={constants.Images.IC_LOCATION}
+              style={styles.icon}
+            />
+            <Text
+              style={{
+                fontSize: EStyleSheet.value('14rem'),
+                fontFamily: constants.Fonts.light,
+              }}>
+              {data.length} địa điểm
+            </Text>
           </View>
           <View style={styles.infoText}>
             <Image
+              resizeMode="contain"
               source={constants.Images.IC_VEHICLE_GRAY}
               style={styles.icon}
             />
             {totalDistance !== 0 ? (
-              <Text>Xe máy, {totalDistance}km</Text>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('14rem'),
+                  fontFamily: constants.Fonts.light,
+                }}>
+                {totalDistance} km
+              </Text>
             ) : (
-              <Text>Chưa có thông tin</Text>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('14rem'),
+                  fontFamily: constants.Fonts.light,
+                }}>
+                Chưa có thông tin
+              </Text>
             )}
           </View>
         </View>
@@ -70,7 +93,7 @@ const styles = EStyleSheet.create({
   container: {
     marginLeft: '12rem',
     width: '125rem',
-    height: '195rem',
+    height: '200rem',
     marginTop: '5rem',
   },
   pictureView: {
@@ -80,24 +103,29 @@ const styles = EStyleSheet.create({
     borderRadius: '12rem',
   },
   dayNum: {
-    width: '45rem',
-    height: '17rem',
+    width: '50rem',
+    height: '20rem',
     backgroundColor: 'rgba(0,0,0,0.48)',
     position: 'absolute',
     alignSelf: 'flex-end',
     marginTop: '25rem',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderTopLeftRadius: '10rem',
     borderBottomLeftRadius: '10rem',
   },
   icon: {
-    width: '15rem',
-    height: '15rem',
-    marginRight: '10rem',
-    resizeMode: 'contain',
+    width: '20rem',
+    height: '20rem',
+    marginRight: '8rem',
   },
   infoText: {
-    marginTop: '3rem',
+    marginTop: '5rem',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  infoTravelItem: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
 });

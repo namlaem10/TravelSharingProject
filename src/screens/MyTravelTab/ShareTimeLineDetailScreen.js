@@ -290,6 +290,7 @@ class ShareTimeLineDetailScreen extends Component {
         </View>
         <ScrollableTabView
           initialPage={page}
+          showsHorizontalScrollIndicator={false}
           renderTabBar={() => (
             <CustomTabBar
               activeTextColor={'#34D374'}
@@ -314,7 +315,7 @@ class ShareTimeLineDetailScreen extends Component {
               onPress={() => this.onPressNext()}>
               <Text
                 style={{
-                  fontSize: EStyleSheet.value('15rem'),
+                  fontSize: EStyleSheet.value('16rem'),
                   fontFamily: constants.Fonts.medium,
                   color: 'white',
                 }}>
@@ -327,7 +328,7 @@ class ShareTimeLineDetailScreen extends Component {
               onPress={() => this.onPressCompleted()}>
               <Text
                 style={{
-                  fontSize: EStyleSheet.value('15rem'),
+                  fontSize: EStyleSheet.value('16rem'),
                   fontFamily: constants.Fonts.medium,
                   color: 'white',
                 }}>
@@ -373,7 +374,7 @@ const styles = EStyleSheet.create({
   },
   confirmButton: {
     width: '300rem',
-    height: '35rem',
+    height: '40rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',
@@ -382,6 +383,6 @@ const styles = EStyleSheet.create({
   footer: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: '40rem',
+    marginBottom: '10rem',
   },
 });
