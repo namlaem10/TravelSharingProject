@@ -97,11 +97,11 @@ class AddPlaceDetailScreen extends Component {
     }
     this.setState({ChoseItem: newArray});
   };
-  createStars = () => {
-    let count = Math.floor(Math.random() * 5) + 3;
-    if (count > 5) {
-      count = 5;
-    }
+  onPressItem = item => {
+    this.props.navigation.navigate('Rating', {data: item});
+  };
+  createStars = point => {
+    let count = point;
     let leftstar = 5 - count;
     let starts = [];
     for (let i = 1; i <= count; i++) {
@@ -149,6 +149,7 @@ class AddPlaceDetailScreen extends Component {
           }}
         />
         <TouchableOpacity
+          onPress={() => this.onPressItem(item)}
           style={{
             flexDirection: 'column',
             justifyContent: 'flex-start',
@@ -157,10 +158,14 @@ class AddPlaceDetailScreen extends Component {
             paddingLeft: EStyleSheet.value('10rem'),
             height: '100%',
           }}>
-          <Text numberOfLines={1} style={styles.textPlace}>
-            {item.tourist_destination_name}
-          </Text>
-          <View style={{flexDirection: 'row'}}>{this.createStars()}</View>
+          <Text numberOfLines={1} style={styles.textPlace}>{item.tourist_destination_name}</Text>
+          <View style={{flexDirection: 'row'}}>
+            {item.rating_count === 0 ? (
+              <Text>Chưa có đánh giá</Text>
+            ) : (
+              this.createStars(item.rating)
+            )}
+          </View>
         </TouchableOpacity>
         <View style={{position: 'absolute', right: 0, top: 0}}>
           {isChose ? (

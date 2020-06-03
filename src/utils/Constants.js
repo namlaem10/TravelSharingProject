@@ -65,6 +65,16 @@ export async function GetRoutes(schedule_detail, numberOfDay) {
     console.log(error);
   }
 }
+export function groupBy(objectArray, property) {
+  return objectArray.reduce(function(acc, obj) {
+    let key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, {});
+}
 export async function getRegionForCoordinates(points) {
   // points should be an array of { latitude: X, longitude: Y }
   let minX, maxX, minY, maxY;

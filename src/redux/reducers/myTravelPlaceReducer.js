@@ -9,6 +9,8 @@ export const types = {
   GET_DESTINATION_FAIL: 'GET_DESTINATION_FAIL',
   GET_SUGGEST_SCHEDULE: 'GET_SUGGEST_SCHEDULE',
   GET_SUGGEST_SCHEDULE_FAIL: 'GET_SUGGEST_SCHEDULE_FAIL ',
+  RATING_TOURISTL: 'RATING_TOURIST',
+  RATING_TOURISTL_FAIL: 'RATING_TOURISTL_FAIL',
 };
 import {getDistance} from 'geolib';
 import Geolocation from '@react-native-community/geolocation';
@@ -139,6 +141,46 @@ export const actions = {
       });
     };
   },
+  rating_tourist: (data, rating) => {
+    return async dispatch => {
+      try {
+        const url = '/api/touristdestination/rating/' + data._id;
+        const token = await getToken();
+        const contentType = 'application/x-www-form-urlencoded';
+        let params = new URLSearchParams();
+        params.append('rating', rating);
+        const result = await api.put(url, params, token, contentType);
+        if (result.status === 200) {
+          data.rating = result.data.rating;
+          data.rating_count = result.data.rating_count;
+          data.rating_history = result.data.rating_history;
+          data.rating_list = result.data.rating_list;
+          dispatch({
+            type: types.RATING_TOURISTL,
+            payload: {
+              data: data,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.RATING_TOURISTL_FAIL,
+            payload: {
+              data: result.data,
+              satus: result.status,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.RATING_TOURISTL_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
   reset: () => {
     return async dispatch => {
       dispatch({
@@ -197,6 +239,19 @@ export const createTripReducer = (state = initialState, action) => {
     case types.GET_DESTINATION_FAIL: {
       return {
         type: types.GET_DESTINATION_FAIL,
+        data: payload.data,
+        status: payload.status,
+      };
+    }
+    case types.RATING_TOURISTL: {
+      return {
+        type: types.RATING_TOURISTL,
+        data: payload.data,
+      };
+    }
+    case types.RATING_TOURISTL_FAIL: {
+      return {
+        type: types.RATING_TOURISTL_FAIL,
         data: payload.data,
         status: payload.status,
       };

@@ -32,7 +32,7 @@ export default class TimelineDetailPersonal extends Component {
     this.minute = 0;
   }
   renderItem = ({item, index, drag = null, isActive = false}) => {
-    const {data, routeData, isGone, keyDay, action} = this.props;
+    const {data, routeData, isGone, keyDay, action, onPressRating} = this.props;
     if (this.count === data.length) {
       this.count = 0;
     }
@@ -82,6 +82,7 @@ export default class TimelineDetailPersonal extends Component {
         onLongPress={drag}
         isActive={isActive}
         isGone={isGone}
+        onPressRating={onPressRating}
       />
     );
   };

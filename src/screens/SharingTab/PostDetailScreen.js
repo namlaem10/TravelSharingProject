@@ -296,6 +296,7 @@ class PostDetailScreen extends Component {
               onPressRating={this.onPressRating}
               isBlog={true}
               isButton={false}
+              isLoading={this.state.isLoading}
             />
           </View>
         </ScrollView>

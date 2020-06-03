@@ -127,6 +127,7 @@ export default class TimeLineItem extends Component {
       onLongPress,
       isActive,
       isGone,
+      onPressRating,
     } = this.props;
     if (isGone) {
       return (
@@ -200,7 +201,15 @@ export default class TimeLineItem extends Component {
                     </TouchableOpacity>
                   </View>
                 ) : null
-              ) : null}
+              ) : (
+                <View style={styles.deleteButtonGroup}>
+                  <TouchableOpacity
+                    style={styles.ratingButton}
+                    onPress={() => onPressRating(data)}>
+                    <Text style={{color: 'white'}}>Đánh giá</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
             <View
               style={{
@@ -461,6 +470,12 @@ const styles = EStyleSheet.create({
   },
   deleteButton: {
     width: '50rem',
+    height: '25rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ratingButton: {
+    width: '60rem',
     height: '25rem',
     justifyContent: 'center',
     alignItems: 'center',
