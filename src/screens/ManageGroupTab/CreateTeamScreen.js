@@ -206,7 +206,7 @@ class CreateTeamScreen extends Component {
             onPress={() => this.onPressConfirm()}>
             <Text
               style={{
-                fontSize: EStyleSheet.value('16rem'),
+                fontSize: EStyleSheet.value('15rem'),
                 fontFamily: constants.Fonts.medium,
                 color: 'white',
               }}>

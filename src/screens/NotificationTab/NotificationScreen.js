@@ -113,6 +113,21 @@ class NotificationScreen extends Component {
   render() {
     const {isLoading, data} = this.state;
     moment.locale('vi');
+    if (isLoading) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator
+            size={EStyleSheet.value('60rem')}
+            color="#34D374"
+          />
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -127,31 +142,24 @@ class NotificationScreen extends Component {
           </View>
         </View>
         <View style={styles.content}>
-          {isLoading ? (
-            <ActivityIndicator
-              size={EStyleSheet.value('60rem')}
-              color="#34D374"
+          <View style={styles.flatList}>
+            <FlatList
+              contentContainerStyle={{
+                paddingBottom: EStyleSheet.value('70rem'),
+                flex: 0,
+              }}
+              data={data}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item}) => this._renderItem(item)}
+              keyExtractor={item => item._id}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={this.onRefresh.bind(this)}
+                />
+              }
             />
-          ) : (
-            <View style={styles.flatList}>
-              <FlatList
-                contentContainerStyle={{
-                  paddingBottom: EStyleSheet.value('70rem'),
-                  flex: 0,
-                }}
-                data={data}
-                showsVerticalScrollIndicator={false}
-                renderItem={({item}) => this._renderItem(item)}
-                keyExtractor={item => item._id}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={this.state.isRefreshing}
-                    onRefresh={this.onRefresh.bind(this)}
-                  />
-                }
-              />
-            </View>
-          )}
+          </View>
         </View>
       </View>
     );

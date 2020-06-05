@@ -206,7 +206,14 @@ export default class TimeLineItem extends Component {
                   <TouchableOpacity
                     style={styles.ratingButton}
                     onPress={() => onPressRating(data)}>
-                    <Text style={{color: 'white'}}>Đánh giá</Text>
+                    <Text
+                      style={{
+                        fontFamily: constants.Fonts.light,
+                        color: 'white',
+                        fontSize: EStyleSheet.value('12rem'),
+                      }}>
+                      Đánh giá
+                    </Text>
                   </TouchableOpacity>
                 </View>
               )}

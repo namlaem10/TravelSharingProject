@@ -19,32 +19,48 @@ import {actions, types} from '../../redux/reducers/UserReducer';
 import {BASE_URL} from '../../services/URL';
 import ImagePicker from 'react-native-image-picker';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 class EditInfoScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      phone: '',
-      avatar: '',
+      user: this.props.user.data.user_info || null,
+      name: this.props.user.data.user_info.display_name || null,
+      phone: this.props.user.data.user_info.phone || null,
+      avatar: this.props.user.data.user_info.avatar
+        ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+        : null,
       error: '',
       isLoading: false,
       isSuccess: false,
-    };
-  }
-  UNSAFE_componentWillMount = () => {
-    const user = this.props.user.data.user_info;
-    let avatar = null;
-    if (user.avatar) {
-      avatar = BASE_URL + '/' + user.avatar;
-    }
-    this.setState({
-      name: user.display_name,
-      phone: user.phone,
-      avatar: avatar,
       avatarFile: null,
-    });
-  };
+      isFail: false,
+    };
+    this.didFocusSubscription = props.navigation.addListener(
+      'willFocus',
+      async payload => {
+        if (
+          payload.action.type === 'Navigation/NAVIGATE' ||
+          payload.action.type === 'Navigation/BACK'
+        ) {
+          this.setState({
+            user: this.props.user.data.user_info || null,
+            name: this.props.user.data.user_info.display_name || null,
+            phone: this.props.user.data.user_info.phone || null,
+            avatar: this.props.user.data.user_info.avatar
+              ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+              : null,
+            error: '',
+            isLoading: false,
+            isSuccess: false,
+            avatarFile: null,
+            isFail: false,
+          });
+        }
+      },
+    );
+  }
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
@@ -101,117 +117,164 @@ class EditInfoScreen extends Component {
         this.setState({isSuccess: false});
         this.props.navigation.navigate('InfoUser');
       }, 1000);
+    } else {
+      this.setState({isLoading: false, isFail: true});
+      setTimeout(() => {
+        this.setState({isFail: false});
+      }, 1000);
     }
   };
 
   render() {
     const {name, phone, avatar} = this.state;
     return (
-      <View style={styles.container}>
-        <Dialog visible={this.state.isLoading}>
-          <DialogContent>
-            <View style={styles.loadingCompleted}>
-              <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
-                color="#34D374"
-              />
-              <Text
-                style={{
-                  fontFamily: constants.Fonts.light,
-                  fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
-                  textAlignVertical: 'center',
-                }}>
-                Đang cập nhật
-              </Text>
-            </View>
-          </DialogContent>
-        </Dialog>
-        <Dialog visible={this.state.isSuccess}>
-          <DialogContent>
-            <View style={styles.loadingCompleted}>
-              <Text
-                style={{
-                  fontFamily: constants.Fonts.light,
-                  fontSize: EStyleSheet.value('18rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
-                  color: '#34D374',
-                  textAlignVertical: 'center',
-                }}>
-                Đã lưu!
-              </Text>
-            </View>
-          </DialogContent>
-        </Dialog>
-        <View style={styles.backgroundHeader}>
-          <ImageBackground
-            source={require('../../assets/images/vinhhalong.jpeg')}
-            style={{width: '100%', height: '100%', resizeMode: 'contain'}}>
-            <TitleBarCustom onPress={this.onPressBack} />
-          </ImageBackground>
-        </View>
-        <View
-          style={{
-            paddingTop: EStyleSheet.value('40rem'),
-            justifyContent: 'center',
-            width: '100%',
-            alignItems: 'center',
-            backgroundColor: 'white',
-          }}>
-          <TouchableOpacity
-            onPress={() => this.ChangeAvatar()}
-            style={{marginTop: EStyleSheet.value('15rem')}}>
-            <Text style={styles.textTitle}>Đổi ảnh đại diện</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.lastInfoGroup}>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Tên</Text>
-            <TextInput
-              style={name === '' ? styles.placeHolder : styles.textInput}
-              value={name}
-              placeholder="Nhấn để nhập"
-              onChangeText={text => this.setState({name: text})}
-            />
-          </View>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Số điện thoại</Text>
-            <TextInput
-              style={phone === '' ? styles.placeHolder : styles.textInput}
-              value={phone}
-              placeholder="Nhấn để nhập"
-              onChangeText={text => this.setState({phone: text})}
-            />
-          </View>
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => this.SaveChange()}>
-            <Text
+      <KeyboardAwareScrollView
+        // enableOnAndroid={false}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={true}
+        contentContainerStyle={{
+          flexGrow: 1,
+        }}>
+        <View style={styles.container}>
+          <Dialog visible={this.state.isLoading}>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <ActivityIndicator
+                  size={EStyleSheet.value('40rem')}
+                  color="#34D374"
+                />
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
+                  }}>
+                  Đang cập nhật
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
+          <Dialog visible={this.state.isSuccess}>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <Image
+                  style={{
+                    width: EStyleSheet.value('20rem'),
+                    height: EStyleSheet.value('20rem'),
+                  }}
+                  resizeMode="contain"
+                  source={constants.Images.IC_SUCCESS}
+                />
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
+                  }}>
+                  Cập nhật thành công
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
+          <Dialog visible={this.state.isFail}>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <Image
+                  style={{
+                    width: EStyleSheet.value('20rem'),
+                    height: EStyleSheet.value('20rem'),
+                  }}
+                  resizeMode="contain"
+                  source={constants.Images.IC_FAIL}
+                />
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                    marginLeft: EStyleSheet.value('5rem'),
+                  }}>
+                  Có lỗi xảy ra
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
+          <View style={styles.backgroundHeader}>
+            <ImageBackground
+              source={require('../../assets/images/vinhhalong.jpeg')}
               style={{
-                fontSize: EStyleSheet.value('18rem'),
-                fontFamily: constants.Fonts.medium,
-                color: 'white',
+                width: '100%',
+                height: '100%',
+                resizeMode: 'contain',
               }}>
-              Lưu thay đổi
-            </Text>
-          </TouchableOpacity>
+              <TitleBarCustom onPress={this.onPressBack} />
+            </ImageBackground>
+          </View>
+          <View
+            style={{
+              paddingTop: EStyleSheet.value('40rem'),
+              justifyContent: 'center',
+              width: '100%',
+              alignItems: 'center',
+              backgroundColor: 'white',
+            }}>
+            <TouchableOpacity
+              onPress={() => this.ChangeAvatar()}
+              style={{marginTop: EStyleSheet.value('15rem')}}>
+              <Text style={styles.textTitle}>Đổi ảnh đại diện</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.lastInfoGroup}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Tên</Text>
+              <TextInput
+                style={name === '' ? styles.placeHolder : styles.textInput}
+                value={name}
+                onSubmitEditing={() => this.ref_phone.focus()}
+                placeholder="Nhấn để nhập"
+                onChangeText={text => this.setState({name: text})}
+              />
+            </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Số điện thoại</Text>
+              <TextInput
+                style={phone === '' ? styles.placeHolder : styles.textInput}
+                value={phone}
+                keyboardType="number-pad"
+                ref={ref => (this.ref_phone = ref)}
+                onSubmitEditing={() => this.SaveChange()}
+                placeholder="Nhấn để nhập"
+                onChangeText={text => this.setState({phone: text})}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => this.SaveChange()}>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('18rem'),
+                  fontFamily: constants.Fonts.medium,
+                  color: 'white',
+                }}>
+                Lưu thay đổi
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              left: '39%',
+              top: EStyleSheet.value('150rem'),
+            }}>
+            <Image
+              style={styles.avatar}
+              source={
+                avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+              }
+            />
+          </View>
         </View>
-        <View
-          style={{
-            position: 'absolute',
-            left: '39%',
-            top: EStyleSheet.value('150rem'),
-          }}>
-          <Image
-            style={styles.avatar}
-            source={
-              avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
-            }
-          />
-        </View>
-      </View>
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -233,7 +296,7 @@ export default connect(
 )(EditInfoScreen);
 const styles = EStyleSheet.create({
   container: {
-    backgroundColor: '#F9F9F9',
+    backgroundColor: 'white',
     flex: 1,
   },
   backgroundHeader: {
@@ -257,7 +320,7 @@ const styles = EStyleSheet.create({
   },
   textTitle: {
     fontSize: constants.FontSizes.regular,
-    fontFamily: constants.Fonts.regular,
+    fontFamily: constants.Fonts.light,
     color: '#1161D8',
   },
   subText: {
@@ -266,8 +329,8 @@ const styles = EStyleSheet.create({
     color: '#797979',
   },
   lastInfoGroup: {
-    flex: 1,
     backgroundColor: 'white',
+    height: '450rem',
     flexDirection: 'column',
     justifyContent: 'space-around',
     paddingTop: '20rem',
@@ -279,7 +342,7 @@ const styles = EStyleSheet.create({
   },
   label: {
     fontSize: constants.FontSizes.regular,
-    fontFamily: constants.Fonts.regular,
+    fontFamily: constants.Fonts.light,
     color: '#8E8E8E',
   },
   placeHolder: {borderBottomWidth: 0.5, borderColor: '#797979'},
@@ -290,9 +353,12 @@ const styles = EStyleSheet.create({
     fontSize: constants.FontSizes.title,
     fontFamily: constants.Fonts.medium,
   },
-  loadingCompleted: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+  loadingDialog: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

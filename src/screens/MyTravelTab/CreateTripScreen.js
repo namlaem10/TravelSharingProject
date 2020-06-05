@@ -285,15 +285,14 @@ class CreateTripScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 Đang tạo lịch trình...
               </Text>
@@ -303,8 +302,17 @@ class CreateTripScreen extends Component {
         <Dialog
           visible={this.state.visible}
           footer={
-            <DialogFooter>
+            <DialogFooter
+              style={{
+                height: EStyleSheet.value('60rem'),
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <DialogButton
+                textStyle={{
+                  fontFamily: constants.Fonts.medium,
+                  fontSize: EStyleSheet.value('18rem'),
+                }}
                 text="Chọn"
                 onPress={() => {
                   this.setState({
@@ -682,11 +690,11 @@ const styles = EStyleSheet.create({
     color: '#404040',
   },
   loadingCompleted: {
+    paddingTop: '20rem',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    height: EStyleSheet.value('95rem'),
-    width: EStyleSheet.value('250rem'),
-    backgroundColor: 'white',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

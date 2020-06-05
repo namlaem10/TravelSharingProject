@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Keyboard,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -90,15 +91,14 @@ class ForgotPassword extends Component {
             <DialogContent>
               <View style={styles.loadingDialog}>
                 <ActivityIndicator
-                  size={EStyleSheet.value('60rem')}
+                  size={EStyleSheet.value('40rem')}
                   color="#34D374"
                 />
                 <Text
                   style={{
                     fontFamily: constants.Fonts.light,
                     fontSize: EStyleSheet.value('15rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
                   }}>
                   Vui lòng chờ...
                 </Text>
@@ -108,31 +108,40 @@ class ForgotPassword extends Component {
           <Dialog
             visible={this.state.isCompletedVisible}
             footer={
-              <DialogFooter>
+              <DialogFooter
+                style={{
+                  height: EStyleSheet.value('50rem'),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
                 <DialogButton
+                  textStyle={{
+                    fontFamily: constants.Fonts.medium,
+                    fontSize: EStyleSheet.value('16rem'),
+                  }}
                   text="Đăng nhập"
                   onPress={() => this.onPressCompletedDialog()}
                 />
               </DialogFooter>
             }>
             <DialogContent>
-              <View style={styles.loadingDialog}>
+              <View style={[styles.loadingDialog, {flexDirection: 'column'}]}>
                 <Image
                   source={constants.Images.IC_EMAIL}
+                  resizeMode="contain"
                   style={{
-                    width: EStyleSheet.value('60rem'),
-                    height: EStyleSheet.value('60rem'),
+                    width: EStyleSheet.value('40rem'),
+                    height: EStyleSheet.value('30rem'),
                   }}
                 />
                 <Text
                   style={{
                     fontFamily: constants.Fonts.light,
                     fontSize: EStyleSheet.value('15rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
+                    marginTop: EStyleSheet.value('10rem'),
                     textAlign: 'center',
                   }}>
-                  Mật khẩu mới đã gửi đến email của bạn.
+                  {'Mật khẩu mới \nđã gửi đến email của bạn'}
                 </Text>
               </View>
             </DialogContent>
@@ -172,6 +181,9 @@ class ForgotPassword extends Component {
                 keyboardType="email-address"
                 placeholderTextColor={Colors.deactive}
                 blurOnSubmit={false}
+                onSubmitEditing={() => (
+                  Keyboard.dismiss(), this.onPressSignIn()
+                )}
                 value={email}
                 style={styles.textEmail}
                 onFocus={() => this.setState({placeholderEmail: ''})}
@@ -196,13 +208,14 @@ class ForgotPassword extends Component {
             </View>
           </View>
           <View style={styles.viewButton}>
-            <TouchableOpacity onPress={this.onPressSignIn}>
+            <TouchableOpacity
+              onPress={() => (Keyboard.dismiss(), this.onPressSignIn())}>
               <LinearGradient
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 0}}
                 colors={Colors.gradient.background}
                 style={styles.buttonSignIn}>
-                <Text style={styles.textSignIn}>Tiêp tục</Text>
+                <Text style={styles.textSignIn}>Tiếp tục</Text>
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity
@@ -333,11 +346,11 @@ const styles = EStyleSheet.create({
     marginRight: 5,
   },
   loadingDialog: {
+    paddingTop: '20rem',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column',
-    height: EStyleSheet.value('95rem'),
-    width: EStyleSheet.value('250rem'),
-    backgroundColor: 'white',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

@@ -146,6 +146,7 @@ class AddPlaceDetailScreen extends Component {
             width: EStyleSheet.value('60rem'),
             height: EStyleSheet.value('60rem'),
             borderRadius: EStyleSheet.value('10rem'),
+            marginBottom: EStyleSheet.value('20rem'),
           }}
         />
         <TouchableOpacity
@@ -158,7 +159,9 @@ class AddPlaceDetailScreen extends Component {
             paddingLeft: EStyleSheet.value('10rem'),
             height: '100%',
           }}>
-          <Text numberOfLines={1} style={styles.textPlace}>{item.tourist_destination_name}</Text>
+          <Text numberOfLines={1} style={styles.textPlace}>
+            {item.tourist_destination_name}
+          </Text>
           <View style={{flexDirection: 'row'}}>
             {item.rating_count === 0 ? (
               <Text>Chưa có đánh giá</Text>
@@ -189,15 +192,14 @@ class AddPlaceDetailScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 Đang tạo hành trình...
               </Text>
@@ -312,5 +314,13 @@ const styles = EStyleSheet.create({
     fontSize: constants.FontSizes.regular,
     fontFamily: constants.Fonts.medium,
     marginBottom: '3rem',
+  },
+  loadingCompleted: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

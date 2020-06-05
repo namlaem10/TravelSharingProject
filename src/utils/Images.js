@@ -62,4 +62,6 @@ export default {
   IMG_ONBOARDING1: require('../assets/images/onBoarding1.png'),
   IMG_ONBOARDING2: require('../assets/images/onBoarding2.png'),
   IMG_ONBOARDING3: require('../assets/images/onBoarding3.png'),
+  IC_SUCCESS: require('../assets/images/ic-success.png'),
+  IC_FAIL: require('../assets/images/ic-error.png'),
 };

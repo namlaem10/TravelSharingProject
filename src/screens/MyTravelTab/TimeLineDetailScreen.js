@@ -161,8 +161,8 @@ class TimeLineDetailScreen extends Component {
     });
     this.props.get_location_info(data, this.state.totalDay);
   };
-  onPressRating = data => {
-    this.props.navigation.navigate('Rating', {data});
+  onPressRating = item => {
+    this.props.navigation.navigate('Rating', {data: item});
   };
   _renderItem = () => {
     let array = [];
@@ -236,15 +236,14 @@ class TimeLineDetailScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 Đang lưu hành trình...
               </Text>
@@ -255,15 +254,14 @@ class TimeLineDetailScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 {this.state.message}
               </Text>
@@ -379,5 +377,13 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '10rem',
+  },
+  loadingCompleted: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

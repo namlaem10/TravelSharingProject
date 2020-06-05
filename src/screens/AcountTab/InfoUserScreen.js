@@ -5,6 +5,7 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -24,14 +25,38 @@ class InfoUserScreen extends Component {
       travel_share: this.props.user.data.travel_share || null,
       rating_point: this.props.user.data.rating_point || null,
       people_rating: this.props.user.data.people_rating || null,
+      avatar: this.props.user.data.user_info.avatar
+        ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+        : null,
     };
+    this.didFocusSubscription = props.navigation.addListener(
+      'willFocus',
+      async payload => {
+        if (
+          payload.action.type === 'Navigation/NAVIGATE' ||
+          payload.action.type === 'Navigation/BACK'
+        ) {
+          await this.setState({
+            user: this.props.user.data.user_info || null,
+            total_travel: this.props.user.data.total_travel || null,
+            travel_share: this.props.user.data.travel_share || null,
+            rating_point: this.props.user.data.rating_point || null,
+            people_rating: this.props.user.data.people_rating || null,
+            avatar: this.props.user.data.user_info.avatar
+              ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+              : null,
+          });
+        }
+      },
+    );
   }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.user.type === types.UPDATE_INFO) {
-      this.setState({user: nextProps.user.data});
+      this.setState({user: nextProps.user.data.user_info});
     }
     if (nextProps.user.type === types.ADD_FRIEND) {
-      this.setState({user: nextProps.user.data});
+      this.setState({user: nextProps.user.data.user_info});
     }
   }
   onPressBack = () => {
@@ -52,12 +77,8 @@ class InfoUserScreen extends Component {
       people_rating,
       travel_share,
       total_travel,
+      avatar,
     } = this.state;
-    let avatar = null;
-    if (user.avatar) {
-      avatar = BASE_URL + '/' + user.avatar;
-    }
-    console.log('hello', rating_point, people_rating);
     return (
       <View style={styles.container}>
         <View style={styles.backgroundHeader}>
@@ -100,7 +121,7 @@ class InfoUserScreen extends Component {
             <Text
               style={{
                 fontSize: EStyleSheet.value('14rem'),
-                fontFamily: constants.Fonts.regular,
+                fontFamily: constants.Fonts.light,
               }}>
               Lịch trình
             </Text>
@@ -112,7 +133,7 @@ class InfoUserScreen extends Component {
             <Text
               style={{
                 fontSize: EStyleSheet.value('14rem'),
-                fontFamily: constants.Fonts.regular,
+                fontFamily: constants.Fonts.light,
               }}>
               Bài viết
             </Text>
@@ -129,7 +150,7 @@ class InfoUserScreen extends Component {
             <Text
               style={{
                 fontSize: EStyleSheet.value('14rem'),
-                fontFamily: constants.Fonts.regular,
+                fontFamily: constants.Fonts.light,
               }}>
               Đánh giá ({people_rating === null ? 0 : people_rating})
             </Text>

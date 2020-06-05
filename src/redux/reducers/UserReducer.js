@@ -86,6 +86,7 @@ export const actions = {
         const url = '/api/user/updateinfo';
         const contentType = 'multipart/form-data';
         const data = user;
+        console.log(data);
         const token = await getToken();
         const result = await api.put(url, data, token, contentType);
         if (result.status === 200) {
@@ -311,7 +312,7 @@ export const userReducer = (state = initialState, action) => {
     case types.UPDATE_INFO_FAIL: {
       return {
         type: types.UPDATE_INFO_FAIL,
-        data: payload.data,
+        data: state.data,
         status: payload.status,
       };
     }
