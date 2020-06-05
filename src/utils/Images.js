@@ -64,4 +64,5 @@ export default {
   IMG_ONBOARDING3: require('../assets/images/onBoarding3.png'),
   IC_SUCCESS: require('../assets/images/ic-success.png'),
   IC_FAIL: require('../assets/images/ic-error.png'),
+  IC_NO_NOTIFICATION: require('../assets/images/ic-no-notification.png'),
 };

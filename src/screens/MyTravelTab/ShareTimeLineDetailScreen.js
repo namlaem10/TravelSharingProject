@@ -55,7 +55,7 @@ class ShareTimeLineDetailScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Đã tạo xong! đang chuyển màn hình',
+          message: 'Đã tạo xong!',
         });
         setTimeout(() => {
           this.setState({

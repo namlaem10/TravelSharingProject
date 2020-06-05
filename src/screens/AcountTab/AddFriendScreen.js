@@ -129,7 +129,11 @@ class AddFriendScreen extends Component {
     }
     return (
       <View style={styles.flatListItem}>
-        <View style={{marginRight: EStyleSheet.value('10rem')}}>
+        <View
+          style={{
+            marginRight: EStyleSheet.value('10rem'),
+            marginBottom: EStyleSheet.value('20rem'),
+          }}>
           <Image
             source={
               item.avatar !== null
@@ -137,9 +141,9 @@ class AddFriendScreen extends Component {
                 : constants.Images.IC_AVATAR1
             }
             style={{
-              width: EStyleSheet.value('60rem'),
-              height: EStyleSheet.value('60rem'),
-              borderRadius: EStyleSheet.value('30rem'),
+              width: EStyleSheet.value('50rem'),
+              height: EStyleSheet.value('50rem'),
+              borderRadius: EStyleSheet.value('25rem'),
             }}
           />
         </View>
@@ -149,17 +153,20 @@ class AddFriendScreen extends Component {
             justifyContent: 'space-between',
             alignItems: 'center',
             width: EStyleSheet.value('275rem'),
+            marginBottom: EStyleSheet.value('20rem'),
           }}>
           <Text style={styles.textPlace}>{item.display_name}</Text>
           {isfriend ? (
-            <Text>Đã Thêm</Text>
+            <Text style={{fontFamily: constants.Fonts.light}}>Đã Thêm</Text>
           ) : (
             <TouchableOpacity
               style={styles.addButton}
               onPress={() => {
                 this.onPressAddFriend(item);
               }}>
-              <Text style={{color: 'white'}}>Thêm bạn</Text>
+              <Text style={{color: 'white', fontFamily: constants.Fonts.light}}>
+                Thêm bạn
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -194,7 +201,9 @@ class AddFriendScreen extends Component {
           </View>
           <View
             style={{
-              height: EStyleSheet.value('465rem'),
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
             {isLoadding ? (
               <ActivityIndicator
@@ -202,12 +211,19 @@ class AddFriendScreen extends Component {
                 color="#34D374"
               />
             ) : error !== '' ? (
-              <Text>{error}</Text>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('18rem'),
+                  fontFamily: constants.Fonts.medium,
+                }}>
+                {error}
+              </Text>
             ) : (
               <FlatList
                 contentContainerStyle={{
                   paddingBottom: EStyleSheet.value('0rem'),
                 }}
+                showsVerticalScrollIndicator={false}
                 data={data}
                 renderItem={({item}) => this._renderItem(item)}
                 keyExtractor={item => item._id}
@@ -249,24 +265,26 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
   },
   searchBar: {
-    height: '45rem',
+    height: '50rem',
     fontSize: '14rem',
     fontFamily: constants.Fonts.light,
     backgroundColor: 'rgb(238, 238, 238)',
     borderRadius: '8rem',
-    paddingLeft: '10rem',
+    paddingLeft: '15rem',
   },
   content: {
+    flex: 1,
     paddingTop: '10rem',
     paddingHorizontal: '15rem',
     flexDirection: 'column',
   },
   inputText: {
-    height: '60rem',
+    height: '50rem',
+    marginBottom: '15rem',
   },
   flatListItem: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: '10rem',
     borderBottomWidth: 0.5,
@@ -274,14 +292,14 @@ const styles = EStyleSheet.create({
     height: '60rem',
   },
   textPlace: {
-    fontSize: constants.FontSizes.title,
-    fontFamily: constants.Fonts.regular,
+    fontSize: constants.FontSizes.regular,
+    fontFamily: constants.Fonts.medium,
   },
   addButton: {
     backgroundColor: '#34D374',
     borderRadius: '5rem',
-    height: '25rem',
-    width: '70rem',
+    height: '35rem',
+    width: '80rem',
     justifyContent: 'center',
     alignItems: 'center',
   },
