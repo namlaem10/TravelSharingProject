@@ -29,10 +29,14 @@ export const actions = {
         const contentType = 'application/x-www-form-urlencoded';
         let params = new URLSearchParams();
         let count = 0;
-        member.map(item => {
-          params.append(`member[${count}]`, item);
-          count++;
-        });
+        if (member.length > 0) {
+          member.map(item => {
+            params.append(`member[${count}]`, item);
+            count++;
+          });
+        } else {
+          params.append('member[0]', 'null');
+        }
         const result = await api.put(url, params, token, contentType);
         if (result.status === 200) {
           dispatch({

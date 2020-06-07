@@ -68,7 +68,7 @@ class CreatePostScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Đã tạo xong! đang chuyển màn hình',
+          message: 'Đã tạo xong!',
         });
         setTimeout(() => {
           this.setState({
@@ -84,7 +84,7 @@ class CreatePostScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Lỗi tạo hành trình!',
+          message: 'Lỗi tạo bài viết!',
         });
       }
     }
@@ -189,7 +189,7 @@ class CreatePostScreen extends Component {
                     fontSize: EStyleSheet.value('15rem'),
                     marginLeft: EStyleSheet.value('10rem'),
                   }}>
-                  Đang tạo hành trình...
+                  Đang tạo bài viết
                 </Text>
               </View>
             </DialogContent>

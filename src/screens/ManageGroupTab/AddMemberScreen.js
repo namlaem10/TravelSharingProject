@@ -49,7 +49,7 @@ class AddMemberScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Đã cập nhật! đang chuyển màn hình',
+          message: 'Đã cập nhật!',
         });
         let location = this.props.navigation.getParam('location');
         if (location === 'InfoGroup') {
@@ -80,7 +80,7 @@ class AddMemberScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Lỗi tạo hành trình!',
+          message: 'Lỗi thêm thành viên!',
         });
       }
     }
@@ -102,7 +102,10 @@ class AddMemberScreen extends Component {
     this.setState({searchText: text});
   };
   setSearchText = text => {
-    let searchText = text.replace(/[^a-zA-Z0-9-  ]/g, '');
+    let searchText = text.replace(
+      /[^a-zA-Z0-9-ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ  ]/g,
+      '',
+    );
     this.setState({searchText: searchText});
     let data = this.state.friendBackup;
     searchText = searchText.trim().toLowerCase();
@@ -237,7 +240,7 @@ class AddMemberScreen extends Component {
                   fontSize: EStyleSheet.value('15rem'),
                   marginLeft: EStyleSheet.value('10rem'),
                 }}>
-                Đang tạo hành trình...
+                Đang thêm...
               </Text>
             </View>
           </DialogContent>
@@ -353,7 +356,7 @@ const styles = EStyleSheet.create({
     fontFamily: constants.Fonts.medium,
   },
   textemail: {
-    fontSize: constants.FontSizes.regular,
+    fontSize: constants.FontSizes.smalltext,
     fontFamily: constants.Fonts.light,
     color: '#797979',
   },
