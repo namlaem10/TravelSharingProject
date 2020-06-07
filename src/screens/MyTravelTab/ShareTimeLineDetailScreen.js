@@ -63,6 +63,7 @@ class ShareTimeLineDetailScreen extends Component {
           });
           this.props.navigation.navigate('TripDetail', {
             data: nextProps.detailLichTrinh.data[0],
+            isLeader: true,
           });
         }, 1500);
       } else {
