@@ -18,7 +18,6 @@ import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
-import {BASE_URL} from '../../services/URL';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
@@ -201,8 +200,8 @@ class PostDetailScreen extends Component {
     if (data !== null) {
       background =
         data.background !== null
-          ? BASE_URL + '/' + data.background
-          : BASE_URL + '/' + data.destination.destination_image;
+          ? data.background
+          : data.destination.destination_image;
     }
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],

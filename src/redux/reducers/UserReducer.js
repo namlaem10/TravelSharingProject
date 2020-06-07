@@ -2,6 +2,8 @@ import api from '../../services/APIservice';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export const types = {
+  LOGOUT: 'LOGOUT',
+  LOGOUT_FAIL: 'LOGOUT_FAIL',
   LOGIN: 'LOGIN',
   LOGIN_FAIL: 'LOGIN_FAIL',
   UPDATE_INFO: 'UPDATE_INFO',
@@ -41,6 +43,42 @@ async function getFcmToken() {
   }
 }
 export const actions = {
+  logout: () => {
+    return async dispatch => {
+      try {
+        const url = '/api/user/fcm';
+        const token = await getToken();
+        const contentType = 'application/x-www-form-urlencoded';
+        let params = new URLSearchParams();
+        params.append('fcm', 'null');
+        const result = await api.put(url, params, token, contentType);
+        if (result.status === 200) {
+          dispatch({
+            type: types.LOGOUT,
+            payload: {
+              data: result.data,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.LOGOUT_FAIL,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: types.LOGOUT_FAIL,
+          payload: {
+            data: error.data,
+            status: error.status,
+          },
+        });
+      }
+    };
+  },
   login: user => {
     return async dispatch => {
       try {
@@ -289,6 +327,20 @@ const initialState = {
 export const userReducer = (state = initialState, action) => {
   const {type, payload} = action;
   switch (type) {
+    case types.LOGOUT: {
+      return {
+        type: types.LOGOUT,
+        data: payload.data,
+        status: payload.status,
+      };
+    }
+    case types.LOGOUT_FAIL: {
+      return {
+        type: types.LOGOUT_FAIL,
+        data: payload.data,
+        status: payload.status,
+      };
+    }
     case types.LOGIN: {
       return {
         type: types.LOGIN,

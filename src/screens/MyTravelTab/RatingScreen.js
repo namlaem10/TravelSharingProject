@@ -16,7 +16,6 @@ import moment from 'moment';
 import TitleBarCustom from '../../components/TitleBarCustom';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/myTravelPlaceReducer.js';
-import {BASE_URL} from '../../services/URL';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import MapView, {Marker, Polyline} from 'react-native-maps';
 import * as Progress from 'react-native-progress';
@@ -281,7 +280,7 @@ class RatingScreen extends Component {
               <Image
                 source={
                   item.user.avatar !== null
-                    ? {uri: BASE_URL + '/' + item.user.avatar}
+                    ? {uri: item.user.avatar}
                     : constants.Images.IC_AVATAR2
                 }
                 resizeMode="contain"
@@ -333,7 +332,7 @@ class RatingScreen extends Component {
               <Image
                 source={
                   item.user.avatar !== null
-                    ? {uri: BASE_URL + '/' + item.user.avatar}
+                    ? {uri: item.user.avatar}
                     : constants.Images.IC_AVATAR2
                 }
                 style={{

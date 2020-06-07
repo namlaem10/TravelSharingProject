@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {View, Text, Image} from 'react-native';
-import {BASE_URL} from '../services/URL';
 
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -19,7 +18,11 @@ export default class Comment extends Component {
         <View style={styles.container} key={index}>
           <View style={styles.Userinfo}>
             <Image
-              source={{uri: `${BASE_URL}/${item.avatar}`}}
+              source={
+                item.avatar !== null
+                  ? {uri: item.avatar}
+                  : constants.Images.IC_AVATAR1
+              }
               style={{
                 width: EStyleSheet.value('36rem'),
                 height: EStyleSheet.value('36rem'),

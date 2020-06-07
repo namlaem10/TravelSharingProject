@@ -14,7 +14,6 @@ import SearchBar from '../../components/SearchBar';
 import * as constants from '../../utils/Constants';
 import NewsFeedItem from './SharingTapComponents/NewsFeedItem';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {BASE_URL} from '../../services/URL';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/allLichTrinhReducer';
 

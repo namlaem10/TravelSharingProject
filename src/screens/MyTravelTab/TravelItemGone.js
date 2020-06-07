@@ -4,7 +4,6 @@ import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 import moment from 'moment';
-import {BASE_URL} from '../../services/URL';
 export default class TravelItem extends Component {
   constructor(props) {
     super(props);
@@ -23,8 +22,8 @@ export default class TravelItem extends Component {
     let background = null;
     background =
       data.background !== null
-        ? BASE_URL + '/' + data.background
-        : BASE_URL + '/' + data.destination.destination_image;
+        ? data.background
+        : data.destination.destination_image;
     return (
       <TouchableOpacity
         style={styles.container}

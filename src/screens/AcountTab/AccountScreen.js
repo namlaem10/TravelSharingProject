@@ -13,7 +13,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/UserReducer';
-import {BASE_URL} from '../../services/URL';
 import AsyncStorage from '@react-native-community/async-storage';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 
@@ -23,7 +22,7 @@ class AccountScreen extends Component {
     this.state = {
       user: this.props.user.data.user_info || null,
       avatar: this.props.user.data.user_info.avatar
-        ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+        ? this.props.user.data.user_info.avatar
         : null,
     };
     this.didFocusSubscription = props.navigation.addListener(
@@ -36,7 +35,7 @@ class AccountScreen extends Component {
           this.setState({
             user: this.props.user.data.user_info || null,
             avatar: this.props.user.data.user_info.avatar
-              ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+              ? this.props.user.data.user_info.avatar
               : null,
           });
         }
@@ -47,7 +46,7 @@ class AccountScreen extends Component {
     this.props.navigation.navigate('InfoUser', {user: this.state.user});
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  async UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.user.type === types.UPDATE_INFO) {
       this.setState({user: nextProps.user.data.user_info});
     } else if (nextProps.user.type === types.UPDATE_INFO_FAIL) {
@@ -55,6 +54,16 @@ class AccountScreen extends Component {
     } else if (nextProps.user.type === types.ADD_FRIEND) {
       this.setState({user: nextProps.user.data.user_info});
     } else if (nextProps.user.type === types.ADD_FRIEND_FAIL) {
+      this.showToast('Đã có lỗi xảy ra! Thử lại sau');
+    } else if (nextProps.user.type === types.LOGOUT) {
+      let remove = await this.removeToken();
+      if (remove === true) {
+        setTimeout(() => {
+          this.setState({isLoading: false});
+          this.props.navigation.navigate('SignIn');
+        }, 2000);
+      }
+    } else if (nextProps.user.type === types.LOGIN_FAIL) {
       this.showToast('Đã có lỗi xảy ra! Thử lại sau');
     }
   }
@@ -71,13 +80,7 @@ class AccountScreen extends Component {
   }
   logOut = async () => {
     this.setState({isLoading: true});
-    let remove = await this.removeToken();
-    if (remove === true) {
-      setTimeout(() => {
-        this.setState({isLoading: false});
-        this.props.navigation.navigate('SignIn');
-      }, 2000);
-    }
+    await this.props.logout();
   };
   onPressMyTravel = () => {
     this.props.navigation.navigate('MyTravel');
@@ -300,14 +303,16 @@ const mapStateToProps = ({user}) => {
     user: user,
   };
 };
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     login: parrams => dispatch(actions.login(parrams)),
-//     reset: () => dispatch(actions.reset()),
-//   };
-// };
+const mapDispatchToProps = dispatch => {
+  return {
+    logout: () => dispatch(actions.logout()),
+  };
+};
 // eslint-disable-next-line prettier/prettier
-export default connect(mapStateToProps)(AccountScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AccountScreen);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,

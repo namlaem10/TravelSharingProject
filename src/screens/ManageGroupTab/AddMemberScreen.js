@@ -18,7 +18,6 @@ import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/managerGroupReducer';
 
 import SearchBar from '../../components/SearchBar';
-import {BASE_URL} from '../../services/URL';
 
 class AddMemberScreen extends Component {
   constructor(props) {
@@ -185,9 +184,6 @@ class AddMemberScreen extends Component {
     let found = array.find(e => e === item._id);
     let isSelect = found === undefined ? false : true;
     let avatar = item.avatar;
-    if (avatar !== null) {
-      avatar = BASE_URL + '/' + avatar;
-    }
     return (
       <View style={styles.flatListItem}>
         <Image

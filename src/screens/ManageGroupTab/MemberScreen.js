@@ -13,7 +13,6 @@ import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 import HeaderBar from '../../components/HeaderBar';
-import {BASE_URL} from '../../services/URL';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/managerGroupReducer';
@@ -92,9 +91,6 @@ class MemberScreen extends Component {
     if (isLeader) {
       array.map((item, index) => {
         let avatar = item.avatar;
-        if (avatar !== null) {
-          avatar = BASE_URL + '/' + avatar;
-        }
         let renderItem = (
           <TouchableOpacity
             key={index}
@@ -132,9 +128,6 @@ class MemberScreen extends Component {
     } else {
       array.map((item, index) => {
         let avatar = item.avatar;
-        if (avatar !== null) {
-          avatar = BASE_URL + '/' + avatar;
-        }
         let renderItem = (
           <View
             key={index}

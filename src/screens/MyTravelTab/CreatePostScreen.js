@@ -18,7 +18,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import HeaderBar from '../../components/HeaderBar';
-import {BASE_URL} from '../../services/URL';
 import ImagePicker from 'react-native-image-picker';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
@@ -51,7 +50,7 @@ class CreatePostScreen extends Component {
     const background = this.props.navigation.getParam('background', null);
     let backgroundUri = null;
     if (background !== null) {
-      backgroundUri = BASE_URL + '/' + background;
+      backgroundUri = background;
     }
     const idHanhTrinh = this.props.navigation.getParam('idHanhTrinh');
     this.setState({
@@ -171,7 +170,7 @@ class CreatePostScreen extends Component {
     } = this.state;
     let avatar = null;
     if (user.user_info.avatar !== null) {
-      avatar = BASE_URL + '/' + user.user_info.avatar;
+      avatar = user.user_info.avatar;
     }
     return (
       <DismissKeyboard>

@@ -4,7 +4,6 @@ import {View, Text, Image} from 'react-native';
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-import {BASE_URL} from '../services/URL';
 
 export default class MemberScrollItem extends Component {
   constructor(props) {
@@ -15,9 +14,6 @@ export default class MemberScrollItem extends Component {
   render() {
     const {data, count} = this.props;
     let avatar = data.avatar;
-    if (avatar !== null) {
-      avatar = BASE_URL + '/' + avatar;
-    }
     if (count === 0) {
       return (
         <View style={styles.container}>

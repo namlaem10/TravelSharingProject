@@ -16,7 +16,6 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 import TitleBarCustom from '../../components/TitleBarCustom';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/UserReducer';
-import {BASE_URL} from '../../services/URL';
 import ImagePicker from 'react-native-image-picker';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -29,7 +28,7 @@ class EditInfoScreen extends Component {
       name: this.props.user.data.user_info.display_name || null,
       phone: this.props.user.data.user_info.phone || null,
       avatar: this.props.user.data.user_info.avatar
-        ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+        ? this.props.user.data.user_info.avatar
         : null,
       error: '',
       isLoading: false,
@@ -49,7 +48,7 @@ class EditInfoScreen extends Component {
             name: this.props.user.data.user_info.display_name || null,
             phone: this.props.user.data.user_info.phone || null,
             avatar: this.props.user.data.user_info.avatar
-              ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+              ? this.props.user.data.user_info.avatar
               : null,
             error: '',
             isLoading: false,

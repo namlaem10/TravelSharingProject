@@ -4,7 +4,7 @@ import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-import {BASE_URL} from '../services/URL';
+
 import Comment from './Comment';
 import moment from 'moment';
 
@@ -69,10 +69,6 @@ export default class BlogDetail extends Component {
     const {data, dataComment, dataRating, onPressRating} = this.props;
     const {comment, messageText} = this.state;
     const User = data.create_by;
-    let avatar = null;
-    if (User) {
-      avatar = BASE_URL + '/' + User.avatar;
-    }
     return (
       <View style={styles.content}>
         <View style={styles.headerInfo}>
@@ -80,7 +76,7 @@ export default class BlogDetail extends Component {
             <Image
               source={
                 User.avatar !== null
-                  ? {uri: avatar}
+                  ? {uri: User.avatar}
                   : constants.Images.IC_AVATAR3
               }
               style={{

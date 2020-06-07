@@ -7,10 +7,8 @@ import {
   Image,
   ActivityIndicator,
   Text,
-  KeyboardAvoidingView,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {BASE_URL} from '../../services/URL';
 import {GiftedChat, Send} from 'react-native-gifted-chat';
 
 import * as constants from '../../utils/Constants';
@@ -18,41 +16,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 import HeaderBar from '../../components/HeaderBar';
 import database from '../../utils/fireBaseConfig';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-
-//fakedata
-let fakemessdata = [
-  {
-    _id: 1,
-    text: 'Chào Anh!',
-    createdAt: new Date(),
-    user: {
-      _id: 'USER02',
-      display_name: 'Hoàn',
-      avatar: BASE_URL + '/' + 'uploads/fd72eff14fe22bc10f1b35e59f82f6f3.png',
-    },
-  },
-  {
-    _id: 2,
-    text: 'EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE',
-    createdAt: new Date(),
-    user: {
-      _id: 'USER02',
-      display_name: 'Hoàn',
-      avatar: BASE_URL + '/' + 'uploads/fd72eff14fe22bc10f1b35e59f82f6f3.png',
-    },
-  },
-  {
-    _id: 3,
-    text: 'Cút',
-    createdAt: new Date(),
-    user: {
-      _id: 'USER01',
-      display_name: 'Nam ngu',
-      avatar: BASE_URL + '/' + 'uploads/fd72eff14fe22bc10f1b35e59f82f6f3.png',
-    },
-  },
-];
 
 class ChattingScreen extends Component {
   constructor(props) {
@@ -198,9 +161,7 @@ class ChattingScreen extends Component {
                 _id: user._id,
                 display_name: user.display_name,
                 avatar:
-                  user !== null
-                    ? BASE_URL + '/' + user.avatar
-                    : constants.Images.IC_AVATAR1,
+                  user !== null ? user.avatar : constants.Images.IC_AVATAR1,
               }}
               isTyping={true}
               keyboardShouldPersistTaps={'never'}

@@ -14,7 +14,6 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import TitleBarCustom from '../../components/TitleBarCustom';
 import {connect} from 'react-redux';
-import {BASE_URL} from '../../services/URL';
 import {types} from '../../redux/reducers/UserReducer';
 class InfoUserScreen extends Component {
   constructor(props) {
@@ -26,7 +25,7 @@ class InfoUserScreen extends Component {
       rating_point: this.props.user.data.rating_point || null,
       people_rating: this.props.user.data.people_rating || null,
       avatar: this.props.user.data.user_info.avatar
-        ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+        ? this.props.user.data.user_info.avatar
         : null,
     };
     this.didFocusSubscription = props.navigation.addListener(
@@ -43,7 +42,7 @@ class InfoUserScreen extends Component {
             rating_point: this.props.user.data.rating_point || null,
             people_rating: this.props.user.data.people_rating || null,
             avatar: this.props.user.data.user_info.avatar
-              ? `${BASE_URL + '/' + this.props.user.data.user_info.avatar}`
+              ? this.props.user.data.user_info.avatar
               : null,
           });
         }

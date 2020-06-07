@@ -4,7 +4,6 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-import {BASE_URL} from '../../services/URL';
 import moment from 'moment';
 export default class TeamItem extends Component {
   constructor(props) {
@@ -16,7 +15,7 @@ export default class TeamItem extends Component {
     const {onPress, data} = this.props;
     let background = null;
     if (data.background != null) {
-      background = BASE_URL + '/' + data.background;
+      background = data.background;
     }
     let member = data.member.length;
     return (

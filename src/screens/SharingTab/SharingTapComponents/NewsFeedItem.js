@@ -3,7 +3,6 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import * as constants from '../../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import moment from 'moment';
-import {BASE_URL} from '../../../services/URL';
 import 'moment/locale/vi';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
@@ -53,7 +52,7 @@ export default class NewsFeedItem extends Component {
     const User = data.create_by;
     let avatar = null;
     if (User) {
-      avatar = BASE_URL + '/' + User.avatar;
+      avatar = User.avatar;
     }
     return (
       <TouchableOpacity
@@ -63,7 +62,7 @@ export default class NewsFeedItem extends Component {
           <Image
             source={
               data.background
-                ? {uri: BASE_URL + '/' + data.background}
+                ? {uri: data.background}
                 : require('../../../assets/images/dalat2.jpg')
             }
             style={{

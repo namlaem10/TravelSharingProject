@@ -21,7 +21,6 @@ import {actions, types} from '../../redux/reducers/UserReducer';
 import HeaderBar from '../../components/HeaderBar';
 import api from '../../services/APIservice';
 import AsyncStorage from '@react-native-community/async-storage';
-import {BASE_URL} from '../../services/URL';
 
 //fake data
 
@@ -137,7 +136,7 @@ class AddFriendScreen extends Component {
           <Image
             source={
               item.avatar !== null
-                ? {uri: BASE_URL + '/' + item.avatar}
+                ? {uri: item.avatar}
                 : constants.Images.IC_AVATAR1
             }
             style={{
