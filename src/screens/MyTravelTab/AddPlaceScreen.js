@@ -123,7 +123,7 @@ class AddPlaceScreen extends Component {
           />
         </View>
         <View style={styles.content}>
-          <View style={styles.listTripGroup}>
+          <View style={{flex: 1}}>
             <Text
               style={{
                 fontFamily: constants.Fonts.medium,
@@ -198,7 +198,7 @@ const styles = EStyleSheet.create({
     paddingHorizontal: '23rem',
   },
   flatList: {
-    height: '100%',
+    flex: 1,
     paddingTop: '10rem',
   },
   flatListItem: {

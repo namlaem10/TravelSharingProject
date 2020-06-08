@@ -275,6 +275,7 @@ class AddMemberScreen extends Component {
               justifyContent: 'space-between',
               flexDirection: 'row',
               alignItems: 'center',
+              height: EStyleSheet.value('30rem'),
             }}>
             <Text
               style={{
@@ -296,10 +297,6 @@ class AddMemberScreen extends Component {
           </View>
           <View style={styles.flatList}>
             <FlatList
-              contentContainerStyle={{
-                paddingBottom: EStyleSheet.value('40rem'),
-                flex: 0,
-              }}
               showsVerticalScrollIndicator={false}
               data={friend}
               renderItem={({item}) => this._renderItem(item)}
@@ -346,7 +343,7 @@ const styles = EStyleSheet.create({
     marginTop: '10rem',
     justifyContent: 'center',
   },
-  content: {paddingTop: '10rem', paddingHorizontal: '23rem'},
+  content: {flex: 1, paddingTop: '10rem', paddingHorizontal: '23rem'},
   textName: {
     fontSize: constants.FontSizes.regular,
     fontFamily: constants.Fonts.medium,
@@ -356,7 +353,7 @@ const styles = EStyleSheet.create({
     fontFamily: constants.Fonts.light,
     color: '#797979',
   },
-  flatList: {marginTop: '10rem'},
+  flatList: {flex: 1, marginTop: '10rem'},
   flatListItem: {
     flexDirection: 'row',
     marginVertical: '15rem',
