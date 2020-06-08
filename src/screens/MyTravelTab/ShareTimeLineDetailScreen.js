@@ -72,6 +72,11 @@ class ShareTimeLineDetailScreen extends Component {
           loadingCompleted: true,
           message: 'Lỗi tạo hành trình!',
         });
+        setTimeout(() => {
+          this.setState({
+            loadingCompleted: false,
+          });
+        }, 1500);
       }
     } else if (
       nextProps.detailLichTrinh.type === types.DELETE_SCHEDULE_DETAIL_ITEM ||

@@ -526,7 +526,7 @@ const styles = EStyleSheet.create({
     paddingVertical: '5rem',
   },
   miniMap: {
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
     flex: 1.5,
   },
   text: {

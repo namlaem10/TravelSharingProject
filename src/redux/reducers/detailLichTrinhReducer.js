@@ -188,9 +188,9 @@ export const actions = {
       try {
         const url = '/api/travel/create';
         const token = await getToken();
-        const contentType = 'multipart/form-data';
+        const contentType = 'application/x-www-form-urlencoded';
         let nums_of_day = data.nums_of_day;
-        var bodyFormData = new FormData();
+        var bodyFormData = new URLSearchParams();
         bodyFormData.append('departure', data.departure);
         bodyFormData.append('destination', data.destination);
         bodyFormData.append('start_day', data.start_day);

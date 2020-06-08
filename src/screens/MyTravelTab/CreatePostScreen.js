@@ -85,6 +85,11 @@ class CreatePostScreen extends Component {
           loadingCompleted: true,
           message: 'Lỗi tạo bài viết!',
         });
+        setTimeout(() => {
+          this.setState({
+            loadingCompleted: false,
+          });
+        }, 1500);
       }
     }
   }

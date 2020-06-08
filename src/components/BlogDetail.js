@@ -77,7 +77,7 @@ export default class BlogDetail extends Component {
               source={
                 User.avatar !== null
                   ? {uri: User.avatar}
-                  : constants.Images.IC_AVATAR3
+                  : constants.Images.IC_AVATAR1
               }
               style={{
                 width: EStyleSheet.value('40rem'),
