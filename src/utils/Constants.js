@@ -54,7 +54,7 @@ export async function GetRoutes(schedule_detail, numberOfDay) {
         }`;
         count++;
       }
-      link += '&mode=fastest;car;traffic:disabled';
+      link += '&mode=fastest;car;traffic:enabled';
       let response = await fetch(link);
       let responseJson = await response.json();
       let routes = responseJson.response.route[0];

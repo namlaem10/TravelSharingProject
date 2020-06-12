@@ -242,6 +242,7 @@ class CreatePostScreen extends Component {
               style={styles.textTitle}
               placeholder={'Nhập tiêu đề'}
               value={textTitle}
+              maxLength={32}
               onChangeText={text => this.setState({textTitle: text})}
             />
           </View>
@@ -254,6 +255,7 @@ class CreatePostScreen extends Component {
               numberOfLines={10}
               multiline={true}
               value={textInput}
+              maxLength={1000}
               onChangeText={text => this.setState({textInput: text})}
             />
           </View>
