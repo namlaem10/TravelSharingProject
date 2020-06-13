@@ -41,6 +41,7 @@ class CreateTripScreen extends Component {
       endPlace: null,
       member: [],
       schedule_detail: null,
+      isCopy: false,
     };
   }
 
@@ -75,6 +76,7 @@ class CreateTripScreen extends Component {
         endPlace: destination,
         schedule_detail: schedule_detail,
         member: member !== null ? member : [],
+        isCopy: true,
       });
     } else {
       this.setState({
@@ -233,6 +235,10 @@ class CreateTripScreen extends Component {
             startPlace: startPlace,
             endPlace: endPlace,
             memsId: this.state.member,
+            schedule_reference: this.props.navigation.getParam(
+              'schedule_reference',
+            ),
+            copy_reference: this.props.navigation.getParam('copy_reference'),
           });
         } else {
           await this.props.get_suggest_schedule(endPlace._id, number_of_days);
@@ -275,6 +281,7 @@ class CreateTripScreen extends Component {
       startPlace,
       endPlace,
       member,
+      isCopy,
     } = this.state;
     const MemberGroup = member.length;
     const start = moment(startDate).format('DD/MM/YYYY');
@@ -412,30 +419,53 @@ class CreateTripScreen extends Component {
             {endPlace !== null ? (
               <View style={styles.TouchGroup}>
                 <Text style={styles.label}>Điểm Đến</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.onPressEndPlace();
-                  }}
-                  style={{
-                    justifyContent: 'center',
-                    height: '80%',
-                  }}>
+                {isCopy ? (
                   <View
                     style={{
-                      position: 'absolute',
-                      top: EStyleSheet.value('16rem'),
-                      right: EStyleSheet.value('13rem'),
+                      justifyContent: 'center',
+                      height: '80%',
                     }}>
-                    <Text style={{color: '#1161D8'}}> Chỉnh sửa </Text>
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: EStyleSheet.value('16rem'),
+                        right: EStyleSheet.value('13rem'),
+                      }}
+                    />
+                    <Text
+                      style={{
+                        ...styles.inputText,
+                        paddingLeft: EStyleSheet.value('2rem'),
+                      }}>
+                      {endPlace.destination_name}
+                    </Text>
                   </View>
-                  <Text
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.onPressEndPlace();
+                    }}
                     style={{
-                      ...styles.inputText,
-                      paddingLeft: EStyleSheet.value('2rem'),
+                      justifyContent: 'center',
+                      height: '80%',
                     }}>
-                    {endPlace.destination_name}
-                  </Text>
-                </TouchableOpacity>
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: EStyleSheet.value('16rem'),
+                        right: EStyleSheet.value('13rem'),
+                      }}>
+                      <Text style={{color: '#1161D8'}}> Chỉnh sửa </Text>
+                    </View>
+                    <Text
+                      style={{
+                        ...styles.inputText,
+                        paddingLeft: EStyleSheet.value('2rem'),
+                      }}>
+                      {endPlace.destination_name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
             ) : (
               <View style={styles.TouchGroup}>

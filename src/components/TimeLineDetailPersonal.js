@@ -42,17 +42,19 @@ export default class TimelineDetailPersonal extends Component {
       lastPlace = true;
     }
     if (this.count > 0) {
-      var secs = routeData.leg[this.count - 1].travelTime + 5400;
-      let minutes = Math.floor(secs / 60);
-      if (minutes > 60) {
-        let hours = Math.floor(minutes / 60);
-        this.hour += hours;
-        minutes = minutes - hours * 60;
-      }
-      this.minute += minutes;
-      if (this.minute > 60) {
-        this.hour = this.hour + Math.floor(this.minute / 60);
-        this.minute = this.minute - Math.floor(this.minute / 60) * 60;
+      if (routeData) {
+        var secs = routeData.leg[this.count - 1].travelTime + 5400;
+        let minutes = Math.floor(secs / 60);
+        if (minutes > 60) {
+          let hours = Math.floor(minutes / 60);
+          this.hour += hours;
+          minutes = minutes - hours * 60;
+        }
+        this.minute += minutes;
+        if (this.minute > 60) {
+          this.hour = this.hour + Math.floor(this.minute / 60);
+          this.minute = this.minute - Math.floor(this.minute / 60) * 60;
+        }
       }
     }
     if (this.hour <= 24) {
@@ -63,15 +65,17 @@ export default class TimelineDetailPersonal extends Component {
       timeText = 'Qua ngày';
     }
     this.count++;
-    return (
+    return item ? (
       <TimeLineItem
         data={item}
         timeText={timeText}
         key={this.count - 1}
         lastPlace={lastPlace}
         route={
-          this.count - 1 < routeData.leg.length
-            ? routeData.leg[this.count - 1]
+          routeData
+            ? this.count - 1 < routeData.leg.length
+              ? routeData.leg[this.count - 1]
+              : null
             : null
         }
         isDelete={isGone ? false : true}
@@ -84,7 +88,7 @@ export default class TimelineDetailPersonal extends Component {
         isGone={isGone}
         onPressRating={onPressRating}
       />
-    );
+    ) : null;
   };
   render() {
     const {

@@ -42,23 +42,28 @@ export async function GetRoutes(schedule_detail, numberOfDay) {
   let scheduleDetails = [];
   try {
     for (let i = 1; i <= numberOfDay; i++) {
-      let startCoord = schedule_detail['day_' + i][0].location;
-      let link = `https://route.ls.hereapi.com/routing/7.2/calculateroute.json?apiKey=${API_KEY}&waypoint0=geo!${
-        startCoord.latitude
-      },${startCoord.longitude}`;
-      let count = 1;
-      for (let j = 1; j < schedule_detail['day_' + i].length; j++) {
-        let wayPointCoord = schedule_detail['day_' + i][j].location;
-        link += `&waypoint${count}=geo!${wayPointCoord.latitude},${
-          wayPointCoord.longitude
-        }`;
-        count++;
+      if (schedule_detail['day_' + i].length > 1) {
+        let startCoord = schedule_detail['day_' + i][0].location;
+        let link = `https://route.ls.hereapi.com/routing/7.2/calculateroute.json?apiKey=${API_KEY}&waypoint0=geo!${
+          startCoord.latitude
+        },${startCoord.longitude}`;
+        let count = 1;
+        for (let j = 1; j < schedule_detail['day_' + i].length; j++) {
+          let wayPointCoord = schedule_detail['day_' + i][j].location;
+          link += `&waypoint${count}=geo!${wayPointCoord.latitude},${
+            wayPointCoord.longitude
+          }`;
+          count++;
+        }
+        link += '&mode=fastest;car;traffic:enabled';
+        let response = await fetch(link);
+        let responseJson = await response.json();
+        let routes = responseJson.response.route[0];
+        scheduleDetails.push(routes);
+      } else {
+        let routes = null;
+        scheduleDetails.push(routes);
       }
-      link += '&mode=fastest;car;traffic:enabled';
-      let response = await fetch(link);
-      let responseJson = await response.json();
-      let routes = responseJson.response.route[0];
-      scheduleDetails.push(routes);
     }
     return scheduleDetails;
   } catch (error) {

@@ -33,9 +33,6 @@ class PostDetailScreen extends Component {
       dataComment: null,
       dataRating: null,
       isLoading: true,
-      linkImage: null,
-      routeData: [],
-      isDetailLichTrinhReady: false,
       showRating: false,
       rating_choose: 0,
     };
@@ -64,7 +61,6 @@ class PostDetailScreen extends Component {
     );
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
     if (nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO) {
       this.setState({
         routeData: nextProps.detailLichTrinh.data,
@@ -86,6 +82,14 @@ class PostDetailScreen extends Component {
       schedule_detail: data.schedule.schedule_detail,
       destinationId: data.schedule.destination,
       number_of_days: data.schedule.number_of_days,
+      schedule_reference:
+        data.schedule.copy_reference !== null
+          ? data.schedule.copy_reference.schedule
+          : data.schedule._id,
+      copy_reference:
+        data.schedule.copy_reference !== null
+          ? data.schedule.copy_reference._id
+          : data._id,
     });
   };
   onPressBack = () => {
@@ -117,7 +121,6 @@ class PostDetailScreen extends Component {
   };
   renderStar = () => {
     const {rating_choose} = this.state;
-    console.log('a', rating_choose);
     const star = [];
     for (let index = 1; index <= 5; index++) {
       if (index <= rating_choose) {

@@ -27,17 +27,19 @@ export default class TimelineDetail extends Component {
         lastPlace = true;
       }
       if (count > 0) {
-        var secs = routeData.leg[count - 1].travelTime + 5400;
-        let minutes = Math.floor(secs / 60);
-        if (minutes > 60) {
-          let hours = Math.floor(minutes / 60);
-          hour += hours;
-          minutes = minutes - hours * 60;
-        }
-        minute += minutes;
-        if (minute > 60) {
-          hour = hour + Math.floor(minute / 60);
-          minute = minute - Math.floor(minute / 60) * 60;
+        if (routeData) {
+          var secs = routeData.leg[count - 1].travelTime + 5400;
+          let minutes = Math.floor(secs / 60);
+          if (minutes > 60) {
+            let hours = Math.floor(minutes / 60);
+            hour += hours;
+            minutes = minutes - hours * 60;
+          }
+          minute += minutes;
+          if (minute > 60) {
+            hour = hour + Math.floor(minute / 60);
+            minute = minute - Math.floor(minute / 60) * 60;
+          }
         }
       }
       timeText = `${hour < 10 ? '0' + hour : hour}:${
@@ -49,7 +51,16 @@ export default class TimelineDetail extends Component {
           timeText={timeText}
           key={count}
           lastPlace={lastPlace}
-          route={count < routeData.leg.length ? routeData.leg[count] : null}
+          route={
+            routeData
+              ? count < routeData.leg.length
+                ? routeData.leg[count]
+                : null
+              : null
+            // routeData && count < routeData.leg.length
+            //   ? routeData.leg[count]
+            //   : null
+          }
         />,
       );
       count++;

@@ -85,6 +85,7 @@ class ShareTimeLineDetailScreen extends Component {
       this.setState({
         schedule_detail: nextProps.detailLichTrinh.data,
       });
+      console.log('hello', nextProps.detailLichTrinh.data);
       this.props.get_location_info(
         nextProps.detailLichTrinh.data,
         this.state.totalDay,
@@ -93,10 +94,12 @@ class ShareTimeLineDetailScreen extends Component {
       nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO ||
       nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO_FAIL
     ) {
-      this.setState({
-        routeData: nextProps.detailLichTrinh.data,
-        isLoading: false,
-      });
+      if (nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO) {
+        this.setState({
+          routeData: nextProps.detailLichTrinh.data,
+          isLoading: false,
+        });
+      }
     } else if (nextProps.detailLichTrinh.type === types.ADD_LANDSCAPES) {
       this.setState({
         schedule_detail: nextProps.detailLichTrinh.data.schedule_detail,
@@ -227,6 +230,11 @@ class ShareTimeLineDetailScreen extends Component {
       schedule_detail: scheduleDetail,
       nums_of_day,
       member: memsId,
+      schedule_reference: this.props.navigation.getParam(
+        'schedule_reference',
+        null,
+      ),
+      copy_reference: this.props.navigation.getParam('copy_reference', null),
     };
     await this.props.post_hanhtrinh(data);
   };
