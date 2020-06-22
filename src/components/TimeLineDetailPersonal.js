@@ -87,6 +87,7 @@ export default class TimelineDetailPersonal extends Component {
         isActive={isActive}
         isGone={isGone}
         onPressRating={onPressRating}
+        onPressItem={this.props.onPressItem}
       />
     ) : null;
   };

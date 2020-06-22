@@ -26,7 +26,6 @@ export default class ScrollVerticalLichTrinh extends Component {
     let Items = [];
     for (let i = 1; i <= schedule.number_of_days; i++) {
       let key = 'day_' + i;
-      console.log(this.props.data.background);
       Items.push(
         <TravelScrollItem
           routeInfo={routeInfo[i - 1]}

@@ -139,19 +139,47 @@ class TimeLineDetailScreen extends Component {
   onPressMap = (routeData, data) => {
     let routing = [];
     let points = [];
-    routeData.leg.map(item => {
-      item.maneuver.map(subItem => {
-        routing.push(subItem.position);
+    if (routeData !== null) {
+      routeData.leg.map(item => {
+        item.maneuver.map(subItem => {
+          routing.push(subItem.position);
+        });
       });
-    });
-    data.map(item => {
-      points.push(item.location);
-    });
-    this.props.navigation.navigate('Map', {
-      routing: routing,
-      data: data,
-      points: points,
-    });
+      data.map(item => {
+        points.push(item.location);
+      });
+      this.props.navigation.navigate('Map', {
+        routing: routing,
+        data: data,
+        points: points,
+      });
+    } else {
+      if (data.length > 0) {
+        data.map(item => {
+          points.push(item.location);
+        });
+        this.props.navigation.navigate('Map', {
+          data: data,
+          points: points,
+        });
+      } else {
+        Alert.alert(
+          'Lưu ý',
+          'Không có địa điểm nào để xem bản đồ',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    }
+  };
+  onPressItem = item => {
+    this.props.navigation.navigate('Rating', {data: item});
   };
   onDragEnd = (dataDay, keyday) => {
     const data = this.props.navigation.getParam('data');
@@ -199,6 +227,7 @@ class TimeLineDetailScreen extends Component {
           onDragEnd={this.onDragEnd}
           onPressMap={this.onPressMap}
           onPressRating={this.onPressRating}
+          onPressItem={this.onPressItem}
         />,
       );
     }

@@ -128,6 +128,7 @@ export default class TimeLineItem extends Component {
       isActive,
       isGone,
       onPressRating,
+      onPressItem,
     } = this.props;
     if (isGone) {
       return (
@@ -300,6 +301,7 @@ export default class TimeLineItem extends Component {
               flexDirection: 'row',
               backgroundColor: isActive ? '#FFFFFF50' : null,
             }}
+            onPress={() => onPressItem(data)}
             onLongPress={onLongPress}>
             <View style={styles.Col1}>
               <View>

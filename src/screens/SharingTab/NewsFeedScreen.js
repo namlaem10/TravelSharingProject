@@ -9,6 +9,7 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
+  ScrollView,
 } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import * as constants from '../../utils/Constants';
@@ -27,6 +28,7 @@ class NewsFeedScreen extends Component {
       message: '',
       data: null,
       dataBackup: null,
+      dataHot: null,
       isRefreshing: false,
     };
     this.didFocusSubscription = props.navigation.addListener(
@@ -58,8 +60,9 @@ class NewsFeedScreen extends Component {
       } else {
         this.setState({
           isLoading: false,
-          data: allLichTrinh.data,
-          dataBackup: allLichTrinh.data,
+          data: allLichTrinh.data.all,
+          dataBackup: allLichTrinh.data.all,
+          dataHot: allLichTrinh.data.hot,
         });
       }
     }
@@ -82,12 +85,15 @@ class NewsFeedScreen extends Component {
     searchText = searchText.trim().toLowerCase();
     data = data.filter(element => {
       let searchData = null;
-      let sText =
-        element.departure.destination_name +
-        element.destination.destination_name;
+      let sText = element.destination.destination_name;
       searchData = sText.toLowerCase().match(searchText);
       return searchData;
     });
+    if (data.length > 1) {
+      data.sort(function(a, b) {
+        return b.schedule.copy_list.length - a.schedule.copy_list.length;
+      });
+    }
     this.setState({
       data: data,
     });
@@ -96,6 +102,71 @@ class NewsFeedScreen extends Component {
     this.setState({isRefreshing: true, searchText: ''});
     await this.props.get_all();
     this.setState({isRefreshing: false});
+  };
+  renderHeader = () => {
+    const {dataHot, searchText} = this.state;
+    let array = [];
+    dataHot.map(item => {
+      let endDate = new Date(item.end_day);
+      let startDate = new Date(item.start_day);
+      let number_of_days = new Date(endDate - startDate).getDate();
+      array.push(
+        <TouchableOpacity
+          key={item._id}
+          style={styles.headerItem}
+          onPress={() => {
+            this.onPressItem(item);
+          }}>
+          <Image
+            source={{uri: item.background}}
+            style={{
+              height: EStyleSheet.value('100rem'),
+              width: EStyleSheet.value('100%'),
+              borderRadius: EStyleSheet.value('10rem'),
+            }}
+          />
+          <Text style={{fontFamily: constants.Fonts.medium}}>
+            {item.departure.destination_name} -{' '}
+            {item.destination.destination_name}
+          </Text>
+          <Text
+            style={{
+              fontFamily: constants.Fonts.light,
+              fontSize: EStyleSheet.value('13rem'),
+            }}>
+            Lượt tham khảo:&nbsp; {item.schedule.copy_list.length}
+          </Text>
+          <View style={styles.dayMarker}>
+            <Text style={{color: 'white'}}>{number_of_days} ngày</Text>
+          </View>
+        </TouchableOpacity>,
+      );
+    });
+    return searchText === '' ? (
+      <View style={styles.hotView}>
+        <Text style={styles.headerTitle}>Hành trình đang HOT</Text>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <View style={styles.hotScroll}>{array}</View>
+        </ScrollView>
+        <Text
+          style={{
+            ...styles.headerTitle,
+            paddingTop: EStyleSheet.value('5rem'),
+          }}>
+          Bài viết mới
+        </Text>
+      </View>
+    ) : (
+      <View style={styles.hotViewBlank}>
+        <Text
+          style={{
+            ...styles.headerTitle,
+            paddingTop: EStyleSheet.value('5rem'),
+          }}>
+          Tìm kiếm cho "{searchText}"
+        </Text>
+      </View>
+    );
   };
   render() {
     const {searchText, isLoading, message, data} = this.state;
@@ -107,7 +178,7 @@ class NewsFeedScreen extends Component {
               onChangeText={this.setSearchText}
               value={searchText}
               placeHolder={'Nhập địa điểm bạn tìm kiếm'}
-              title={'Hành trình phổ biến'}
+              title={'Khám phá'}
               data={data}
             />
           </View>
@@ -122,6 +193,7 @@ class NewsFeedScreen extends Component {
             <FlatList
               showsVerticalScrollIndicator={false}
               data={data}
+              ListHeaderComponent={this.renderHeader}
               renderItem={({item}) =>
                 item.isShare ? (
                   <NewsFeedItem
@@ -204,5 +276,43 @@ const styles = EStyleSheet.create({
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     marginTop: '20rem',
+  },
+  hotView: {
+    flexDirection: 'column',
+    height: '200rem',
+    paddingLeft: '15rem',
+    paddingRight: '5rem',
+    width: constants.WIDTH,
+  },
+  hotViewBlank: {
+    flexDirection: 'column',
+    paddingLeft: '15rem',
+    paddingRight: '5rem',
+    width: constants.WIDTH,
+  },
+  headerItem: {
+    height: '140rem',
+    width: '180rem',
+    marginRight: '15rem',
+  },
+  hotScroll: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  headerTitle: {
+    fontFamily: constants.Fonts.medium,
+    fontSize: constants.FontSizes.header,
+  },
+  dayMarker: {
+    position: 'absolute',
+    top: EStyleSheet.value('10rem'),
+    right: 0,
+    paddingLeft: EStyleSheet.value('7rem'),
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    width: EStyleSheet.value('50rem'),
+    height: EStyleSheet.value('20rem'),
+    borderTopLeftRadius: EStyleSheet.value('10rem'),
+    borderBottomLeftRadius: EStyleSheet.value('10rem'),
   },
 });

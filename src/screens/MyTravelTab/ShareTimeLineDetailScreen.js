@@ -85,7 +85,6 @@ class ShareTimeLineDetailScreen extends Component {
       this.setState({
         schedule_detail: nextProps.detailLichTrinh.data,
       });
-      console.log('hello', nextProps.detailLichTrinh.data);
       this.props.get_location_info(
         nextProps.detailLichTrinh.data,
         this.state.totalDay,
@@ -151,19 +150,47 @@ class ShareTimeLineDetailScreen extends Component {
   onPressMap = (routeData, data) => {
     let routing = [];
     let points = [];
-    routeData.leg.map(item => {
-      item.maneuver.map(subItem => {
-        routing.push(subItem.position);
+    if (routeData !== null) {
+      routeData.leg.map(item => {
+        item.maneuver.map(subItem => {
+          routing.push(subItem.position);
+        });
       });
-    });
-    data.map(item => {
-      points.push(item.location);
-    });
-    this.props.navigation.navigate('Map', {
-      routing: routing,
-      data: data,
-      points: points,
-    });
+      data.map(item => {
+        points.push(item.location);
+      });
+      this.props.navigation.navigate('Map', {
+        routing: routing,
+        data: data,
+        points: points,
+      });
+    } else {
+      if (data.length > 0) {
+        data.map(item => {
+          points.push(item.location);
+        });
+        this.props.navigation.navigate('Map', {
+          data: data,
+          points: points,
+        });
+      } else {
+        Alert.alert(
+          'Lưu ý',
+          'Không có địa điểm nào để xem bản đồ',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    }
+  };
+  onPressItem = item => {
+    console.log(item);
   };
   _renderItem = () => {
     let array = [];

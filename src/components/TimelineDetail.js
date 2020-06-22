@@ -61,6 +61,7 @@ export default class TimelineDetail extends Component {
             //   ? routeData.leg[count]
             //   : null
           }
+          onPressItem={this.props.onPressItem}
         />,
       );
       count++;

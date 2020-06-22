@@ -223,26 +223,38 @@ class CreateTripScreen extends Component {
       }
       if (this.state.schedule_detail !== null) {
         let props_nums_day = this.props.navigation.getParam('number_of_days');
-        if (props_nums_day >= number_of_days) {
-          this.props.navigation.navigate('ShareTimeLineDetail', {
-            action: 'creating',
-            data: this.state.schedule_detail,
-            page: 1,
-            totalDay: number_of_days,
-            start: startDate,
-            end: endDate,
-            isGone: false,
-            startPlace: startPlace,
-            endPlace: endPlace,
-            memsId: this.state.member,
-            schedule_reference: this.props.navigation.getParam(
-              'schedule_reference',
-            ),
-            copy_reference: this.props.navigation.getParam('copy_reference'),
-          });
-        } else {
-          await this.props.get_suggest_schedule(endPlace._id, number_of_days);
-        }
+        console.log(number_of_days);
+        // if (props_nums_day >= number_of_days) {
+        this.props.navigation.navigate('ShareTimeLineDetail', {
+          action: 'creating',
+          data: this.state.schedule_detail,
+          page: 1,
+          totalDay: number_of_days,
+          start: startDate,
+          end: endDate,
+          isGone: false,
+          startPlace: startPlace,
+          endPlace: endPlace,
+          memsId: this.state.member,
+          schedule_reference: this.props.navigation.getParam(
+            'schedule_reference',
+          ),
+          copy_reference: this.props.navigation.getParam('copy_reference'),
+        });
+        // } else {
+        //   this.props.navigation.navigate('ShareTimeLineDetail', {
+        //     action: 'creating',
+        //     data: this.state.schedule_detail,
+        //     page: 1,
+        //     totalDay: number_of_days,
+        //     start: startDate,
+        //     end: endDate,
+        //     isGone: false,
+        //     startPlace: startPlace,
+        //     endPlace: endPlace,
+        //     memsId: this.state.member,
+        //   });
+        //}
       } else {
         await this.props.get_suggest_schedule(endPlace._id, number_of_days);
       }
