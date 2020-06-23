@@ -6,6 +6,7 @@ import {
   StatusBar,
   Image,
   ActivityIndicator,
+  BackHandler,
   Text,
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -78,6 +79,7 @@ class ChattingScreen extends Component {
     });
   };
   componentDidMount = async () => {
+    BackHandler.addEventListener('hardwareBackPress', this.onPressBack);
     const groupData = this.props.navigation.getParam('data');
     const GroupRef = database.ref('groupChats/' + groupData._id);
     GroupRef.on('child_changed', snapshot => {
@@ -91,6 +93,9 @@ class ChattingScreen extends Component {
       });
     });
   };
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onPressBack);
+  }
   renderSend(props) {
     return (
       <Send {...props}>

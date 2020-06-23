@@ -23,12 +23,14 @@ class InfoGroupScreen extends Component {
       title: '',
       data: null,
       isLeader: false,
+      isWillGo: false,
     };
   }
   UNSAFE_componentWillMount() {
     let data = this.props.navigation.getParam('data');
     let user = this.props.user.data.user_info;
     let title = this.props.navigation.getParam('title');
+    let isWillGo = this.props.navigation.getParam('isWillGo');
     let isLeader = false;
     if (user._id === data.member[0]._id) {
       isLeader = true;
@@ -37,6 +39,7 @@ class InfoGroupScreen extends Component {
       title: title,
       data: data,
       isLeader,
+      isWillGo,
     });
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -110,7 +113,7 @@ class InfoGroupScreen extends Component {
     });
   };
   render() {
-    const {title, data, isLeader} = this.state;
+    const {title, data, isLeader, isWillGo} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -162,25 +165,28 @@ class InfoGroupScreen extends Component {
               </Text>
             </TouchableOpacity>
           ) : null}
-          <TouchableOpacity
-            style={styles.settingItem}
-            onPress={() => {
-              this.onPressTrackingButton(data);
-            }}>
-            <View style={styles.circleIcon}>
-              <Image
-                style={styles.iconVector}
-                source={constants.Images.IC_TRACKING_LOCATION_WHITE}
-              />
-            </View>
-            <Text
-              style={{
-                fontFamily: constants.Fonts.regular,
-                fontSize: EStyleSheet.value('15rem'),
+          {!isWillGo ? null : (
+            <TouchableOpacity
+              style={styles.settingItem}
+              onPress={() => {
+                this.onPressTrackingButton(data);
               }}>
-              Theo dõi nhóm
-            </Text>
-          </TouchableOpacity>
+              <View style={styles.circleIcon}>
+                <Image
+                  style={styles.iconVector}
+                  source={constants.Images.IC_TRACKING_LOCATION_WHITE}
+                />
+              </View>
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.regular,
+                  fontSize: EStyleSheet.value('15rem'),
+                }}>
+                Theo dõi nhóm
+              </Text>
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => this.onPressChatting(data)}>

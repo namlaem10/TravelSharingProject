@@ -14,7 +14,7 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import TitleBarCustom from '../../components/TitleBarCustom';
 import {connect} from 'react-redux';
-import {types} from '../../redux/reducers/UserReducer';
+import {types, actions} from '../../redux/reducers/UserReducer';
 class InfoUserScreen extends Component {
   constructor(props) {
     super(props);
@@ -35,16 +35,7 @@ class InfoUserScreen extends Component {
           payload.action.type === 'Navigation/NAVIGATE' ||
           payload.action.type === 'Navigation/BACK'
         ) {
-          await this.setState({
-            user: this.props.user.data.user_info || null,
-            total_travel: this.props.user.data.total_travel || null,
-            travel_share: this.props.user.data.travel_share || null,
-            rating_point: this.props.user.data.rating_point || null,
-            people_rating: this.props.user.data.people_rating || null,
-            avatar: this.props.user.data.user_info.avatar
-              ? this.props.user.data.user_info.avatar
-              : null,
-          });
+          await this.props.get_info();
         }
       },
     );
@@ -53,9 +44,24 @@ class InfoUserScreen extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.user.type === types.UPDATE_INFO) {
       this.setState({user: nextProps.user.data.user_info});
-    }
-    if (nextProps.user.type === types.ADD_FRIEND) {
+    } else if (nextProps.user.type === types.ADD_FRIEND) {
       this.setState({user: nextProps.user.data.user_info});
+    } else if (
+      nextProps.user.type === types.GET_INFO ||
+      nextProps.user.type === types.GET_INFO_FAIL
+    ) {
+      if (nextProps.user.type === types.GET_INFO) {
+        this.setState({
+          user: nextProps.user.data.user_info,
+          total_travel: nextProps.user.data.total_travel,
+          travel_share: nextProps.user.data.travel_share,
+          rating_point: nextProps.user.data.rating_point,
+          people_rating: nextProps.user.data.people_rating,
+          avatar: nextProps.user.data.user_info.avatar
+            ? nextProps.user.data.user_info.avatar
+            : null,
+        });
+      }
     }
   }
   onPressBack = () => {
@@ -177,14 +183,16 @@ const mapStateToProps = ({user}) => {
     user: user,
   };
 };
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     login: parrams => dispatch(actions.login(parrams)),
-//     reset: () => dispatch(actions.reset()),
-//   };
-// };
+const mapDispatchToProps = dispatch => {
+  return {
+    get_info: () => dispatch(actions.get_info()),
+  };
+};
 // eslint-disable-next-line prettier/prettier
-export default connect(mapStateToProps)(InfoUserScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(InfoUserScreen);
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: '#F9F9F9',

@@ -43,10 +43,13 @@ class SignInScreen extends Component {
     let checkEmptyEmail = validateEmpty(email);
     let checkEmptyPass = validateEmpty(password);
     if (!checkEmptyEmail || !checkEmptyPass) {
-      this.setState({error: 'Tài khoản hoặc mật khẩu không được bỏ trống!'});
+      this.setState({
+        error: 'Tài khoản hoặc mật khẩu không được bỏ trống!',
+        isLoading: false,
+      });
     } else {
       if (!validateEmail(email)) {
-        this.setState({error: 'Email không hợp lệ'});
+        this.setState({error: 'Email không hợp lệ', isLoading: false});
       } else {
         let params = new URLSearchParams();
         params.append('email', email);
