@@ -114,10 +114,17 @@ class MyTravelScreen extends Component {
       if (startDate > currentDate) {
         will++;
       }
-      if (currentDate >= startDate && currentDate <= endDate) {
+      if (
+        (currentDate >= startDate && currentDate <= endDate) ||
+        (currentDate >= startDate &&
+          currentDate.getDate() === endDate.getDate())
+      ) {
         goin++;
       }
-      if (endDate < currentDate) {
+      if (
+        endDate < currentDate &&
+        endDate.getDate() !== currentDate.getDate()
+      ) {
         gone++;
       }
     });
@@ -249,7 +256,11 @@ class MyTravelScreen extends Component {
             var currentDate = new Date();
             var startDate = new Date(item.start_day);
             var endDate = new Date(item.end_day);
-            if (currentDate >= startDate && currentDate <= endDate) {
+            if (
+              (currentDate >= startDate && currentDate <= endDate) ||
+              (currentDate >= startDate &&
+                currentDate.getDate() === endDate.getDate())
+            ) {
               let isLeader = false;
               if (this.state.user._id === item.create_by._id) {
                 isLeader = true;
@@ -301,7 +312,10 @@ class MyTravelScreen extends Component {
             if (this.state.user._id === item.create_by._id) {
               isLeader = true;
             }
-            if (endDate < currentDate) {
+            if (
+              endDate < currentDate &&
+              endDate.getDate() !== currentDate.getDate()
+            ) {
               return (
                 <TravelItemGone
                   data={item}

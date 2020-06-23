@@ -11,7 +11,13 @@ export default class TravelScrollItem extends Component {
   }
 
   render() {
-    const {page, onPressTravelDay, data, routeInfo} = this.props;
+    const {
+      page,
+      onPressTravelDay,
+      data,
+      routeInfo,
+      destinationImg,
+    } = this.props;
     var totalDistance = 0;
     if (routeInfo) {
       totalDistance =
@@ -28,7 +34,12 @@ export default class TravelScrollItem extends Component {
                 height: EStyleSheet.value('150rem'),
                 borderRadius: EStyleSheet.value('12rem'),
               }}
-              source={{uri: data[0].tourist_destination_image}}
+              source={{
+                uri:
+                  data.length > 0
+                    ? data[0].tourist_destination_image
+                    : destinationImg,
+              }}
             />
           </View>
           <View style={styles.dayNum}>
@@ -79,7 +90,7 @@ export default class TravelScrollItem extends Component {
                   fontSize: EStyleSheet.value('14rem'),
                   fontFamily: constants.Fonts.light,
                 }}>
-                Chưa có thông tin
+                0 km
               </Text>
             )}
           </View>

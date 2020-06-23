@@ -26,6 +26,9 @@ export default class TravelTimelineDetailScreen extends Component {
       this.props.navigation.goBack();
     }
   };
+  onPressItem = item => {
+    console.log(item);
+  };
   _renderItem = () => {
     let array = [];
     let countday = 0;
@@ -49,6 +52,7 @@ export default class TravelTimelineDetailScreen extends Component {
           routeData={routeDataItem}
           tabLabel={lable}
           day={countday}
+          onPressItem={this.onPressItem}
         />,
       );
     }

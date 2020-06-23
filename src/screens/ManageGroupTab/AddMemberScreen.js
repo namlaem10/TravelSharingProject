@@ -160,7 +160,6 @@ class AddMemberScreen extends Component {
       this.setState({
         loadingVisible: true,
       });
-      console.log(idUserPick);
       await this.props.put_update_member(idHanhTrinh, idUserPick);
     }
   };

@@ -61,9 +61,7 @@ export default class MapScreen extends Component {
   onPressMyLocation = async () => {
     let points = this.props.navigation.getParam('points');
     points.push(this.state.userLocation);
-    console.log(points);
     let newRegion = await constants.getRegionForCoordinates(points);
-    console.log(newRegion);
     this.setState({
       region: newRegion,
     });
@@ -109,19 +107,21 @@ export default class MapScreen extends Component {
               />
             );
           })}
-          <Polyline
-            coordinates={routing}
-            strokeColor="#4C79FF" // fallback for when `strokeColors` is not supported by the map-provider
-            strokeColors={[
-              '#7F0000',
-              '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
-              '#B24112',
-              '#E5845C',
-              '#238C23',
-              '#7F0000',
-            ]}
-            strokeWidth={4}
-          />
+          {routing !== undefined ? (
+            <Polyline
+              coordinates={routing}
+              strokeColor="#4C79FF" // fallback for when `strokeColors` is not supported by the map-provider
+              strokeColors={[
+                '#7F0000',
+                '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
+                '#B24112',
+                '#E5845C',
+                '#238C23',
+                '#7F0000',
+              ]}
+              strokeWidth={4}
+            />
+          ) : null}
         </MapView>
         <View style={styles.locateUserGroup}>
           <TouchableOpacity onPress={() => this.onPressMyLocation()}>

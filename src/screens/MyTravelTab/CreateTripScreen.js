@@ -41,6 +41,7 @@ class CreateTripScreen extends Component {
       endPlace: null,
       member: [],
       schedule_detail: null,
+      isCopy: false,
     };
   }
 
@@ -75,6 +76,7 @@ class CreateTripScreen extends Component {
         endPlace: destination,
         schedule_detail: schedule_detail,
         member: member !== null ? member : [],
+        isCopy: true,
       });
     } else {
       this.setState({
@@ -221,22 +223,38 @@ class CreateTripScreen extends Component {
       }
       if (this.state.schedule_detail !== null) {
         let props_nums_day = this.props.navigation.getParam('number_of_days');
-        if (props_nums_day >= number_of_days) {
-          this.props.navigation.navigate('ShareTimeLineDetail', {
-            action: 'creating',
-            data: this.state.schedule_detail,
-            page: 1,
-            totalDay: number_of_days,
-            start: startDate,
-            end: endDate,
-            isGone: false,
-            startPlace: startPlace,
-            endPlace: endPlace,
-            memsId: this.state.member,
-          });
-        } else {
-          await this.props.get_suggest_schedule(endPlace._id, number_of_days);
-        }
+        console.log(number_of_days);
+        // if (props_nums_day >= number_of_days) {
+        this.props.navigation.navigate('ShareTimeLineDetail', {
+          action: 'creating',
+          data: this.state.schedule_detail,
+          page: 1,
+          totalDay: number_of_days,
+          start: startDate,
+          end: endDate,
+          isGone: false,
+          startPlace: startPlace,
+          endPlace: endPlace,
+          memsId: this.state.member,
+          schedule_reference: this.props.navigation.getParam(
+            'schedule_reference',
+          ),
+          copy_reference: this.props.navigation.getParam('copy_reference'),
+        });
+        // } else {
+        //   this.props.navigation.navigate('ShareTimeLineDetail', {
+        //     action: 'creating',
+        //     data: this.state.schedule_detail,
+        //     page: 1,
+        //     totalDay: number_of_days,
+        //     start: startDate,
+        //     end: endDate,
+        //     isGone: false,
+        //     startPlace: startPlace,
+        //     endPlace: endPlace,
+        //     memsId: this.state.member,
+        //   });
+        //}
       } else {
         await this.props.get_suggest_schedule(endPlace._id, number_of_days);
       }
@@ -275,6 +293,7 @@ class CreateTripScreen extends Component {
       startPlace,
       endPlace,
       member,
+      isCopy,
     } = this.state;
     const MemberGroup = member.length;
     const start = moment(startDate).format('DD/MM/YYYY');
@@ -412,30 +431,53 @@ class CreateTripScreen extends Component {
             {endPlace !== null ? (
               <View style={styles.TouchGroup}>
                 <Text style={styles.label}>Điểm Đến</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.onPressEndPlace();
-                  }}
-                  style={{
-                    justifyContent: 'center',
-                    height: '80%',
-                  }}>
+                {isCopy ? (
                   <View
                     style={{
-                      position: 'absolute',
-                      top: EStyleSheet.value('16rem'),
-                      right: EStyleSheet.value('13rem'),
+                      justifyContent: 'center',
+                      height: '80%',
                     }}>
-                    <Text style={{color: '#1161D8'}}> Chỉnh sửa </Text>
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: EStyleSheet.value('16rem'),
+                        right: EStyleSheet.value('13rem'),
+                      }}
+                    />
+                    <Text
+                      style={{
+                        ...styles.inputText,
+                        paddingLeft: EStyleSheet.value('2rem'),
+                      }}>
+                      {endPlace.destination_name}
+                    </Text>
                   </View>
-                  <Text
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.onPressEndPlace();
+                    }}
                     style={{
-                      ...styles.inputText,
-                      paddingLeft: EStyleSheet.value('2rem'),
+                      justifyContent: 'center',
+                      height: '80%',
                     }}>
-                    {endPlace.destination_name}
-                  </Text>
-                </TouchableOpacity>
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: EStyleSheet.value('16rem'),
+                        right: EStyleSheet.value('13rem'),
+                      }}>
+                      <Text style={{color: '#1161D8'}}> Chỉnh sửa </Text>
+                    </View>
+                    <Text
+                      style={{
+                        ...styles.inputText,
+                        paddingLeft: EStyleSheet.value('2rem'),
+                      }}>
+                      {endPlace.destination_name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
             ) : (
               <View style={styles.TouchGroup}>
