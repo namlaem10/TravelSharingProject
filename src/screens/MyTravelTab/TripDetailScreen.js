@@ -57,6 +57,7 @@ class TripDetailScreen extends Component {
       },
       isGone: this.props.navigation.getParam('isGone', false),
       isShare: this.props.navigation.getParam('isShare', false),
+      isWillGo: this.props.navigation.getParam('isWillGo', false),
     });
     this.props.get_location_info(
       data.schedule.schedule_detail,
@@ -235,6 +236,7 @@ class TripDetailScreen extends Component {
       dataComment,
       dataRating,
       showRating,
+      isWillGo,
     } = this.state;
     let background = null;
     if (data !== null) {
@@ -407,7 +409,7 @@ class TripDetailScreen extends Component {
               isLoading={this.state.isLoading}
             />
           </View>
-          {isGone ? null : (
+          {isGone ? null : isWillGo ? null : (
             <View
               style={{
                 justifyContent: 'center',

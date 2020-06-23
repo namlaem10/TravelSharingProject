@@ -13,7 +13,7 @@ export default class TravelItem extends Component {
   }
 
   render() {
-    const {data, onPressItem, isLeader} = this.props;
+    const {data, onPressItem, isLeader, isWillGo} = this.props;
     moment.locale('vi');
     var currentDate = new Date();
     var startDate = new Date(data.start_day);
@@ -26,7 +26,7 @@ export default class TravelItem extends Component {
     return (
       <TouchableOpacity
         style={styles.container}
-        onPress={() => onPressItem(data, isLeader)}>
+        onPress={() => onPressItem(data, isLeader, isWillGo)}>
         <View style={styles.header}>
           <Image
             source={{uri: background}}

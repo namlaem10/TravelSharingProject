@@ -20,6 +20,7 @@ class AccountScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       user: this.props.user.data.user_info || null,
       avatar: this.props.user.data.user_info.avatar
         ? this.props.user.data.user_info.avatar
@@ -141,10 +142,10 @@ class AccountScreen extends Component {
     );
   };
   render() {
-    const {user, avatar} = this.state;
+    const {user, avatar, isLoading} = this.state;
     return (
       <View style={styles.container}>
-        <Dialog visible={this.state.isLoading}>
+        <Dialog visible={isLoading}>
           <DialogContent>
             <View style={styles.loadingDialog}>
               <ActivityIndicator

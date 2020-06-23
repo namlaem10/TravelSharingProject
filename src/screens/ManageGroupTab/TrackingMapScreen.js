@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Image,
   Alert,
+  BackHandler,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -109,7 +110,11 @@ class TrackingMapScreen extends Component {
       }
     }
   };
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onPressBack);
+  }
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onPressBack);
     const location = this.props.navigation.getParam('location', '');
     if (location === 'notificationService') {
       this.props.get_travel_by_id(

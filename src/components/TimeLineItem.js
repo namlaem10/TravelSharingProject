@@ -257,7 +257,7 @@ export default class TimeLineItem extends Component {
               flexDirection: 'row',
               backgroundColor: isActive ? '#FFFFFF50' : null,
             }}
-            onLongPress={onLongPress}>
+            onLongPress={this.props.isLeader ? onLongPress : null}>
             <View style={styles.DragCol}>
               <View style={styles.pictureView}>
                 <Image

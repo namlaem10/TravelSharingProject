@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   ScrollView,
+  Alert,
 } from 'react-native';
 import SearchBar from '../../components/SearchBar';
 import * as constants from '../../utils/Constants';
@@ -17,6 +18,8 @@ import NewsFeedItem from './SharingTapComponents/NewsFeedItem';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/allLichTrinhReducer';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
+import {TextInput} from 'react-native-gesture-handler';
 
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 class NewsFeedScreen extends Component {
@@ -30,6 +33,11 @@ class NewsFeedScreen extends Component {
       dataBackup: null,
       dataHot: null,
       isRefreshing: false,
+      showRating: false,
+      reportId: null,
+      reportContent: '',
+      showReportResult: false,
+      reportMessage: '',
     };
     this.didFocusSubscription = props.navigation.addListener(
       'willFocus',
@@ -48,7 +56,10 @@ class NewsFeedScreen extends Component {
     await this.props.get_all();
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.allLichTrinh.type === types.GET_ALL) {
+    if (
+      nextProps.allLichTrinh.type === types.GET_ALL ||
+      nextProps.allLichTrinh.type === types.GET_ALL_FAIL
+    ) {
       const {allLichTrinh} = nextProps;
       if (allLichTrinh.status) {
         this.setState({
@@ -65,6 +76,35 @@ class NewsFeedScreen extends Component {
           dataHot: allLichTrinh.data.hot,
         });
       }
+    } else if (
+      nextProps.allLichTrinh.type === types.REPORT_TRAVEL ||
+      nextProps.allLichTrinh.type === types.REPORT_TRAVEL_FAIL
+    ) {
+      if (nextProps.allLichTrinh.type === types.REPORT_TRAVEL) {
+        setTimeout(() => {
+          this.setState({reportMessage: 'Báo cáo thành công'});
+        }, 1000);
+        setTimeout(() => {
+          this.setState({
+            showReportResult: false,
+            reportMessage: '',
+            reportId: null,
+            reportContent: '',
+          });
+        }, 2200);
+      } else {
+        setTimeout(() => {
+          this.setState({reportMessage: 'Có lỗi! xin thử lại'});
+        }, 1000);
+        setTimeout(() => {
+          this.setState({
+            showReportResult: false,
+            reportMessage: '',
+            reportId: null,
+            reportContent: '',
+          });
+        }, 2200);
+      }
     }
   }
   onSearchChangeText = text => {
@@ -74,6 +114,14 @@ class NewsFeedScreen extends Component {
   };
   onPressItem = item => {
     this.props.navigation.navigate('PostDetail', {data: item});
+  };
+  onPressReportItem = id => {
+    this.setState({showRating: true, reportId: id});
+  };
+  onSendReport = () => {
+    const {reportId, reportContent} = this.state;
+    this.props.report(reportId, reportContent);
+    this.setState({showRating: false, showReportResult: true});
   };
   setSearchText = text => {
     let searchText = text.replace(
@@ -125,7 +173,11 @@ class NewsFeedScreen extends Component {
               borderRadius: EStyleSheet.value('10rem'),
             }}
           />
-          <Text style={{fontFamily: constants.Fonts.medium}}>
+          <Text
+            style={{
+              fontFamily: constants.Fonts.medium,
+              marginTop: EStyleSheet.value('3rem'),
+            }}>
             {item.departure.destination_name} -{' '}
             {item.destination.destination_name}
           </Text>
@@ -169,9 +221,127 @@ class NewsFeedScreen extends Component {
     );
   };
   render() {
-    const {searchText, isLoading, message, data} = this.state;
+    const {
+      searchText,
+      isLoading,
+      message,
+      data,
+      showRating,
+      reportContent,
+      showReportResult,
+      reportMessage,
+    } = this.state;
     return (
       <View style={styles.container}>
+        <Dialog visible={showRating}>
+          <DialogContent>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: EStyleSheet.value('25rem'),
+              }}>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('18rem'),
+                  fontFamily: constants.Fonts.medium,
+                }}>
+                Báo cáo bài viết này
+              </Text>
+            </View>
+            <View style={styles.textAreaContainer}>
+              <TextInput
+                style={styles.textArea}
+                underlineColorAndroid="transparent"
+                placeholder={'nội dung báo cáo'}
+                placeholderTextColor="grey"
+                numberOfLines={10}
+                multiline={true}
+                value={reportContent}
+                maxLength={1000}
+                onChangeText={text => this.setState({reportContent: text})}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+              }}>
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: EStyleSheet.value('120rem'),
+                  height: EStyleSheet.value('40rem'),
+                  backgroundColor: 'red',
+                  borderRadius: EStyleSheet.value('10rem'),
+                  marginTop: EStyleSheet.value('5rem'),
+                  marginRight: EStyleSheet.value('10rem'),
+                }}
+                onPress={() => this.onSendReport()}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: EStyleSheet.value('16rem'),
+                    fontFamily: constants.Fonts.regular,
+                  }}>
+                  Gửi báo cáo
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: EStyleSheet.value('120rem'),
+                  height: EStyleSheet.value('40rem'),
+                  backgroundColor: constants.Colors.deactive,
+                  borderRadius: EStyleSheet.value('10rem'),
+                  marginTop: EStyleSheet.value('5rem'),
+                }}
+                onPress={() =>
+                  this.setState({showRating: false, reportId: null})
+                }>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: EStyleSheet.value('16rem'),
+                    fontFamily: constants.Fonts.regular,
+                  }}>
+                  Hủy
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </DialogContent>
+        </Dialog>
+        <Dialog visible={showReportResult}>
+          <DialogContent>
+            <View
+              style={{
+                width: EStyleSheet.value('250rem'),
+                height: EStyleSheet.value('80rem'),
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: EStyleSheet.value('25rem'),
+              }}>
+              {reportMessage !== '' ? (
+                <Text
+                  style={{
+                    fontSize: EStyleSheet.value('18rem'),
+                    fontFamily: constants.Fonts.regular,
+                  }}>
+                  {reportMessage}
+                </Text>
+              ) : (
+                <ActivityIndicator
+                  size={EStyleSheet.value('60rem')}
+                  color="#34D374"
+                />
+              )}
+            </View>
+          </DialogContent>
+        </Dialog>
         <View style={styles.header}>
           <View style={styles.titleGroup}>
             <SearchBar
@@ -200,6 +370,7 @@ class NewsFeedScreen extends Component {
                     data={item}
                     key={item._id}
                     onPressItem={this.onPressItem}
+                    onPressReportItem={this.onPressReportItem}
                   />
                 ) : null
               }
@@ -234,6 +405,8 @@ const mapStateToProps = ({user, allLichTrinh}) => {
 const mapDispatchToProps = dispatch => {
   return {
     get_all: () => dispatch(actions.get_all()),
+    report: (reportId, reportContent) =>
+      dispatch(actions.report(reportId, reportContent)),
     reset: () => dispatch(actions.reset()),
   };
 };
@@ -279,7 +452,7 @@ const styles = EStyleSheet.create({
   },
   hotView: {
     flexDirection: 'column',
-    height: '200rem',
+    height: '220rem',
     paddingLeft: '15rem',
     paddingRight: '5rem',
     width: constants.WIDTH,
@@ -291,7 +464,7 @@ const styles = EStyleSheet.create({
     width: constants.WIDTH,
   },
   headerItem: {
-    height: '140rem',
+    height: '150rem',
     width: '180rem',
     marginRight: '15rem',
   },
@@ -308,11 +481,24 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     top: EStyleSheet.value('10rem'),
     right: 0,
-    paddingLeft: EStyleSheet.value('7rem'),
     backgroundColor: 'rgba(0,0,0,0.3)',
-    width: EStyleSheet.value('50rem'),
-    height: EStyleSheet.value('20rem'),
-    borderTopLeftRadius: EStyleSheet.value('10rem'),
-    borderBottomLeftRadius: EStyleSheet.value('10rem'),
+    width: EStyleSheet.value('60rem'),
+    height: EStyleSheet.value('25rem'),
+    borderTopLeftRadius: EStyleSheet.value('12.5rem'),
+    borderBottomLeftRadius: EStyleSheet.value('12.5rem'),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textArea: {
+    height: '130rem',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    textAlignVertical: 'top',
+    color: 'black',
+    fontSize: constants.FontSizes.regular,
+    borderWidth: 0.3,
+    borderRadius: '10rem',
+    paddingHorizontal: '15rem',
+    marginVertical: '10rem',
   },
 });

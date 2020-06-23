@@ -17,6 +17,8 @@ export const types = {
   CHANGE_PASSWORD_FAIL: 'CHANGE_PASSWORD_FAIL',
   ADD_FRIEND: 'ADD_FRIEND',
   ADD_FRIEND_FAIL: 'ADD_FRIEND_FAIL',
+  GET_INFO: 'GET_INFO',
+  GET_INFO_FAIL: 'GET_INFO_FAIL',
 };
 async function getToken() {
   try {
@@ -113,6 +115,40 @@ export const actions = {
           payload: {
             data: error.data,
             status: error.status,
+          },
+        });
+      }
+    };
+  },
+  get_info: () => {
+    return async dispatch => {
+      try {
+        const url = '/api/user/getinfo';
+        const token = await getToken();
+        const result = await api.get(url, token);
+        if (result.status === 200) {
+          dispatch({
+            type: types.GET_INFO,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        } else {
+          dispatch({
+            type: types.GET_INFO_FAIL,
+            payload: {
+              data: result.data,
+              status: result.status,
+            },
+          });
+        }
+      } catch (err) {
+        dispatch({
+          type: types.GET_INFO_FAIL,
+          payload: {
+            data: err.data,
+            status: err.status,
           },
         });
       }
@@ -337,6 +373,20 @@ export const userReducer = (state = initialState, action) => {
       return {
         type: types.LOGOUT_FAIL,
         data: payload.data,
+        status: payload.status,
+      };
+    }
+    case types.GET_INFO: {
+      return {
+        type: types.GET_INFO,
+        data: payload.data,
+        status: payload.status,
+      };
+    }
+    case types.GET_INFO_FAIL: {
+      return {
+        type: types.GET_INFO_FAIL,
+        data: state.data,
         status: payload.status,
       };
     }

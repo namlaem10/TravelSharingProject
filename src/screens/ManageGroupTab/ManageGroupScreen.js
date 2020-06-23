@@ -106,6 +106,12 @@ class ManageGroupScreen extends Component {
     });
   };
   onPressItem = item => {
+    let currentDate = new Date();
+    let startDate = new Date(item.start_day);
+    let isWillGo = false;
+    if (startDate < currentDate) {
+      isWillGo = true;
+    }
     this.props.navigation.navigate('InfoGroup', {
       location: 'ManageGroup',
       data: item,
@@ -113,6 +119,7 @@ class ManageGroupScreen extends Component {
         item.departure.destination_name +
         ' - ' +
         item.destination.destination_name,
+      isWillGo: isWillGo,
     });
   };
   _handleStartDrag = () => {

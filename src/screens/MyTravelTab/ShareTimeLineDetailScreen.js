@@ -192,6 +192,9 @@ class ShareTimeLineDetailScreen extends Component {
   onPressItem = item => {
     console.log(item);
   };
+  onPressRating = item => {
+    this.props.navigation.navigate('Rating', {data: item});
+  };
   _renderItem = () => {
     let array = [];
     let countday = 0;
@@ -223,6 +226,7 @@ class ShareTimeLineDetailScreen extends Component {
           action={action}
           onDragEnd={this.onDragEnd}
           onPressMap={this.onPressMap}
+          onPressRating={this.onPressRating}
         />,
       );
     }

@@ -47,7 +47,7 @@ export default class NewsFeedItem extends Component {
   };
 
   render() {
-    const {data, onPressItem} = this.props;
+    const {data, onPressItem, onPressReportItem} = this.props;
     moment.locale('vi');
     const User = data.create_by;
     let avatar = null;
@@ -73,6 +73,14 @@ export default class NewsFeedItem extends Component {
               marginBottom: EStyleSheet.value('7rem'),
             }}
           />
+          <TouchableOpacity
+            style={styles.reportMarker}
+            onPress={() => onPressReportItem(data._id)}>
+            <Text
+              style={{fontSize: EStyleSheet.value('15rem'), color: 'white'}}>
+              Báo cáo
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.content}>
           <View style={styles.headerInfo}>
@@ -269,5 +277,17 @@ const styles = EStyleSheet.create({
   heartComment: {
     flexDirection: 'row',
     marginHorizontal: '8rem',
+  },
+  reportMarker: {
+    position: 'absolute',
+    top: EStyleSheet.value('20rem'),
+    right: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    width: EStyleSheet.value('80rem'),
+    height: EStyleSheet.value('30rem'),
+    borderTopLeftRadius: EStyleSheet.value('15rem'),
+    borderBottomLeftRadius: EStyleSheet.value('15rem'),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

@@ -135,10 +135,11 @@ class MyTravelScreen extends Component {
       searchText: text,
     });
   };
-  onPressItem = (item, isLeader) => {
+  onPressItem = (item, isLeader, isWillGo = false) => {
     this.props.navigation.navigate('TripDetail', {
       data: item,
       isLeader: isLeader,
+      isWillGo: isWillGo,
     });
   };
   onPressItemGone = (item, isLeader) => {
@@ -200,6 +201,7 @@ class MyTravelScreen extends Component {
                     data={item}
                     isLeader={isLeader}
                     onPressItem={this.onPressItem}
+                    isWillGo={true}
                   />
                 );
               }
