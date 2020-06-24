@@ -4,7 +4,6 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-import {BASE_URL} from '../../services/URL';
 import moment from 'moment';
 export default class TeamItem extends Component {
   constructor(props) {
@@ -16,7 +15,7 @@ export default class TeamItem extends Component {
     const {onPress, data} = this.props;
     let background = null;
     if (data.background != null) {
-      background = BASE_URL + '/' + data.background;
+      background = data.background;
     }
     let member = data.member.length;
     return (
@@ -41,7 +40,7 @@ export default class TeamItem extends Component {
               }
               style={{
                 width: EStyleSheet.value('100rem'),
-                height: EStyleSheet.value('100rem'),
+                height: EStyleSheet.value('120rem'),
                 borderTopLeftRadius: EStyleSheet.value('4rem'),
                 borderBottomLeftRadius: EStyleSheet.value('4rem'),
               }}
@@ -57,14 +56,20 @@ export default class TeamItem extends Component {
               {data.departure.destination_name}&nbsp;-&nbsp;
               {data.destination.destination_name}
             </Text>
-            <Text
-              style={{
-                fontFamily: constants.Fonts.regular,
-                fontSize: EStyleSheet.value('14rem'),
-              }}>
-              {moment(data.start_day).format('DD/MM/YYYY')}&nbsp;-&nbsp;
-              {moment(data.end_day).format('DD/MM/YYYY')}
-            </Text>
+
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{...styles.text, ...styles.subText}}>
+                Thời gian:&nbsp;
+              </Text>
+              <Text
+                style={{
+                  fontFamily: constants.Fonts.regular,
+                  fontSize: EStyleSheet.value('14rem'),
+                }}>
+                {moment(data.start_day).format('DD/MM/YYYY')}&nbsp;-&nbsp;
+                {moment(data.end_day).format('DD/MM/YYYY')}
+              </Text>
+            </View>
             <View style={{flexDirection: 'row'}}>
               <Text style={{...styles.text, ...styles.subText}}>
                 Nhóm trưởng:&nbsp;
@@ -127,7 +132,7 @@ const styles = EStyleSheet.create({
   },
   card: {
     backgroundColor: 'white',
-    height: '100rem',
+    height: '120rem',
     width: '100%',
     borderRadius: '5rem',
     flexDirection: 'row',
@@ -138,7 +143,7 @@ const styles = EStyleSheet.create({
   },
   infomation: {
     width: '75%',
-    height: '100rem',
+    height: '120rem',
     justifyContent: 'space-around',
     alignItems: 'flex-start',
     paddingLeft: '7rem',

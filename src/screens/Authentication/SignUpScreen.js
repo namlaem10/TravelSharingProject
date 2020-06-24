@@ -7,6 +7,7 @@ import {
   Alert,
   TouchableOpacity,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -43,6 +44,7 @@ class SignUpScreen extends Component {
       error: '',
       isLoading: false,
       isSuccess: false,
+      isFail: false,
     };
   }
 
@@ -84,13 +86,17 @@ class SignUpScreen extends Component {
           this.setState({
             error: this.props.user.data.message,
             isLoading: false,
+            isFail: true,
           });
+          setTimeout(() => {
+            this.setState({isFail: false});
+          }, 1000);
         } else {
           this.setState({isLoading: false, isSuccess: true});
           setTimeout(() => {
             this.setState({isSuccess: false});
             this.props.navigation.navigate('SignIn');
-          }, 2000);
+          }, 1000);
         }
       }
     }
@@ -126,15 +132,14 @@ class SignUpScreen extends Component {
             <DialogContent>
               <View style={styles.loadingDialog}>
                 <ActivityIndicator
-                  size={EStyleSheet.value('60rem')}
+                  size={EStyleSheet.value('40rem')}
                   color="#34D374"
                 />
                 <Text
                   style={{
                     fontFamily: Fonts.light,
                     fontSize: EStyleSheet.value('15rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
                   }}>
                   Đang xử lý...
                 </Text>
@@ -144,27 +149,43 @@ class SignUpScreen extends Component {
           <Dialog visible={this.state.isSuccess}>
             <DialogContent>
               <View style={styles.loadingDialog}>
+                <Image
+                  style={{
+                    width: EStyleSheet.value('20rem'),
+                    height: EStyleSheet.value('20rem'),
+                  }}
+                  resizeMode="contain"
+                  source={Images.IC_SUCCESS}
+                />
                 <Text
                   style={{
                     fontFamily: Fonts.light,
-                    fontSize: EStyleSheet.value('18rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
-                    color: '#34D374',
-                    textAlignVertical: 'center',
+                    fontSize: EStyleSheet.value('15rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
                   }}>
-                  Đăng ký thành công!
+                  Đăng kí thành công
                 </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
+          <Dialog visible={this.state.isFail}>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <Image
+                  style={{
+                    width: EStyleSheet.value('20rem'),
+                    height: EStyleSheet.value('20rem'),
+                  }}
+                  resizeMode="contain"
+                  source={Images.IC_FAIL}
+                />
                 <Text
                   style={{
                     fontFamily: Fonts.light,
-                    fontSize: EStyleSheet.value('18rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
-                    color: 'black',
-                    textAlignVertical: 'center',
+                    fontSize: EStyleSheet.value('15rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
                   }}>
-                  Đang chuyển về trang đăng nhập...
+                  Đã có lỗi xảy ra
                 </Text>
               </View>
             </DialogContent>
@@ -251,7 +272,9 @@ class SignUpScreen extends Component {
                 onFocus={() => this.setState({placeholderDisplayName: ''})}
                 onEndEditing={() =>
                   email === ''
-                    ? this.setState({placeholderDisplayName: 'Tên hiển thị'})
+                    ? this.setState({
+                        placeholderDisplayName: 'Tên hiển thị',
+                      })
                     : null
                 }
               />
@@ -373,7 +396,9 @@ class SignUpScreen extends Component {
                 placeholderTextColor={Colors.deactive}
                 ref={ref => (this.confirmRef = ref)}
                 value={confirm}
-                onSubmitEditing={() => this.onPressSignUp()}
+                onSubmitEditing={() => (
+                  Keyboard.dismiss(), this.onPressSignUp()
+                )}
                 style={styles.textPassword}
                 onFocus={() => this.setState({placeholderConfirm: ''})}
                 onEndEditing={() =>
@@ -403,7 +428,8 @@ class SignUpScreen extends Component {
             </View>
           </View>
           <View style={styles.viewButton}>
-            <TouchableOpacity onPress={this.onPressSignUp}>
+            <TouchableOpacity
+              onPress={() => (Keyboard.dismiss(), this.onPressSignUp())}>
               <LinearGradient
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 0}}
@@ -537,11 +563,11 @@ const styles = EStyleSheet.create({
     marginRight: 5,
   },
   loadingDialog: {
+    paddingTop: '20rem',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column',
-    height: EStyleSheet.value('95rem'),
-    width: EStyleSheet.value('250rem'),
-    backgroundColor: 'white',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

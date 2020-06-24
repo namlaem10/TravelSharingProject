@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Image,
   Alert,
+  BackHandler,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -19,7 +20,6 @@ import Geolocation from '@react-native-community/geolocation';
 import {getDistance} from 'geolib';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/notificationReducer';
-import {BASE_URL} from '../../services/URL';
 import HeaderBar from '../../components/HeaderBar';
 import moment from 'moment';
 
@@ -110,7 +110,11 @@ class TrackingMapScreen extends Component {
       }
     }
   };
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onPressBack);
+  }
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onPressBack);
     const location = this.props.navigation.getParam('location', '');
     if (location === 'notificationService') {
       this.props.get_travel_by_id(
@@ -355,7 +359,7 @@ class TrackingMapScreen extends Component {
     let avatar = null;
     if (user !== null) {
       if (user.user_info.avatar !== null) {
-        avatar = BASE_URL + '/' + user.user_info.avatar;
+        avatar = user.user_info.avatar;
       }
     }
     return isLoading ? (
@@ -431,7 +435,7 @@ class TrackingMapScreen extends Component {
                             source={
                               item.avatar !== undefined
                                 ? {
-                                    uri: BASE_URL + '/' + item.avatar,
+                                    uri: item.avatar,
                                   }
                                 : constants.Images.IC_AVATAR1
                             }

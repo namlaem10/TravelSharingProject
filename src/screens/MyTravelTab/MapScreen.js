@@ -61,15 +61,14 @@ export default class MapScreen extends Component {
   onPressMyLocation = async () => {
     let points = this.props.navigation.getParam('points');
     points.push(this.state.userLocation);
-    console.log(points);
     let newRegion = await constants.getRegionForCoordinates(points);
-    console.log(newRegion);
     this.setState({
       region: newRegion,
     });
   };
   render() {
     const {title, region, routing, data, isLoading, userLocation} = this.state;
+    let count = 0;
     return isLoading ? (
       <View
         style={{
@@ -98,6 +97,7 @@ export default class MapScreen extends Component {
             />
           ) : null}
           {data.map(item => {
+            count++;
             return (
               <Marker
                 key={item._id}
@@ -105,23 +105,36 @@ export default class MapScreen extends Component {
                   latitude: item.location.latitude,
                   longitude: item.location.longitude,
                 }}
-                title={item.tourist_destination_name}
-              />
+                title={item.tourist_destination_name}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'white',
+                    padding: EStyleSheet.value('5rem'),
+                  }}>
+                  <Text style={styles.leaderText}>
+                    {count}. {item.tourist_destination_name}
+                  </Text>
+                </View>
+              </Marker>
             );
           })}
-          <Polyline
-            coordinates={routing}
-            strokeColor="#4C79FF" // fallback for when `strokeColors` is not supported by the map-provider
-            strokeColors={[
-              '#7F0000',
-              '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
-              '#B24112',
-              '#E5845C',
-              '#238C23',
-              '#7F0000',
-            ]}
-            strokeWidth={4}
-          />
+          {routing !== undefined ? (
+            <Polyline
+              coordinates={routing}
+              strokeColor="#4C79FF" // fallback for when `strokeColors` is not supported by the map-provider
+              strokeColors={[
+                '#7F0000',
+                '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
+                '#B24112',
+                '#E5845C',
+                '#238C23',
+                '#7F0000',
+              ]}
+              strokeWidth={4}
+            />
+          ) : null}
         </MapView>
         <View style={styles.locateUserGroup}>
           <TouchableOpacity onPress={() => this.onPressMyLocation()}>

@@ -188,9 +188,9 @@ export const actions = {
       try {
         const url = '/api/travel/create';
         const token = await getToken();
-        const contentType = 'multipart/form-data';
+        const contentType = 'application/x-www-form-urlencoded';
         let nums_of_day = data.nums_of_day;
-        var bodyFormData = new FormData();
+        var bodyFormData = new URLSearchParams();
         bodyFormData.append('departure', data.departure);
         bodyFormData.append('destination', data.destination);
         bodyFormData.append('start_day', data.start_day);
@@ -199,6 +199,10 @@ export const actions = {
         bodyFormData.append('title', data.title);
         bodyFormData.append('description', data.description);
         bodyFormData.append('price', data.price);
+        if (data.schedule_reference && data.copy_reference) {
+          bodyFormData.append('schedule_reference', data.schedule_reference);
+          bodyFormData.append('copy_reference', data.copy_reference);
+        }
         for (let i = 1; i <= nums_of_day; i++) {
           let count = 0;
           data.schedule_detail['day_' + i].map(item => {
@@ -379,7 +383,7 @@ export const detailLichTrinhReducer = (state = initialState, action) => {
     case types.GET_LOCATION_INFO_FAIL: {
       return {
         type: types.GET_LOCATION_INFO_FAIL,
-        data: payload.data,
+        data: state.data,
         status: payload.status,
       };
     }

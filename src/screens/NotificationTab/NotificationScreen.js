@@ -49,6 +49,9 @@ class NotificationScreen extends Component {
   UNSAFE_componentWillMount() {
     this.props.get_noti();
   }
+  componentWillUnmount() {
+    this.setState({isLoading: false});
+  }
   onPressItem = item => {
     this.props.navigation.navigate('TrackingMap', {
       location: 'Notification',
@@ -109,7 +112,23 @@ class NotificationScreen extends Component {
   };
   render() {
     const {isLoading, data} = this.state;
+    console.log(data);
     moment.locale('vi');
+    if (isLoading) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator
+            size={EStyleSheet.value('60rem')}
+            color="#34D374"
+          />
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -123,13 +142,8 @@ class NotificationScreen extends Component {
             </Text>
           </View>
         </View>
-        <View style={styles.content}>
-          {isLoading ? (
-            <ActivityIndicator
-              size={EStyleSheet.value('60rem')}
-              color="#34D374"
-            />
-          ) : (
+        {data.length > 0 ? (
+          <View style={styles.content}>
             <View style={styles.flatList}>
               <FlatList
                 contentContainerStyle={{
@@ -148,8 +162,33 @@ class NotificationScreen extends Component {
                 }
               />
             </View>
-          )}
-        </View>
+          </View>
+        ) : (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+            }}>
+            <Image
+              resizeMode="contain"
+              source={constants.Images.IC_NO_NOTIFICATION}
+              style={{
+                width: EStyleSheet.value('200rem'),
+                height: EStyleSheet.value('200rem'),
+              }}
+            />
+            <Text
+              style={{
+                textAlign: 'center',
+                fontFamily: constants.Fonts.medium,
+                fontSize: EStyleSheet.value('18rem'),
+                marginTop: EStyleSheet.value('20rem'),
+              }}>
+              Hiện tại chưa có thông báo
+            </Text>
+          </View>
+        )}
       </View>
     );
   }

@@ -26,6 +26,9 @@ export default class TravelTimelineDetailScreen extends Component {
       this.props.navigation.goBack();
     }
   };
+  onPressItem = item => {
+    console.log(item._id);
+  };
   _renderItem = () => {
     let array = [];
     let countday = 0;
@@ -49,6 +52,7 @@ export default class TravelTimelineDetailScreen extends Component {
           routeData={routeDataItem}
           tabLabel={lable}
           day={countday}
+          onPressItem={this.onPressItem}
         />,
       );
     }
@@ -70,9 +74,10 @@ export default class TravelTimelineDetailScreen extends Component {
         </View>
         <ScrollableTabView
           initialPage={page}
+          showsHorizontalScrollIndicator={false}
           renderTabBar={() => (
             <CustomTabBar
-              activeTextColor={'black'}
+              activeTextColor={'#34D374'}
               inactiveTextColor={'#B7B7B7'}
               tabStyle={tabStyle}
               backgroundColor={'white'}

@@ -139,19 +139,47 @@ class TimeLineDetailScreen extends Component {
   onPressMap = (routeData, data) => {
     let routing = [];
     let points = [];
-    routeData.leg.map(item => {
-      item.maneuver.map(subItem => {
-        routing.push(subItem.position);
+    if (routeData !== null) {
+      routeData.leg.map(item => {
+        item.maneuver.map(subItem => {
+          routing.push(subItem.position);
+        });
       });
-    });
-    data.map(item => {
-      points.push(item.location);
-    });
-    this.props.navigation.navigate('Map', {
-      routing: routing,
-      data: data,
-      points: points,
-    });
+      data.map(item => {
+        points.push(item.location);
+      });
+      this.props.navigation.navigate('Map', {
+        routing: routing,
+        data: data,
+        points: points,
+      });
+    } else {
+      if (data.length > 0) {
+        data.map(item => {
+          points.push(item.location);
+        });
+        this.props.navigation.navigate('Map', {
+          data: data,
+          points: points,
+        });
+      } else {
+        Alert.alert(
+          'Lưu ý',
+          'Không có địa điểm nào để xem bản đồ',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    }
+  };
+  onPressItem = item => {
+    this.props.navigation.navigate('Rating', {data: item});
   };
   onDragEnd = (dataDay, keyday) => {
     const data = this.props.navigation.getParam('data');
@@ -161,8 +189,8 @@ class TimeLineDetailScreen extends Component {
     });
     this.props.get_location_info(data, this.state.totalDay);
   };
-  onPressRating = data => {
-    this.props.navigation.navigate('Rating', {data});
+  onPressRating = item => {
+    this.props.navigation.navigate('Rating', {data: item});
   };
   _renderItem = () => {
     let array = [];
@@ -199,6 +227,7 @@ class TimeLineDetailScreen extends Component {
           onDragEnd={this.onDragEnd}
           onPressMap={this.onPressMap}
           onPressRating={this.onPressRating}
+          onPressItem={this.onPressItem}
         />,
       );
     }
@@ -236,15 +265,14 @@ class TimeLineDetailScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 Đang lưu hành trình...
               </Text>
@@ -255,15 +283,14 @@ class TimeLineDetailScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 {this.state.message}
               </Text>
@@ -282,6 +309,7 @@ class TimeLineDetailScreen extends Component {
         </View>
         <ScrollableTabView
           initialPage={page}
+          showsHorizontalScrollIndicator={false}
           renderTabBar={() => (
             <CustomTabBar
               activeTextColor={'#34D374'}
@@ -300,7 +328,7 @@ class TimeLineDetailScreen extends Component {
                 onPress={() => this.onPressShare()}>
                 <Text
                   style={{
-                    fontSize: EStyleSheet.value('15rem'),
+                    fontSize: EStyleSheet.value('16rem'),
                     fontFamily: constants.Fonts.medium,
                     color: 'white',
                   }}>
@@ -316,7 +344,7 @@ class TimeLineDetailScreen extends Component {
               onPress={() => this.onPressCompleted()}>
               <Text
                 style={{
-                  fontSize: EStyleSheet.value('15rem'),
+                  fontSize: EStyleSheet.value('16rem'),
                   fontFamily: constants.Fonts.medium,
                   color: 'white',
                 }}>
@@ -368,7 +396,7 @@ const styles = EStyleSheet.create({
   },
   confirmButton: {
     width: '300rem',
-    height: '35rem',
+    height: '40rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',
@@ -377,6 +405,14 @@ const styles = EStyleSheet.create({
   footer: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: '40rem',
+    marginBottom: '10rem',
+  },
+  loadingCompleted: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

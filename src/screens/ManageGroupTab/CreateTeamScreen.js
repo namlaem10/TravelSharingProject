@@ -261,7 +261,7 @@ const styles = EStyleSheet.create({
   },
   confirmButton: {
     width: '300rem',
-    height: '35rem',
+    height: '40rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',

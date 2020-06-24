@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 
 import * as constants from '../../utils/Constants';
@@ -12,7 +13,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/UserReducer';
-import {BASE_URL} from '../../services/URL';
 import AsyncStorage from '@react-native-community/async-storage';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 
@@ -21,20 +21,56 @@ class AccountScreen extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      user: this.props.user.data || null,
+      user: this.props.user.data.user_info || null,
+      avatar: this.props.user.data.user_info.avatar
+        ? this.props.user.data.user_info.avatar
+        : null,
     };
+    this.didFocusSubscription = props.navigation.addListener(
+      'willFocus',
+      async payload => {
+        if (
+          payload.action.type === 'Navigation/NAVIGATE' ||
+          payload.action.type === 'Navigation/BACK'
+        ) {
+          this.setState({
+            user: this.props.user.data.user_info || null,
+            avatar: this.props.user.data.user_info.avatar
+              ? this.props.user.data.user_info.avatar
+              : null,
+          });
+        }
+      },
+    );
   }
   seeMore = () => {
     this.props.navigation.navigate('InfoUser', {user: this.state.user});
   };
-  UNSAFE_componentWillReceiveProps(nextProps) {
+
+  async UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.user.type === types.UPDATE_INFO) {
-      this.setState({user: nextProps.user.data});
-    }
-    if (nextProps.user.type === types.ADD_FRIEND) {
-      this.setState({user: nextProps.user.data});
+      this.setState({user: nextProps.user.data.user_info});
+    } else if (nextProps.user.type === types.UPDATE_INFO_FAIL) {
+      this.showToast('Cập nhật thông tin lỗi! Thử lại sau');
+    } else if (nextProps.user.type === types.ADD_FRIEND) {
+      this.setState({user: nextProps.user.data.user_info});
+    } else if (nextProps.user.type === types.ADD_FRIEND_FAIL) {
+      this.showToast('Đã có lỗi xảy ra! Thử lại sau');
+    } else if (nextProps.user.type === types.LOGOUT) {
+      let remove = await this.removeToken();
+      if (remove === true) {
+        setTimeout(() => {
+          this.setState({isLoading: false});
+          this.props.navigation.navigate('SignIn');
+        }, 2000);
+      }
+    } else if (nextProps.user.type === types.LOGIN_FAIL) {
+      this.showToast('Đã có lỗi xảy ra! Thử lại sau');
     }
   }
+  showToast = message => {
+    ToastAndroid.show(message, ToastAndroid.LONG);
+  };
   async removeToken() {
     try {
       await AsyncStorage.removeItem('token');
@@ -45,13 +81,7 @@ class AccountScreen extends Component {
   }
   logOut = async () => {
     this.setState({isLoading: true});
-    let remove = await this.removeToken();
-    if (remove === true) {
-      setTimeout(() => {
-        this.setState({isLoading: false});
-        this.props.navigation.navigate('SignIn');
-      }, 2000);
-    }
+    await this.props.logout();
   };
   onPressMyTravel = () => {
     this.props.navigation.navigate('MyTravel');
@@ -112,28 +142,23 @@ class AccountScreen extends Component {
     );
   };
   render() {
-    const user = this.state.user.user_info;
-    let avatar = null;
-    if (user.avatar) {
-      avatar = BASE_URL + '/' + user.avatar;
-    }
+    const {user, avatar, isLoading} = this.state;
     return (
       <View style={styles.container}>
-        <Dialog visible={this.state.isLoading}>
+        <Dialog visible={isLoading}>
           <DialogContent>
-            <View style={styles.loadingCompleted}>
+            <View style={styles.loadingDialog}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
-                Đang đăng xuất...
+                Đang đăng xuất
               </Text>
             </View>
           </DialogContent>
@@ -143,8 +168,7 @@ class AccountScreen extends Component {
             <Text
               style={{
                 fontSize: EStyleSheet.value('22rem'),
-                fontFamily: constants.Fonts.regular,
-                // letterSpacing: 2,
+                fontFamily: constants.Fonts.light,
               }}>
               Khác
             </Text>
@@ -172,6 +196,7 @@ class AccountScreen extends Component {
             <Text
               style={{
                 ...styles.textTitle,
+                fontFamily: constants.Fonts.medium,
                 fontSize: EStyleSheet.value('18rem'),
               }}>
               {user.display_name}
@@ -279,14 +304,16 @@ const mapStateToProps = ({user}) => {
     user: user,
   };
 };
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     login: parrams => dispatch(actions.login(parrams)),
-//     reset: () => dispatch(actions.reset()),
-//   };
-// };
+const mapDispatchToProps = dispatch => {
+  return {
+    logout: () => dispatch(actions.logout()),
+  };
+};
 // eslint-disable-next-line prettier/prettier
-export default connect(mapStateToProps)(AccountScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AccountScreen);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -320,7 +347,7 @@ const styles = EStyleSheet.create({
   },
   textTitle: {
     fontSize: constants.FontSizes.regular,
-    fontFamily: constants.Fonts.regular,
+    fontFamily: constants.Fonts.light,
   },
   settingGroup: {
     backgroundColor: 'white',
@@ -361,5 +388,13 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+  },
+  loadingDialog: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

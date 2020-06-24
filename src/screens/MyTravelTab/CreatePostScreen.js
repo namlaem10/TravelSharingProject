@@ -18,7 +18,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
 import HeaderBar from '../../components/HeaderBar';
-import {BASE_URL} from '../../services/URL';
 import ImagePicker from 'react-native-image-picker';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
@@ -51,7 +50,7 @@ class CreatePostScreen extends Component {
     const background = this.props.navigation.getParam('background', null);
     let backgroundUri = null;
     if (background !== null) {
-      backgroundUri = BASE_URL + '/' + background;
+      backgroundUri = background;
     }
     const idHanhTrinh = this.props.navigation.getParam('idHanhTrinh');
     this.setState({
@@ -68,7 +67,7 @@ class CreatePostScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Đã tạo xong! đang chuyển màn hình',
+          message: 'Đã tạo xong!',
         });
         setTimeout(() => {
           this.setState({
@@ -84,8 +83,13 @@ class CreatePostScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Lỗi tạo hành trình!',
+          message: 'Lỗi tạo bài viết!',
         });
+        setTimeout(() => {
+          this.setState({
+            loadingCompleted: false,
+          });
+        }, 1500);
       }
     }
   }
@@ -171,7 +175,7 @@ class CreatePostScreen extends Component {
     } = this.state;
     let avatar = null;
     if (user.user_info.avatar !== null) {
-      avatar = BASE_URL + '/' + user.user_info.avatar;
+      avatar = user.user_info.avatar;
     }
     return (
       <DismissKeyboard>
@@ -180,17 +184,16 @@ class CreatePostScreen extends Component {
             <DialogContent>
               <View style={styles.loadingCompleted}>
                 <ActivityIndicator
-                  size={EStyleSheet.value('60rem')}
+                  size={EStyleSheet.value('40rem')}
                   color="#34D374"
                 />
                 <Text
                   style={{
                     fontFamily: constants.Fonts.light,
                     fontSize: EStyleSheet.value('15rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
                   }}>
-                  Đang tạo hành trình...
+                  Đang tạo bài viết
                 </Text>
               </View>
             </DialogContent>
@@ -199,15 +202,14 @@ class CreatePostScreen extends Component {
             <DialogContent>
               <View style={styles.loadingCompleted}>
                 <ActivityIndicator
-                  size={EStyleSheet.value('60rem')}
+                  size={EStyleSheet.value('40rem')}
                   color="#34D374"
                 />
                 <Text
                   style={{
                     fontFamily: constants.Fonts.light,
                     fontSize: EStyleSheet.value('15rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
                   }}>
                   {this.state.message}
                 </Text>
@@ -217,13 +219,14 @@ class CreatePostScreen extends Component {
           <HeaderBar title={title} onPressBack={this.onPressBack} />
           <View style={styles.userInfo}>
             <Image
+              resizeMode="contain"
               source={
                 avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
               }
               style={{
-                width: EStyleSheet.value('40rem'),
-                height: EStyleSheet.value('40rem'),
-                borderRadius: EStyleSheet.value('20rem'),
+                width: EStyleSheet.value('50rem'),
+                height: EStyleSheet.value('50rem'),
+                borderRadius: EStyleSheet.value('25rem'),
               }}
             />
             <Text
@@ -239,6 +242,7 @@ class CreatePostScreen extends Component {
               style={styles.textTitle}
               placeholder={'Nhập tiêu đề'}
               value={textTitle}
+              maxLength={32}
               onChangeText={text => this.setState({textTitle: text})}
             />
           </View>
@@ -251,6 +255,7 @@ class CreatePostScreen extends Component {
               numberOfLines={10}
               multiline={true}
               value={textInput}
+              maxLength={1000}
               onChangeText={text => this.setState({textInput: text})}
             />
           </View>
@@ -299,7 +304,7 @@ class CreatePostScreen extends Component {
               onPress={() => this.onPressConfirm()}>
               <Text
                 style={{
-                  fontSize: EStyleSheet.value('15rem'),
+                  fontSize: EStyleSheet.value('16rem'),
                   fontFamily: constants.Fonts.medium,
                   color: 'white',
                 }}>
@@ -340,6 +345,7 @@ const styles = EStyleSheet.create({
   },
   textAreaContainer: {
     paddingHorizontal: '13rem',
+    // backgroundColor: 'red',
   },
   textArea: {
     height: '160rem',
@@ -348,30 +354,34 @@ const styles = EStyleSheet.create({
     textAlignVertical: 'top',
     color: 'black',
     fontSize: constants.FontSizes.regular,
+    borderWidth: 0.3,
+    borderRadius: '10rem',
+    paddingHorizontal: '15rem',
   },
   textTitle: {
     textAlignVertical: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '40rem',
+    height: '60rem',
     color: 'black',
     fontSize: constants.FontSizes.title,
     fontFamily: constants.Fonts.bold,
   },
   userInfo: {
     flexDirection: 'row',
-    marginTop: '5rem',
+    marginTop: '10rem',
     justifyContent: 'flex-start',
+    alignItems: 'center',
     paddingHorizontal: '13rem',
   },
   uploadPictureGroup: {
     flexDirection: 'column',
     paddingHorizontal: '13rem',
+    marginVertical: '8rem',
   },
   titleText: {
     fontFamily: constants.Fonts.medium,
-    fontSize: EStyleSheet.value('15rem'),
-    marginTop: EStyleSheet.value('5rem'),
+    fontSize: EStyleSheet.value('16rem'),
   },
   imageArena: {
     marginTop: '5rem',
@@ -383,17 +393,16 @@ const styles = EStyleSheet.create({
   },
   confirmButton: {
     width: '300rem',
-    height: '35rem',
+    height: '40rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',
     alignItems: 'center',
   },
   footer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: '40rem',
-    marginTop: '25rem',
   },
   changeBackgroundText: {
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -405,5 +414,13 @@ const styles = EStyleSheet.create({
     height: '30rem',
     bottom: '5rem',
     right: '5rem',
+  },
+  loadingCompleted: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

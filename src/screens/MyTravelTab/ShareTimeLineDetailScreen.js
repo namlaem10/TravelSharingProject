@@ -55,7 +55,7 @@ class ShareTimeLineDetailScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Đã tạo xong! đang chuyển màn hình',
+          message: 'Đã tạo xong!',
         });
         setTimeout(() => {
           this.setState({
@@ -63,6 +63,7 @@ class ShareTimeLineDetailScreen extends Component {
           });
           this.props.navigation.navigate('TripDetail', {
             data: nextProps.detailLichTrinh.data[0],
+            isLeader: true,
           });
         }, 1500);
       } else {
@@ -71,6 +72,11 @@ class ShareTimeLineDetailScreen extends Component {
           loadingCompleted: true,
           message: 'Lỗi tạo hành trình!',
         });
+        setTimeout(() => {
+          this.setState({
+            loadingCompleted: false,
+          });
+        }, 1500);
       }
     } else if (
       nextProps.detailLichTrinh.type === types.DELETE_SCHEDULE_DETAIL_ITEM ||
@@ -87,10 +93,12 @@ class ShareTimeLineDetailScreen extends Component {
       nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO ||
       nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO_FAIL
     ) {
-      this.setState({
-        routeData: nextProps.detailLichTrinh.data,
-        isLoading: false,
-      });
+      if (nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO) {
+        this.setState({
+          routeData: nextProps.detailLichTrinh.data,
+          isLoading: false,
+        });
+      }
     } else if (nextProps.detailLichTrinh.type === types.ADD_LANDSCAPES) {
       this.setState({
         schedule_detail: nextProps.detailLichTrinh.data.schedule_detail,
@@ -142,19 +150,50 @@ class ShareTimeLineDetailScreen extends Component {
   onPressMap = (routeData, data) => {
     let routing = [];
     let points = [];
-    routeData.leg.map(item => {
-      item.maneuver.map(subItem => {
-        routing.push(subItem.position);
+    if (routeData !== null) {
+      routeData.leg.map(item => {
+        item.maneuver.map(subItem => {
+          routing.push(subItem.position);
+        });
       });
-    });
-    data.map(item => {
-      points.push(item.location);
-    });
-    this.props.navigation.navigate('Map', {
-      routing: routing,
-      data: data,
-      points: points,
-    });
+      data.map(item => {
+        points.push(item.location);
+      });
+      this.props.navigation.navigate('Map', {
+        routing: routing,
+        data: data,
+        points: points,
+      });
+    } else {
+      if (data.length > 0) {
+        data.map(item => {
+          points.push(item.location);
+        });
+        this.props.navigation.navigate('Map', {
+          data: data,
+          points: points,
+        });
+      } else {
+        Alert.alert(
+          'Lưu ý',
+          'Không có địa điểm nào để xem bản đồ',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    }
+  };
+  onPressItem = item => {
+    console.log(item);
+  };
+  onPressRating = item => {
+    this.props.navigation.navigate('Rating', {data: item});
   };
   _renderItem = () => {
     let array = [];
@@ -187,6 +226,7 @@ class ShareTimeLineDetailScreen extends Component {
           action={action}
           onDragEnd={this.onDragEnd}
           onPressMap={this.onPressMap}
+          onPressRating={this.onPressRating}
         />,
       );
     }
@@ -221,6 +261,11 @@ class ShareTimeLineDetailScreen extends Component {
       schedule_detail: scheduleDetail,
       nums_of_day,
       member: memsId,
+      schedule_reference: this.props.navigation.getParam(
+        'schedule_reference',
+        null,
+      ),
+      copy_reference: this.props.navigation.getParam('copy_reference', null),
     };
     await this.props.post_hanhtrinh(data);
   };
@@ -244,15 +289,14 @@ class ShareTimeLineDetailScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 Đang tạo hành trình...
               </Text>
@@ -263,15 +307,14 @@ class ShareTimeLineDetailScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 {this.state.message}
               </Text>
@@ -290,6 +333,7 @@ class ShareTimeLineDetailScreen extends Component {
         </View>
         <ScrollableTabView
           initialPage={page}
+          showsHorizontalScrollIndicator={false}
           renderTabBar={() => (
             <CustomTabBar
               activeTextColor={'#34D374'}
@@ -314,7 +358,7 @@ class ShareTimeLineDetailScreen extends Component {
               onPress={() => this.onPressNext()}>
               <Text
                 style={{
-                  fontSize: EStyleSheet.value('15rem'),
+                  fontSize: EStyleSheet.value('16rem'),
                   fontFamily: constants.Fonts.medium,
                   color: 'white',
                 }}>
@@ -327,7 +371,7 @@ class ShareTimeLineDetailScreen extends Component {
               onPress={() => this.onPressCompleted()}>
               <Text
                 style={{
-                  fontSize: EStyleSheet.value('15rem'),
+                  fontSize: EStyleSheet.value('16rem'),
                   fontFamily: constants.Fonts.medium,
                   color: 'white',
                 }}>
@@ -373,7 +417,7 @@ const styles = EStyleSheet.create({
   },
   confirmButton: {
     width: '300rem',
-    height: '35rem',
+    height: '40rem',
     backgroundColor: '#34D374',
     borderRadius: '5rem',
     justifyContent: 'center',
@@ -382,6 +426,14 @@ const styles = EStyleSheet.create({
   footer: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: '40rem',
+    marginBottom: '10rem',
+  },
+  loadingCompleted: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

@@ -4,7 +4,6 @@ import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import moment from 'moment';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-import {BASE_URL} from '../../services/URL';
 import 'moment/locale/vi';
 
 export default class TravelItem extends Component {
@@ -14,7 +13,7 @@ export default class TravelItem extends Component {
   }
 
   render() {
-    const {data, onPressItem, isLeader} = this.props;
+    const {data, onPressItem, isLeader, isWillGo} = this.props;
     moment.locale('vi');
     var currentDate = new Date();
     var startDate = new Date(data.start_day);
@@ -22,12 +21,12 @@ export default class TravelItem extends Component {
     let background = null;
     background =
       data.background !== null
-        ? BASE_URL + '/' + data.background
-        : BASE_URL + '/' + data.destination.destination_image;
+        ? data.background
+        : data.destination.destination_image;
     return (
       <TouchableOpacity
         style={styles.container}
-        onPress={() => onPressItem(data, isLeader)}>
+        onPress={() => onPressItem(data, isLeader, isWillGo)}>
         <View style={styles.header}>
           <Image
             source={{uri: background}}

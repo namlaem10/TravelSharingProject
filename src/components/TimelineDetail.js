@@ -27,17 +27,19 @@ export default class TimelineDetail extends Component {
         lastPlace = true;
       }
       if (count > 0) {
-        var secs = routeData.leg[count - 1].travelTime + 5400;
-        let minutes = Math.floor(secs / 60);
-        if (minutes > 60) {
-          let hours = Math.floor(minutes / 60);
-          hour += hours;
-          minutes = minutes - hours * 60;
-        }
-        minute += minutes;
-        if (minute > 60) {
-          hour = hour + Math.floor(minute / 60);
-          minute = minute - Math.floor(minute / 60) * 60;
+        if (routeData) {
+          var secs = routeData.leg[count - 1].travelTime + 5400;
+          let minutes = Math.floor(secs / 60);
+          if (minutes > 60) {
+            let hours = Math.floor(minutes / 60);
+            hour += hours;
+            minutes = minutes - hours * 60;
+          }
+          minute += minutes;
+          if (minute > 60) {
+            hour = hour + Math.floor(minute / 60);
+            minute = minute - Math.floor(minute / 60) * 60;
+          }
         }
       }
       timeText = `${hour < 10 ? '0' + hour : hour}:${
@@ -49,7 +51,17 @@ export default class TimelineDetail extends Component {
           timeText={timeText}
           key={count}
           lastPlace={lastPlace}
-          route={count < routeData.leg.length ? routeData.leg[count] : null}
+          route={
+            routeData
+              ? count < routeData.leg.length
+                ? routeData.leg[count]
+                : null
+              : null
+            // routeData && count < routeData.leg.length
+            //   ? routeData.leg[count]
+            //   : null
+          }
+          onPressItem={this.props.onPressItem}
         />,
       );
       count++;
@@ -62,10 +74,10 @@ export default class TimelineDetail extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.title}>
-          <Text style={styles.text}>Chi tiết lịch trình </Text>
+          <Text style={styles.text} />
           <Text style={styles.text}>Ngày {day} </Text>
         </View>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.content}>{this._renderItem()}</View>
         </ScrollView>
       </View>
@@ -85,15 +97,16 @@ const styles = EStyleSheet.create({
   },
   title: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: '5rem',
-    marginHorizontal: '13rem',
+    justifyContent: 'flex-start',
+    marginVertical: '10rem',
+    paddingHorizontal: '6.5rem',
   },
   text: {
     color: '#127138',
+    fontSize: constants.FontSizes.regular,
+    fontFamily: constants.Fonts.medium,
   },
   content: {
-    marginTop: '10rem',
-    marginLeft: '13rem',
+    paddingHorizontal: '6.5rem',
   },
 });

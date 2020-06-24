@@ -86,7 +86,10 @@ class ManageGroupScreen extends Component {
     });
   };
   setSearchText = text => {
-    let searchText = text.replace(/[^a-zA-Z-  ]/g, '');
+    let searchText = text.replace(
+      /[^a-zA-Z0-9-ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ  ]/g,
+      '',
+    );
     this.setState({searchText: searchText});
     let data = this.state.dataBackup;
     searchText = searchText.trim().toLowerCase();
@@ -103,6 +106,12 @@ class ManageGroupScreen extends Component {
     });
   };
   onPressItem = item => {
+    let currentDate = new Date();
+    let startDate = new Date(item.start_day);
+    let isWillGo = false;
+    if (startDate < currentDate) {
+      isWillGo = true;
+    }
     this.props.navigation.navigate('InfoGroup', {
       location: 'ManageGroup',
       data: item,
@@ -110,6 +119,7 @@ class ManageGroupScreen extends Component {
         item.departure.destination_name +
         ' - ' +
         item.destination.destination_name,
+      isWillGo: isWillGo,
     });
   };
   _handleStartDrag = () => {
@@ -136,6 +146,21 @@ class ManageGroupScreen extends Component {
 
   render() {
     const {title, searchText, data, isLoading} = this.state;
+    if (isLoading) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator
+            size={EStyleSheet.value('60rem')}
+            color="#34D374"
+          />
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -146,43 +171,30 @@ class ManageGroupScreen extends Component {
           />
         </View>
         <View styles={styles.content}>
-          {isLoading ? (
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
-                color="#34D374"
-              />
-            </View>
-          ) : (
-            <View
-              style={{
-                paddingBottom: EStyleSheet.value('100rem'),
-              }}>
-              <Text style={styles.text}>Danh sách nhóm của bạn</Text>
-              <FlatList
-                contentContainerStyle={{
-                  paddingBottom: EStyleSheet.value('40rem'),
-                  paddingHorizontal: EStyleSheet.value('20rem'),
-                }}
-                showsVerticalScrollIndicator={false}
-                data={data}
-                renderItem={({item}) => this._renderItem(item)}
-                keyExtractor={item => item._id}
-                onScrollEndDrag={() => this._handleEndDrag()}
-                onScrollBeginDrag={() => this._handleStartDrag()}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={this.state.isRefreshing}
-                    onRefresh={this.onRefresh.bind(this)}
-                  />
-                }
-              />
-            </View>
-          )}
+          <View
+            style={{
+              paddingBottom: EStyleSheet.value('100rem'),
+            }}>
+            <Text style={styles.text}>Danh sách nhóm của bạn</Text>
+            <FlatList
+              contentContainerStyle={{
+                paddingBottom: EStyleSheet.value('40rem'),
+                paddingHorizontal: EStyleSheet.value('20rem'),
+              }}
+              showsVerticalScrollIndicator={false}
+              data={data}
+              renderItem={({item}) => this._renderItem(item)}
+              keyExtractor={item => item._id}
+              onScrollEndDrag={() => this._handleEndDrag()}
+              onScrollBeginDrag={() => this._handleStartDrag()}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={this.onRefresh.bind(this)}
+                />
+              }
+            />
+          </View>
         </View>
         {/* {this.state.isDarg ? null : (
           <TouchableOpacity

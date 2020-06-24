@@ -33,6 +33,7 @@ export default class ScrollVerticalLichTrinh extends Component {
           key={key}
           page={i}
           onPressTravelDay={this.props.onPressTravelDay}
+          destinationImg={this.props.data.background}
         />,
       );
     }
@@ -69,7 +70,6 @@ export default class ScrollVerticalLichTrinh extends Component {
     if (isButton === false) {
       Button = isButton;
     }
-    console.log(isLoading);
     return (
       <View style={styles.container}>
         <View
@@ -82,7 +82,7 @@ export default class ScrollVerticalLichTrinh extends Component {
           <Text
             style={{
               fontFamily: constants.Fonts.medium,
-              fontSize: EStyleSheet.value('15rem'),
+              fontSize: EStyleSheet.value('16rem'),
             }}>
             Lịch trình
           </Text>
@@ -116,7 +116,7 @@ export default class ScrollVerticalLichTrinh extends Component {
             <Text
               style={{
                 fontFamily: constants.Fonts.medium,
-                fontSize: EStyleSheet.value('15rem'),
+                fontSize: EStyleSheet.value('16rem'),
               }}>
               Thành viên
             </Text>

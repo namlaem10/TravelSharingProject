@@ -18,7 +18,6 @@ import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/managerGroupReducer';
 
 import SearchBar from '../../components/SearchBar';
-import {BASE_URL} from '../../services/URL';
 
 class AddMemberScreen extends Component {
   constructor(props) {
@@ -49,7 +48,7 @@ class AddMemberScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Đã cập nhật! đang chuyển màn hình',
+          message: 'Đã cập nhật!',
         });
         let location = this.props.navigation.getParam('location');
         if (location === 'InfoGroup') {
@@ -60,6 +59,7 @@ class AddMemberScreen extends Component {
             this.props.navigation.navigate(location, {
               data: nextProps.groupInfo.data[0],
               title: this.props.navigation.getParam('title'),
+              isWillGo: this.props.navigation.getParam('isWillGo'),
             });
           }, 2000);
         } else {
@@ -80,7 +80,7 @@ class AddMemberScreen extends Component {
         this.setState({
           loadingVisible: false,
           loadingCompleted: true,
-          message: 'Lỗi tạo hành trình!',
+          message: 'Lỗi thêm thành viên!',
         });
       }
     }
@@ -102,7 +102,10 @@ class AddMemberScreen extends Component {
     this.setState({searchText: text});
   };
   setSearchText = text => {
-    let searchText = text.replace(/[^a-zA-Z0-9-  ]/g, '');
+    let searchText = text.replace(
+      /[^a-zA-Z0-9-ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ  ]/g,
+      '',
+    );
     this.setState({searchText: searchText});
     let data = this.state.friendBackup;
     searchText = searchText.trim().toLowerCase();
@@ -139,9 +142,11 @@ class AddMemberScreen extends Component {
           isLeader: this.props.navigation.getParam('isLeader'),
         });
       } else if (location === 'InfoGroup') {
+        console.log('vào infoGroup');
         this.props.navigation.navigate(location, {
           data: this.props.navigation.getParam('data'),
           title: this.props.navigation.getParam('title'),
+          isWillGo: this.props.navigation.getParam('isWillGo'),
         });
       }
     } else {
@@ -158,7 +163,6 @@ class AddMemberScreen extends Component {
       this.setState({
         loadingVisible: true,
       });
-      console.log(idUserPick);
       await this.props.put_update_member(idHanhTrinh, idUserPick);
     }
   };
@@ -182,9 +186,6 @@ class AddMemberScreen extends Component {
     let found = array.find(e => e === item._id);
     let isSelect = found === undefined ? false : true;
     let avatar = item.avatar;
-    if (avatar !== null) {
-      avatar = BASE_URL + '/' + avatar;
-    }
     return (
       <View style={styles.flatListItem}>
         <Image
@@ -228,17 +229,16 @@ class AddMemberScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
-                Đang tạo hành trình...
+                Đang thêm...
               </Text>
             </View>
           </DialogContent>
@@ -247,15 +247,14 @@ class AddMemberScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 {this.state.message}
               </Text>
@@ -278,6 +277,7 @@ class AddMemberScreen extends Component {
               justifyContent: 'space-between',
               flexDirection: 'row',
               alignItems: 'center',
+              height: EStyleSheet.value('30rem'),
             }}>
             <Text
               style={{
@@ -299,13 +299,10 @@ class AddMemberScreen extends Component {
           </View>
           <View style={styles.flatList}>
             <FlatList
-              contentContainerStyle={{
-                paddingBottom: EStyleSheet.value('40rem'),
-                flex: 0,
-              }}
+              showsVerticalScrollIndicator={false}
               data={friend}
               renderItem={({item}) => this._renderItem(item)}
-              keyExtractor={item => item.id}
+              keyExtractor={(item, index) => index.toString()}
             />
           </View>
         </View>
@@ -348,17 +345,17 @@ const styles = EStyleSheet.create({
     marginTop: '10rem',
     justifyContent: 'center',
   },
-  content: {paddingTop: '10rem', paddingHorizontal: '23rem'},
+  content: {flex: 1, paddingTop: '10rem', paddingHorizontal: '23rem'},
   textName: {
     fontSize: constants.FontSizes.regular,
-    fontFamily: constants.Fonts.regular,
+    fontFamily: constants.Fonts.medium,
   },
   textemail: {
-    fontSize: constants.FontSizes.regular,
+    fontSize: constants.FontSizes.smalltext,
     fontFamily: constants.Fonts.light,
     color: '#797979',
   },
-  flatList: {marginTop: '10rem'},
+  flatList: {flex: 1, marginTop: '10rem'},
   flatListItem: {
     flexDirection: 'row',
     marginVertical: '15rem',
@@ -385,5 +382,13 @@ const styles = EStyleSheet.create({
     borderRadius: '17rem',
     top: '10rem',
     right: '0rem',
+  },
+  loadingCompleted: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

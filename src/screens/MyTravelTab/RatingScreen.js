@@ -16,7 +16,6 @@ import moment from 'moment';
 import TitleBarCustom from '../../components/TitleBarCustom';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/myTravelPlaceReducer.js';
-import {BASE_URL} from '../../services/URL';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 import MapView, {Marker, Polyline} from 'react-native-maps';
 import * as Progress from 'react-native-progress';
@@ -119,7 +118,21 @@ class RatingScreen extends Component {
   }
   onSendRating = () => {
     const {data, rating_choose} = this.state;
-    this.props.rating_tourist(data, rating_choose);
+    if (rating_choose > 1) {
+      this.props.rating_tourist(data, rating_choose);
+    } else {
+      Alert.alert(
+        'Lưu ý',
+        'Vui lòng chọn ít nhất là 1 sao',
+        [
+          {
+            text: 'Chọn lại',
+            style: 'cancel',
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
@@ -200,14 +213,14 @@ class RatingScreen extends Component {
             style={{
               justifyContent: 'center',
               alignItems: 'center',
-              marginHorizontal: EStyleSheet.value('2rem'),
+              marginHorizontal: EStyleSheet.value('1.5rem'),
             }}>
             <Image
               source={constants.Images.IC_GOLD_STAR}
+              resizeMode="contain"
               style={{
-                width: EStyleSheet.value('15rem'),
-                height: EStyleSheet.value('15rem'),
-                resizeMode: 'contain',
+                width: EStyleSheet.value('18rem'),
+                height: EStyleSheet.value('18rem'),
               }}
             />
           </View>,
@@ -218,14 +231,14 @@ class RatingScreen extends Component {
             style={{
               justifyContent: 'center',
               alignItems: 'center',
-              marginHorizontal: EStyleSheet.value('2rem'),
+              marginHorizontal: EStyleSheet.value('1.5rem'),
             }}>
             <Image
+              resizeMode="contain"
               source={constants.Images.IC_NORMAL_STAR}
               style={{
-                width: EStyleSheet.value('15rem'),
-                height: EStyleSheet.value('15rem'),
-                resizeMode: 'contain',
+                width: EStyleSheet.value('18rem'),
+                height: EStyleSheet.value('18rem'),
               }}
             />
           </View>,
@@ -239,20 +252,27 @@ class RatingScreen extends Component {
     const {rating_list, data} = this.state;
     let rating_count = data.rating_count;
     for (let i = 5; i > 0; i--) {
-      let percent = rating_list[i] / rating_count;
+      let percent;
+      if (rating_count === 0) {
+        percent = 0;
+      } else {
+        percent = rating_list[i] / rating_count;
+      }
+      console.log(percent, rating_list[i], rating_count);
       array.push(
         <View style={styles.bar}>
           <Text
             style={{
-              fontSize: 10,
-              marginRight: EStyleSheet.value('5rem'),
+              fontSize: EStyleSheet.value('14rem'),
+              fontFamily: constants.Fonts.medium,
+              marginRight: EStyleSheet.value('10rem'),
             }}>
             {i}
           </Text>
           <Progress.Bar
             progress={percent}
             width={EStyleSheet.value('170rem')}
-            height={EStyleSheet.value('11rem')}
+            height={EStyleSheet.value('10rem')}
             color={'#34D374'}
           />
         </View>,
@@ -274,25 +294,46 @@ class RatingScreen extends Component {
               <Image
                 source={
                   item.user.avatar !== null
-                    ? {uri: BASE_URL + '/' + item.user.avatar}
+                    ? {uri: item.user.avatar}
                     : constants.Images.IC_AVATAR2
                 }
+                resizeMode="contain"
                 style={{
                   height: EStyleSheet.value('40rem'),
                   width: EStyleSheet.value('40rem'),
-                  resizeMode: 'contain',
                 }}
               />
             </View>
             <View style={{flexDirection: 'column'}}>
               <View style={{flexDirection: 'row'}}>
-                <Text style={{marginLeft: EStyleSheet.value('3rem')}}>
-                  {item.user.display_name} -{' '}
-                  {moment(item.create_at).format('DD/MM/YYYY')}
+                <Text
+                  style={{
+                    marginLeft: EStyleSheet.value('3rem'),
+                    fontFamily: constants.Fonts.medium,
+                    fontSize: EStyleSheet.value('15rem'),
+                  }}>
+                  {item.user.display_name}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row'}}>
-                {this.renderStarLittleStart(item.rating)}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '78%',
+                }}>
+                <View style={{flexDirection: 'row', flex: 0.3}}>
+                  {this.renderStarLittleStart(item.rating)}
+                </View>
+                <Text
+                  style={{
+                    marginLeft: EStyleSheet.value('3rem'),
+                    flex: 0.7,
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                  }}>
+                  {moment(item.create_at).format('DD/MM/YYYY')}
+                </Text>
               </View>
             </View>
           </View>,
@@ -305,7 +346,7 @@ class RatingScreen extends Component {
               <Image
                 source={
                   item.user.avatar !== null
-                    ? {uri: BASE_URL + '/' + item.user.avatar}
+                    ? {uri: item.user.avatar}
                     : constants.Images.IC_AVATAR2
                 }
                 style={{
@@ -317,13 +358,34 @@ class RatingScreen extends Component {
             </View>
             <View style={{flexDirection: 'column'}}>
               <View style={{flexDirection: 'row'}}>
-                <Text style={{marginLeft: EStyleSheet.value('3rem')}}>
-                  {item.user.display_name} -{' '}
-                  {moment(item.create_at).format('DD/MM/YYYY')} - Đã chỉnh sửa
+                <Text
+                  style={{
+                    marginLeft: EStyleSheet.value('3rem'),
+                    fontFamily: constants.Fonts.medium,
+                    fontSize: EStyleSheet.value('15rem'),
+                  }}>
+                  {item.user.display_name}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row'}}>
-                {this.renderStarLittleStart(item.rating)}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '78%',
+                }}>
+                <View style={{flexDirection: 'row', flex: 0.3}}>
+                  {this.renderStarLittleStart(item.rating)}
+                </View>
+                <Text
+                  style={{
+                    marginLeft: EStyleSheet.value('3rem'),
+                    flex: 0.7,
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('14rem'),
+                  }}>
+                  {moment(item.create_at).format('DD/MM/YYYY')} (đã chỉnh sửa)
+                </Text>
               </View>
             </View>
           </View>,
@@ -347,7 +409,7 @@ class RatingScreen extends Component {
             <TitleBarCustom onPress={this.onPressBack} />
           </ImageBackground>
         </View>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
             <View style={styles.infoCard}>
               <MapView style={styles.mapView} region={region}>
@@ -400,10 +462,21 @@ class RatingScreen extends Component {
             <View style={styles.ShowRatingGroup}>
               <View style={styles.showColLeft}>
                 <Text style={styles.bigPoint}>{data.rating}</Text>
-                <View style={{flexDirection: 'row'}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginBottom: EStyleSheet.value('15rem'),
+                  }}>
                   {this.renderStarLittleStart()}
                 </View>
-                <Text style={{color: 'gray'}}>{data.rating_count}</Text>
+                <Text
+                  style={{
+                    color: 'gray',
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('14rem'),
+                  }}>
+                  {data.rating_count}
+                </Text>
               </View>
               <View style={styles.showColRight}>
                 {this.renderProcessRating()}
@@ -510,7 +583,7 @@ const styles = EStyleSheet.create({
     width: '100%',
     height: '120rem',
     flexDirection: 'row',
-    marginTop: '11rem',
+    marginVertical: '15rem',
   },
   showColLeft: {
     flex: 0.4,
@@ -522,28 +595,29 @@ const styles = EStyleSheet.create({
     flex: 0.6,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    height: '120rem',
   },
   bigPoint: {
-    fontFamily: constants.Fonts.light,
-    fontSize: '50rem',
+    fontFamily: constants.Fonts.blod,
+    fontSize: '55rem',
     color: '#34D374',
   },
   bar: {
     flexDirection: 'row',
-    marginVertical: '6rem',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   ratingHistoryGroup: {
     marginVertical: '11rem',
   },
   historyItem: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: '5rem',
+    marginVertical: '20rem',
   },
   avarGroup: {
-    backgroundColor: 'red',
     borderRadius: '20rem',
     marginRight: '7rem',
     overflow: 'hidden',

@@ -84,7 +84,10 @@ class MyTravelScreen extends Component {
     this.setState({isRefreshing: false});
   };
   setSearchText = text => {
-    let searchText = text.replace(/[^a-zA-Z-  ]/g, '');
+    let searchText = text.replace(
+      /[^a-zA-Z0-9-ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ  ]/g,
+      '',
+    );
     this.setState({searchText: searchText});
     let data = this.state.ownLichTrinhBackup;
     searchText = searchText.trim().toLowerCase();
@@ -111,10 +114,17 @@ class MyTravelScreen extends Component {
       if (startDate > currentDate) {
         will++;
       }
-      if (currentDate >= startDate && currentDate <= endDate) {
+      if (
+        (currentDate >= startDate && currentDate <= endDate) ||
+        (currentDate >= startDate &&
+          currentDate.getDate() === endDate.getDate())
+      ) {
         goin++;
       }
-      if (endDate < currentDate) {
+      if (
+        endDate < currentDate &&
+        endDate.getDate() !== currentDate.getDate()
+      ) {
         gone++;
       }
     });
@@ -125,10 +135,11 @@ class MyTravelScreen extends Component {
       searchText: text,
     });
   };
-  onPressItem = (item, isLeader) => {
+  onPressItem = (item, isLeader, isWillGo = false) => {
     this.props.navigation.navigate('TripDetail', {
       data: item,
       isLeader: isLeader,
+      isWillGo: isWillGo,
     });
   };
   onPressItemGone = (item, isLeader) => {
@@ -190,6 +201,7 @@ class MyTravelScreen extends Component {
                     data={item}
                     isLeader={isLeader}
                     onPressItem={this.onPressItem}
+                    isWillGo={true}
                   />
                 );
               }
@@ -246,7 +258,11 @@ class MyTravelScreen extends Component {
             var currentDate = new Date();
             var startDate = new Date(item.start_day);
             var endDate = new Date(item.end_day);
-            if (currentDate >= startDate && currentDate <= endDate) {
+            if (
+              (currentDate >= startDate && currentDate <= endDate) ||
+              (currentDate >= startDate &&
+                currentDate.getDate() === endDate.getDate())
+            ) {
               let isLeader = false;
               if (this.state.user._id === item.create_by._id) {
                 isLeader = true;
@@ -298,7 +314,10 @@ class MyTravelScreen extends Component {
             if (this.state.user._id === item.create_by._id) {
               isLeader = true;
             }
-            if (endDate < currentDate) {
+            if (
+              endDate < currentDate &&
+              endDate.getDate() !== currentDate.getDate()
+            ) {
               return (
                 <TravelItemGone
                   data={item}

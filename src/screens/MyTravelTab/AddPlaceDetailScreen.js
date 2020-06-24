@@ -65,7 +65,10 @@ class AddPlaceDetailScreen extends Component {
     //this.props.navigation.goBack();
   };
   setSearchText = text => {
-    let searchText = text.replace(/[^a-zA-Z-  ]/g, '');
+    let searchText = text.replace(
+      /[^a-zA-Z0-9-ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ  ]/g,
+      '',
+    );
     this.setState({searchText: searchText});
     let data = this.state.famousLandscapesBackup;
     searchText = searchText.trim().toLowerCase();
@@ -107,6 +110,7 @@ class AddPlaceDetailScreen extends Component {
     for (let i = 1; i <= count; i++) {
       starts.push(
         <Image
+          key={i}
           source={constants.Images.IC_GOLD_STAR}
           style={{
             width: EStyleSheet.value('16rem'),
@@ -119,6 +123,7 @@ class AddPlaceDetailScreen extends Component {
     for (let i = 1; i <= leftstar; i++) {
       starts.push(
         <Image
+          key={`${i}+1`}
           source={constants.Images.IC_NORMAL_STAR}
           style={{
             width: EStyleSheet.value('16rem'),
@@ -142,8 +147,9 @@ class AddPlaceDetailScreen extends Component {
           source={{uri: item.tourist_destination_image}}
           style={{
             width: EStyleSheet.value('60rem'),
-            height: EStyleSheet.value('58rem'),
-            borderRadius: EStyleSheet.value('7rem'),
+            height: EStyleSheet.value('60rem'),
+            borderRadius: EStyleSheet.value('10rem'),
+            marginBottom: EStyleSheet.value('20rem'),
           }}
         />
         <TouchableOpacity
@@ -156,7 +162,9 @@ class AddPlaceDetailScreen extends Component {
             paddingLeft: EStyleSheet.value('10rem'),
             height: '100%',
           }}>
-          <Text style={styles.textPlace}>{item.tourist_destination_name}</Text>
+          <Text numberOfLines={1} style={styles.textPlace}>
+            {item.tourist_destination_name}
+          </Text>
           <View style={{flexDirection: 'row'}}>
             {item.rating_count === 0 ? (
               <Text>Chưa có đánh giá</Text>
@@ -187,15 +195,14 @@ class AddPlaceDetailScreen extends Component {
           <DialogContent>
             <View style={styles.loadingCompleted}>
               <ActivityIndicator
-                size={EStyleSheet.value('60rem')}
+                size={EStyleSheet.value('40rem')}
                 color="#34D374"
               />
               <Text
                 style={{
                   fontFamily: constants.Fonts.light,
                   fontSize: EStyleSheet.value('15rem'),
-                  letterSpacing: 1,
-                  marginLeft: EStyleSheet.value('5rem'),
+                  marginLeft: EStyleSheet.value('10rem'),
                 }}>
                 Đang tạo hành trình...
               </Text>
@@ -213,13 +220,20 @@ class AddPlaceDetailScreen extends Component {
           <TouchableOpacity
             onPress={() => this.onPressCompleted()}
             style={{alignSelf: 'flex-end'}}>
-            <Text style={{...styles.touchText}}>Hoàn tất</Text>
+            <Text
+              style={{
+                ...styles.touchText,
+                fontSize: EStyleSheet.value('18rem'),
+              }}>
+              Hoàn tất
+            </Text>
           </TouchableOpacity>
           <View style={styles.flatList}>
             <FlatList
               contentContainerStyle={{
-                paddingBottom: EStyleSheet.value('0rem'),
+                paddingHorizontal: EStyleSheet.value('0rem'),
               }}
+              showsVerticalScrollIndicator={false}
               data={famousLandscapes}
               renderItem={({item}) => this._renderGoingItem(item)}
               keyExtractor={item => item._id}
@@ -270,10 +284,26 @@ const styles = EStyleSheet.create({
     marginTop: '10rem',
     justifyContent: 'center',
   },
-  content: {paddingTop: '10rem', paddingHorizontal: '23rem'},
-  touchText: {color: '#259CDF', fontSize: constants.FontSizes.title},
-  touchUnSelectText: {color: 'red', fontSize: constants.FontSizes.title},
-  flatList: {height: '495rem', paddingTop: '10rem'},
+  content: {
+    flex: 1,
+    paddingTop: '10rem',
+    paddingHorizontal: '23rem',
+  },
+  touchText: {
+    color: '#259CDF',
+    fontFamily: constants.Fonts.medium,
+    fontSize: constants.FontSizes.regular,
+  },
+  touchUnSelectText: {
+    color: 'red',
+    fontFamily: constants.Fonts.medium,
+    fontSize: constants.FontSizes.regular,
+  },
+  flatList: {
+    flex: 1,
+    height: '100%',
+    paddingTop: '10rem',
+  },
   flatListItem: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -281,10 +311,19 @@ const styles = EStyleSheet.create({
     marginVertical: '15rem',
     borderBottomWidth: 0.5,
     borderColor: '#CFCFCF',
-    height: '58rem',
+    height: '60rem',
   },
   textPlace: {
     fontSize: constants.FontSizes.regular,
-    fontFamily: constants.Fonts.regular,
+    fontFamily: constants.Fonts.medium,
+    marginBottom: '3rem',
+  },
+  loadingCompleted: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

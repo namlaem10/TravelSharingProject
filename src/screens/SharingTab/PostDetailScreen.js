@@ -10,6 +10,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -18,7 +19,6 @@ import TitleBarCustom from '../../components/TitleBarCustom';
 import ScrollVerticalLichTrinh from '../../components/ScrollVerticalLichTrinh';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/detailLichTrinhReducer.js';
-import {BASE_URL} from '../../services/URL';
 import Dialog, {DialogContent} from 'react-native-popup-dialog';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 
@@ -34,9 +34,6 @@ class PostDetailScreen extends Component {
       dataComment: null,
       dataRating: null,
       isLoading: true,
-      linkImage: null,
-      routeData: [],
-      isDetailLichTrinhReady: false,
       showRating: false,
       rating_choose: 0,
     };
@@ -65,7 +62,6 @@ class PostDetailScreen extends Component {
     );
   };
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
     if (nextProps.detailLichTrinh.type === types.GET_LOCATION_INFO) {
       this.setState({
         routeData: nextProps.detailLichTrinh.data,
@@ -87,6 +83,14 @@ class PostDetailScreen extends Component {
       schedule_detail: data.schedule.schedule_detail,
       destinationId: data.schedule.destination,
       number_of_days: data.schedule.number_of_days,
+      schedule_reference:
+        data.schedule.copy_reference !== null
+          ? data.schedule.copy_reference.schedule
+          : data.schedule._id,
+      copy_reference:
+        data.schedule.copy_reference !== null
+          ? data.schedule.copy_reference._id
+          : data._id,
     });
   };
   onPressBack = () => {
@@ -118,12 +122,12 @@ class PostDetailScreen extends Component {
   };
   renderStar = () => {
     const {rating_choose} = this.state;
-    console.log('a', rating_choose);
     const star = [];
     for (let index = 1; index <= 5; index++) {
       if (index <= rating_choose) {
         star.push(
           <TouchableOpacity
+            key={index}
             onPress={() =>
               this.setState({
                 rating_choose: index,
@@ -147,6 +151,7 @@ class PostDetailScreen extends Component {
       } else {
         star.push(
           <TouchableOpacity
+            key={index}
             onPress={() =>
               this.setState({
                 rating_choose: index,
@@ -180,9 +185,23 @@ class PostDetailScreen extends Component {
     this.setState({showRating: rating});
   };
   onSendRating = () => {
-    this.setState({showRating: false, rating_choose: 0});
     const {data, rating_choose} = this.state;
-    this.props.post_rating(data._id, rating_choose);
+    if (rating_choose > 1) {
+      this.props.post_rating(data._id, rating_choose);
+      this.setState({showRating: false, rating_choose: 0});
+    } else {
+      Alert.alert(
+        'Lưu ý',
+        'Vui lòng chọn ít nhất là 1 sao',
+        [
+          {
+            text: 'Chọn lại',
+            style: 'cancel',
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
   render() {
     const {
@@ -199,8 +218,8 @@ class PostDetailScreen extends Component {
     if (data !== null) {
       background =
         data.background !== null
-          ? BASE_URL + '/' + data.background
-          : BASE_URL + '/' + data.destination.destination_image;
+          ? data.background
+          : data.destination.destination_image;
     }
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -217,7 +236,7 @@ class PostDetailScreen extends Component {
       outputRange: [0, -50],
       extrapolate: 'clamp',
     });
-    return !isLoading ? (
+    return isDetailLichTrinhReady ? (
       <View style={styles.container}>
         <Dialog visible={showRating}>
           <DialogContent>
@@ -265,6 +284,17 @@ class PostDetailScreen extends Component {
                 }}>
                 Gửi đánh giá
               </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: EStyleSheet.value('10rem'),
+                right: EStyleSheet.value('5rem'),
+                height: EStyleSheet.value('30rem'),
+                width: EStyleSheet.value('30rem'),
+              }}
+              onPress={() => this.setState({showRating: false})}>
+              <Text style={{fontSize: EStyleSheet.value('20rem')}}>X</Text>
             </TouchableOpacity>
           </DialogContent>
         </Dialog>
@@ -325,9 +355,8 @@ class PostDetailScreen extends Component {
                 <View style={{...styles.infoBoxText}}>
                   <Text
                     style={{
-                      ...styles.text,
-                      fontSize: EStyleSheet.value('18rem'),
-                      fontFamily: constants.Fonts.regular,
+                      fontSize: EStyleSheet.value('16rem'),
+                      fontFamily: constants.Fonts.medium,
                     }}>
                     {data.destination.destination_name}
                   </Text>
@@ -337,7 +366,11 @@ class PostDetailScreen extends Component {
                     source={constants.Images.IC_TIME}
                     style={styles.infoBoxIcon}
                   />
-                  <Text style={{...styles.text}}>
+                  <Text
+                    style={{
+                      fontSize: EStyleSheet.value('14rem'),
+                      fontFamily: constants.Fonts.light,
+                    }}>
                     {moment(data.start_day).format('DD/MM/YYYY')}
                     &nbsp;-&nbsp;
                     {moment(data.end_day).format('DD/MM/YYYY')}
@@ -348,16 +381,26 @@ class PostDetailScreen extends Component {
                     source={constants.Images.IC_MONEY_GRAY}
                     style={styles.infoBoxIcon}
                   />
-                  <Text style={{...styles.text}}>
+                  <Text
+                    style={{
+                      fontSize: EStyleSheet.value('14rem'),
+                      fontFamily: constants.Fonts.light,
+                    }}>
                     {constants.currencyFormatter.format(data.price)}đ̲
                   </Text>
                 </View>
                 <View style={{...styles.infoBoxText}}>
-                  <Text style={{...styles.text}}>Tạo bởi: &nbsp;&nbsp;</Text>
                   <Text
                     style={{
-                      ...styles.text,
-                      fontFamily: constants.Fonts.regular,
+                      fontSize: EStyleSheet.value('14rem'),
+                      fontFamily: constants.Fonts.light,
+                    }}>
+                    Tạo bởi: &nbsp;&nbsp;
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: EStyleSheet.value('14rem'),
+                      fontFamily: constants.Fonts.medium,
                     }}>
                     {data.create_by.display_name}
                   </Text>
@@ -385,8 +428,7 @@ class PostDetailScreen extends Component {
                 }}>
                 <Text
                   style={{
-                    fontSize: EStyleSheet.value('12rem'),
-                    letterSpacing: EStyleSheet.value('1rem'),
+                    fontSize: EStyleSheet.value('14rem'),
                     color: 'white',
                     fontFamily: constants.Fonts.bold,
                   }}>
@@ -468,10 +510,10 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
   },
   AddButton: {
-    height: '35rem',
+    height: '40rem',
     width: '128rem',
     backgroundColor: '#34D374',
-    marginTop: '255rem',
+    marginTop: '250rem',
     marginLeft: '210rem',
     position: 'absolute',
     borderRadius: '5rem',
@@ -488,25 +530,26 @@ const styles = EStyleSheet.create({
   },
   infoPlace: {
     flex: 2.5,
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    paddingVertical: '5rem',
   },
   miniMap: {
     backgroundColor: 'blue',
     flex: 1.5,
   },
   text: {
-    marginVertical: '3rem',
-    letterSpacing: '1rem',
     fontFamily: constants.Fonts.light,
   },
   infoBoxIcon: {
-    width: '15rem',
-    height: '15rem',
+    width: '22rem',
+    height: '22rem',
     marginRight: '5rem',
     resizeMode: 'contain',
   },
   infoBoxText: {
     marginHorizontal: '12rem',
-    marginBottom: '8rem',
+    // marginBottom: '8rem',
     flexDirection: 'row',
     alignItems: 'center',
   },

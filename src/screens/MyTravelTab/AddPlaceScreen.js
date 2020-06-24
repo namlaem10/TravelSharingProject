@@ -45,7 +45,10 @@ class AddPlaceScreen extends Component {
     }
   }
   setSearchText = text => {
-    let searchText = text.replace(/[^a-zA-Z-  ]/g, '');
+    let searchText = text.replace(
+      /[^a-zA-Z0-9-ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ  ]/g,
+      '',
+    );
     this.setState({searchText: searchText});
     let data = this.state.destinationArrayBackup;
     searchText = searchText.trim().toLowerCase();
@@ -120,12 +123,11 @@ class AddPlaceScreen extends Component {
           />
         </View>
         <View style={styles.content}>
-          <View style={styles.listTripGroup}>
+          <View style={{flex: 1}}>
             <Text
               style={{
                 fontFamily: constants.Fonts.medium,
                 fontSize: EStyleSheet.value('18rem'),
-                marginBottom: EStyleSheet.value('10rem'),
               }}>
               Địa điểm phổ biến
             </Text>
@@ -142,6 +144,7 @@ class AddPlaceScreen extends Component {
                   contentContainerStyle={{
                     paddingBottom: EStyleSheet.value('0rem'),
                   }}
+                  showsVerticalScrollIndicator={false}
                   data={desitnationArray}
                   renderItem={({item}) => this._renderGoingItem(item)}
                   keyExtractor={item => item._id}
@@ -189,8 +192,15 @@ const styles = EStyleSheet.create({
     marginTop: '10rem',
     justifyContent: 'center',
   },
-  content: {paddingTop: '10rem', paddingHorizontal: '23rem'},
-  flatList: {height: '495rem'},
+  content: {
+    flex: 1,
+    paddingTop: '10rem',
+    paddingHorizontal: '23rem',
+  },
+  flatList: {
+    flex: 1,
+    paddingTop: '10rem',
+  },
   flatListItem: {
     flexDirection: 'row',
     justifyContent: 'flex-start',

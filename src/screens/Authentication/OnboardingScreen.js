@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Image, AsyncStorage} from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import LinearGradient from 'react-native-linear-gradient';

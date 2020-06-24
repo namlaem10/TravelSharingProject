@@ -42,17 +42,19 @@ export default class TimelineDetailPersonal extends Component {
       lastPlace = true;
     }
     if (this.count > 0) {
-      var secs = routeData.leg[this.count - 1].travelTime + 5400;
-      let minutes = Math.floor(secs / 60);
-      if (minutes > 60) {
-        let hours = Math.floor(minutes / 60);
-        this.hour += hours;
-        minutes = minutes - hours * 60;
-      }
-      this.minute += minutes;
-      if (this.minute > 60) {
-        this.hour = this.hour + Math.floor(this.minute / 60);
-        this.minute = this.minute - Math.floor(this.minute / 60) * 60;
+      if (routeData) {
+        var secs = routeData.leg[this.count - 1].travelTime + 5400;
+        let minutes = Math.floor(secs / 60);
+        if (minutes > 60) {
+          let hours = Math.floor(minutes / 60);
+          this.hour += hours;
+          minutes = minutes - hours * 60;
+        }
+        this.minute += minutes;
+        if (this.minute > 60) {
+          this.hour = this.hour + Math.floor(this.minute / 60);
+          this.minute = this.minute - Math.floor(this.minute / 60) * 60;
+        }
       }
     }
     if (this.hour <= 24) {
@@ -63,15 +65,17 @@ export default class TimelineDetailPersonal extends Component {
       timeText = 'Qua ngày';
     }
     this.count++;
-    return (
+    return item ? (
       <TimeLineItem
         data={item}
         timeText={timeText}
         key={this.count - 1}
         lastPlace={lastPlace}
         route={
-          this.count - 1 < routeData.leg.length
-            ? routeData.leg[this.count - 1]
+          routeData
+            ? this.count - 1 < routeData.leg.length
+              ? routeData.leg[this.count - 1]
+              : null
             : null
         }
         isDelete={isGone ? false : true}
@@ -83,8 +87,9 @@ export default class TimelineDetailPersonal extends Component {
         isActive={isActive}
         isGone={isGone}
         onPressRating={onPressRating}
+        onPressItem={this.props.onPressItem}
       />
-    );
+    ) : null;
   };
   render() {
     const {
@@ -133,9 +138,7 @@ export default class TimelineDetailPersonal extends Component {
         <View style={styles.content}>
           {isGone ? (
             <FlatList
-              contentContainerStyle={{
-                paddingBottom: EStyleSheet.value('0rem'),
-              }}
+              showsVerticalScrollIndicator={false}
               data={this.props.data}
               renderItem={this.renderItem}
               keyExtractor={item => item._id}
@@ -150,6 +153,7 @@ export default class TimelineDetailPersonal extends Component {
               data={this.props.data}
               extraData={this.props}
               renderItem={this.renderItem}
+              showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => `draggable-item-${item._id}`}
               onDragEnd={({data}) => {
                 onDragEnd(data, keyDay);
@@ -163,26 +167,26 @@ export default class TimelineDetailPersonal extends Component {
 }
 const styles = EStyleSheet.create({
   container: {
-    height: '420rem',
+    flex: 1,
   },
   containerSub: {
-    height: '470rem',
+    flex: 1,
   },
   title: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: '5rem',
-    marginHorizontal: '13rem',
+    marginVertical: '10rem',
+    paddingHorizontal: '6.5rem',
   },
   text: {
     color: '#127138',
   },
   titleText: {
     fontSize: constants.FontSizes.regular,
+    fontFamily: constants.Fonts.medium,
   },
   content: {
-    marginTop: '10rem',
-    marginLeft: '13rem',
+    paddingHorizontal: '6.5rem',
     flex: 1,
   },
 });

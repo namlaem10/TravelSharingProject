@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -24,8 +25,8 @@ class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: 'test@gmail.com',
-      password: '111111',
+      email: '',
+      password: '',
       placeholderEmail: 'Email',
       placeholderPassword: 'Mật khẩu',
       show: false,
@@ -42,10 +43,13 @@ class SignInScreen extends Component {
     let checkEmptyEmail = validateEmpty(email);
     let checkEmptyPass = validateEmpty(password);
     if (!checkEmptyEmail || !checkEmptyPass) {
-      this.setState({error: 'Tài khoản hoặc mật khẩu không được bỏ trống!'});
+      this.setState({
+        error: 'Tài khoản hoặc mật khẩu không được bỏ trống!',
+        isLoading: false,
+      });
     } else {
       if (!validateEmail(email)) {
-        this.setState({error: 'Email không hợp lệ'});
+        this.setState({error: 'Email không hợp lệ', isLoading: false});
       } else {
         let params = new URLSearchParams();
         params.append('email', email);
@@ -95,15 +99,14 @@ class SignInScreen extends Component {
             <DialogContent>
               <View style={styles.loadingDialog}>
                 <ActivityIndicator
-                  size={EStyleSheet.value('60rem')}
+                  size={EStyleSheet.value('40rem')}
                   color="#34D374"
                 />
                 <Text
                   style={{
                     fontFamily: constants.Fonts.light,
                     fontSize: EStyleSheet.value('15rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
                   }}>
                   Đang đăng nhập
                 </Text>
@@ -183,7 +186,9 @@ class SignInScreen extends Component {
                 placeholderTextColor={Colors.deactive}
                 ref={ref => (this.passRef = ref)}
                 value={password}
-                onSubmitEditing={() => this.onPressSignIn()}
+                onSubmitEditing={() => (
+                  Keyboard.dismiss(), this.onPressSignIn()
+                )}
                 style={styles.textPassword}
                 onFocus={() => this.setState({placeholderPassword: ''})}
                 onEndEditing={() =>
@@ -209,7 +214,8 @@ class SignInScreen extends Component {
             </View>
           </View>
           <View style={styles.viewButton}>
-            <TouchableOpacity onPress={this.onPressSignIn}>
+            <TouchableOpacity
+              onPress={() => (Keyboard.dismiss(), this.onPressSignIn())}>
               <LinearGradient
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 0}}
@@ -347,11 +353,11 @@ const styles = EStyleSheet.create({
     marginRight: 5,
   },
   loadingDialog: {
+    paddingTop: '20rem',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    height: EStyleSheet.value('95rem'),
-    width: EStyleSheet.value('250rem'),
-    backgroundColor: 'white',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

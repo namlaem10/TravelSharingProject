@@ -13,7 +13,6 @@ import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
 import HeaderBar from '../../components/HeaderBar';
-import {BASE_URL} from '../../services/URL';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 import {actions, types} from '../../redux/reducers/managerGroupReducer';
@@ -90,13 +89,11 @@ class MemberScreen extends Component {
     const {isLeader} = this.state;
     let render = [];
     if (isLeader) {
-      array.map(item => {
+      array.map((item, index) => {
         let avatar = item.avatar;
-        if (avatar !== null) {
-          avatar = BASE_URL + '/' + avatar;
-        }
         let renderItem = (
           <TouchableOpacity
+            key={index}
             style={styles.memberItem}
             onLongPress={() => this.onLongPressItem(item)}>
             <Image
@@ -129,13 +126,11 @@ class MemberScreen extends Component {
         render.push(renderItem);
       });
     } else {
-      array.map(item => {
+      array.map((item, index) => {
         let avatar = item.avatar;
-        if (avatar !== null) {
-          avatar = BASE_URL + '/' + avatar;
-        }
         let renderItem = (
           <View
+            key={index}
             style={styles.memberItem}
             onLongPress={() => this.onLongPressItem(item)}>
             <Image

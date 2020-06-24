@@ -43,8 +43,9 @@ class ChangePasswordScreen extends Component {
       show2: false,
       show3: false,
       error: '',
+      isSuccess: false,
+      isFail: false,
       isLoading: false,
-      isCompleted: false,
       title: 'Đổi mật khẩu',
     };
   }
@@ -54,9 +55,20 @@ class ChangePasswordScreen extends Component {
       nextProps.user.type === types.CHANGE_PASSWORD_FAIL
     ) {
       if (nextProps.user.type === types.CHANGE_PASSWORD) {
-        this.setState({isLoading: false, isCompleted: true});
+        this.setState({isLoading: false, isSuccess: true});
+        setTimeout(() => {
+          this.setState({isSuccess: false});
+          this.props.navigation.goBack();
+        }, 1000);
       } else {
-        this.setState({isLoading: false, error: nextProps.user.message});
+        this.setState({
+          isLoading: false,
+          isFail: true,
+          error: nextProps.user.message,
+        });
+        setTimeout(() => {
+          this.setState({isFail: false});
+        }, 1000);
       }
     }
   }
@@ -93,10 +105,6 @@ class ChangePasswordScreen extends Component {
       }
     }
   };
-  onPressCompletedDialog = () => {
-    this.setState({isCompleted: false});
-    this.props.navigation.goBack();
-  };
   render() {
     const {
       password,
@@ -115,7 +123,7 @@ class ChangePasswordScreen extends Component {
       <KeyboardAwareScrollView
         // enableOnAndroid={false}
         keyboardShouldPersistTaps="handled"
-        scrollEnabled={false}
+        scrollEnabled={true}
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: Colors.backgroundColor,
@@ -125,49 +133,60 @@ class ChangePasswordScreen extends Component {
             <DialogContent>
               <View style={styles.loadingDialog}>
                 <ActivityIndicator
-                  size={EStyleSheet.value('60rem')}
+                  size={EStyleSheet.value('40rem')}
                   color="#34D374"
                 />
                 <Text
                   style={{
                     fontFamily: constants.Fonts.light,
                     fontSize: EStyleSheet.value('15rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
                   }}>
                   Đang đổi mật khẩu
                 </Text>
               </View>
             </DialogContent>
           </Dialog>
-          <Dialog
-            visible={this.state.isCompleted}
-            footer={
-              <DialogFooter>
-                <DialogButton
-                  text="Trở về"
-                  onPress={() => this.onPressCompletedDialog()}
-                />
-              </DialogFooter>
-            }>
+          <Dialog visible={this.state.isSuccess}>
             <DialogContent>
               <View style={styles.loadingDialog}>
                 <Image
-                  source={constants.Images.IC_PASSWORD_ACTIVE}
                   style={{
-                    width: EStyleSheet.value('60rem'),
-                    height: EStyleSheet.value('60rem'),
+                    width: EStyleSheet.value('20rem'),
+                    height: EStyleSheet.value('20rem'),
                   }}
+                  resizeMode="contain"
+                  source={constants.Images.IC_SUCCESS}
                 />
                 <Text
                   style={{
                     fontFamily: constants.Fonts.light,
                     fontSize: EStyleSheet.value('15rem'),
-                    letterSpacing: 1,
-                    marginLeft: EStyleSheet.value('5rem'),
-                    textAlign: 'center',
+                    marginLeft: EStyleSheet.value('10rem'),
                   }}>
-                  Đã đổi mật khẩu
+                  Cập nhật thành công
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
+          <Dialog visible={this.state.isFail}>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <Image
+                  style={{
+                    width: EStyleSheet.value('20rem'),
+                    height: EStyleSheet.value('20rem'),
+                  }}
+                  resizeMode="contain"
+                  source={constants.Images.IC_FAIL}
+                />
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                    marginLeft: EStyleSheet.value('5rem'),
+                  }}>
+                  Có lỗi xảy ra
                 </Text>
               </View>
             </DialogContent>
@@ -183,7 +202,9 @@ class ChangePasswordScreen extends Component {
                 styles.ErrorInput,
                 {marginBottom: EStyleSheet.value('10rem')},
               ]}>
-              <Text style={[styles.textEmail, {color: 'red'}]}>{error}</Text>
+              <Text style={[styles.textEmail, {color: 'red'}]}>
+                Lỗi: {error}
+              </Text>
             </View>
           )}
           <View style={styles.viewTextInput}>
@@ -200,7 +221,7 @@ class ChangePasswordScreen extends Component {
                 autoCapitalize="none"
                 secureTextEntry={show ? false : true}
                 placeholderTextColor={Colors.deactive}
-                ref={ref => (this.passRef = ref)}
+                onSubmitEditing={() => this.newpassRef.focus()}
                 value={password}
                 style={styles.textPassword}
                 onFocus={() => this.setState({placeholderPassword: ''})}
@@ -240,7 +261,8 @@ class ChangePasswordScreen extends Component {
                 autoCapitalize="none"
                 secureTextEntry={show2 ? false : true}
                 placeholderTextColor={Colors.deactive}
-                ref={ref => (this.passRef = ref)}
+                ref={ref => (this.newpassRef = ref)}
+                onSubmitEditing={() => this.confirmnewpassRef.focus()}
                 value={newPassword}
                 style={styles.textPassword}
                 onFocus={() => this.setState({placeholderNewPassword: ''})}
@@ -278,9 +300,10 @@ class ChangePasswordScreen extends Component {
                 selectionColor="white"
                 onChangeText={text => this.setState({confirmPassword: text})}
                 autoCapitalize="none"
-                secureTextEntry={show2 ? false : true}
+                secureTextEntry={show3 ? false : true}
                 placeholderTextColor={Colors.deactive}
-                ref={ref => (this.passRef = ref)}
+                ref={ref => (this.confirmnewpassRef = ref)}
+                onSubmitEditing={() => this.onpressChangePass()}
                 value={confirmPassword}
                 style={styles.textPassword}
                 onFocus={() => this.setState({placeholderConfirm: ''})}
@@ -308,17 +331,17 @@ class ChangePasswordScreen extends Component {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-        <View style={styles.viewButton}>
-          <TouchableOpacity onPress={() => this.onpressChangePass()}>
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              colors={Colors.gradient.background}
-              style={styles.buttonSignIn}>
-              <Text style={styles.textSignIn}>Đổi mật khẩu</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+          <View style={styles.viewButton}>
+            <TouchableOpacity onPress={() => this.onpressChangePass()}>
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                colors={Colors.gradient.background}
+                style={styles.buttonSignIn}>
+                <Text style={styles.textSignIn}>Đổi mật khẩu</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAwareScrollView>
     );
@@ -345,11 +368,24 @@ const styles = EStyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
+  header: {
+    paddingTop: '20rem',
+    width: '100%',
+    height: '90rem',
+    borderBottomWidth: 0.3,
+    borderBottomColor: '#CDCDCD',
+    paddingHorizontal: '13rem',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  title: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   viewLogo: {
     flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'red',
   },
   image: {
     width: '130rem',
@@ -366,7 +402,7 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
   },
   viewTextInput: {
-    flex: 2,
+    height: '300rem',
     justifyContent: 'space-around',
     alignItems: 'center',
     margin: '5rem',
@@ -381,11 +417,11 @@ const styles = EStyleSheet.create({
     width: '285rem',
     position: 'absolute',
     left: '32rem',
-    top: '100rem',
+    top: '130rem',
   },
   textEmail: {
     color: Colors.deactive,
-    fontSize: FontSizes.smalltext,
+    fontSize: FontSizes.normal,
     paddingBottom: 3,
     width: '285rem',
     paddingLeft: 0,
@@ -393,7 +429,7 @@ const styles = EStyleSheet.create({
   },
   textPassword: {
     color: Colors.deactive,
-    fontSize: FontSizes.smalltext,
+    fontSize: FontSizes.normal,
     paddingBottom: 3,
     width: '285rem',
     paddingLeft: 0,
@@ -430,11 +466,11 @@ const styles = EStyleSheet.create({
     marginRight: 5,
   },
   loadingDialog: {
+    paddingTop: '20rem',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    height: EStyleSheet.value('95rem'),
-    width: EStyleSheet.value('250rem'),
-    backgroundColor: 'white',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });

@@ -4,7 +4,7 @@ import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
 EStyleSheet.build({$rem: constants.WIDTH / 380});
-import {BASE_URL} from '../services/URL';
+
 import Comment from './Comment';
 import moment from 'moment';
 
@@ -26,6 +26,7 @@ export default class BlogDetail extends Component {
     for (let i = 1; i <= count; i++) {
       starts.push(
         <Image
+          key={i}
           source={constants.Images.IC_GOLD_STAR}
           style={{
             width: EStyleSheet.value('16rem'),
@@ -38,6 +39,7 @@ export default class BlogDetail extends Component {
     for (let i = 1; i <= leftstar; i++) {
       starts.push(
         <Image
+          key={`${i}+10`}
           source={constants.Images.IC_NORMAL_STAR}
           style={{
             width: EStyleSheet.value('16rem'),
@@ -67,10 +69,6 @@ export default class BlogDetail extends Component {
     const {data, dataComment, dataRating, onPressRating} = this.props;
     const {comment, messageText} = this.state;
     const User = data.create_by;
-    let avatar = null;
-    if (User) {
-      avatar = BASE_URL + '/' + User.avatar;
-    }
     return (
       <View style={styles.content}>
         <View style={styles.headerInfo}>
@@ -78,33 +76,31 @@ export default class BlogDetail extends Component {
             <Image
               source={
                 User.avatar !== null
-                  ? {uri: avatar}
-                  : constants.Images.IC_AVATAR3
+                  ? {uri: User.avatar}
+                  : constants.Images.IC_AVATAR1
               }
               style={{
-                width: EStyleSheet.value('35rem'),
-                height: EStyleSheet.value('35rem'),
-                borderRadius: EStyleSheet.value('17.5rem'),
+                width: EStyleSheet.value('40rem'),
+                height: EStyleSheet.value('40rem'),
+                borderRadius: EStyleSheet.value('20rem'),
               }}
             />
             <View
               style={{
                 flexDirection: 'column',
-                justifyContent: 'center',
-                marginLeft: EStyleSheet.value('15rem'),
+                justifyContent: 'space-between',
+                marginLeft: EStyleSheet.value('10rem'),
               }}>
               <Text
                 style={{
-                  ...styles.text,
-                  fontSize: EStyleSheet.value('12rem'),
-                  fontFamily: constants.Fonts.regular,
+                  fontSize: EStyleSheet.value('14rem'),
+                  fontFamily: constants.Fonts.medium,
                 }}>
                 {User.display_name}
               </Text>
               <Text
                 style={{
-                  ...styles.text,
-                  fontSize: EStyleSheet.value('12rem'),
+                  fontSize: EStyleSheet.value('14rem'),
                   fontFamily: constants.Fonts.light,
                 }}>
                 {data.departure.destination_name}&nbsp;-&nbsp;
@@ -115,8 +111,8 @@ export default class BlogDetail extends Component {
           <View style={styles.headerCol2}>
             <Text
               style={{
-                ...styles.text,
                 fontFamily: constants.Fonts.light,
+                fontSize: EStyleSheet.value('14rem'),
                 color: '#8E8E8E',
               }}>
               {moment(data.end_day).format('DD/MM/YYYY')}
@@ -127,27 +123,23 @@ export default class BlogDetail extends Component {
         <View style={styles.contentInfo}>
           <Text
             style={{
-              ...styles.text,
               fontFamily: constants.Fonts.medium,
-              fontSize: EStyleSheet.value('14rem'),
+              fontSize: EStyleSheet.value('15rem'),
             }}>
             {data.title}
           </Text>
           <Text
             style={{
-              ...styles.text,
               fontFamily: constants.Fonts.medium,
-              fontSize: EStyleSheet.value('10rem'),
+              fontSize: EStyleSheet.value('13rem'),
               color: '#41A96B',
-              marginBottom: EStyleSheet.value('5rem'),
             }}>
             #{data.schedule.destination}
           </Text>
           <Text
             style={{
-              ...styles.text,
               fontFamily: constants.Fonts.light,
-              fontSize: EStyleSheet.value('12rem'),
+              fontSize: EStyleSheet.value('14rem'),
             }}>
             {data.description}
           </Text>
@@ -156,13 +148,15 @@ export default class BlogDetail extends Component {
           <View style={styles.likeAndCommentSmallIcon}>
             <View style={styles.icItem}>
               <Image
+                resizeMode="contain"
                 source={constants.Images.IC_GOLD_STAR}
                 style={styles.smallIcon}
               />
-              <Text>{dataRating.rating_count}</Text>
+              <Text>Lượt đánh giá: {dataRating.rating_count}</Text>
             </View>
             <View style={styles.icItem}>
               <Image
+                resizeMode="contain"
                 source={constants.Images.IC_COMMENT}
                 style={styles.smallIcon}
               />
@@ -174,6 +168,7 @@ export default class BlogDetail extends Component {
               style={styles.icItem}
               onPress={() => onPressRating(true)}>
               <Image
+                resizeMode="contain"
                 source={constants.Images.IC_GOLD_STAR}
                 style={styles.bigIcon}
               />
@@ -183,6 +178,7 @@ export default class BlogDetail extends Component {
               style={styles.icItem}
               onPress={() => this.setState({comment: true})}>
               <Image
+                resizeMode="contain"
                 source={constants.Images.IC_COMMENT}
                 style={styles.bigIcon}
               />
@@ -247,7 +243,7 @@ const styles = EStyleSheet.create({
   content: {
     flex: 1.3,
     marginHorizontal: '13rem',
-    marginVertical: '12rem',
+    marginBottom: '12rem',
   },
   headerInfo: {
     flex: 1,
@@ -257,20 +253,20 @@ const styles = EStyleSheet.create({
   headerCol1: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   headerCol2: {
     alignItems: 'flex-end',
+    justifyContent: 'center',
     flexDirection: 'column',
   },
   contentInfo: {
     marginTop: '10rem',
   },
-  text: {
-    letterSpacing: '0.8rem',
+  commentGroup: {
+    // backgroundColor: 'red',
   },
   likeAndCommentSmallIcon: {
-    marginTop: '8rem',
+    marginTop: '6rem',
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: '0.5rem',
@@ -280,7 +276,6 @@ const styles = EStyleSheet.create({
     width: '18rem',
     height: '18rem',
     marginRight: '8rem',
-    resizeMode: 'contain',
   },
   likeAndCommentBigIcon: {
     marginTop: '8rem',

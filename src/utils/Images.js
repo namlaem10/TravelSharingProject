@@ -10,7 +10,7 @@ export default {
   IC_NOTIFICATION_DEACTIVE: require('../assets/images/ic-notification-deactive.png'),
   IC_DIFFERENCE_ACTIVE: require('../assets/images/ic-difference-active.png'),
   IC_DIFFERENCE_DEACTIVE: require('../assets/images/ic-difference-deactive.png'),
-  IC_LOGO: require('../assets/images/ic-logo.png'),
+  IC_LOGO: require('../assets/images/ic-logo.jpg'),
   IC_HIDE_PASSWORD: require('../assets/images/ic-hide-password.png'),
   IC_SHOW_PASSWORD: require('../assets/images/ic-show-password.png'),
   IC_CLEAR: require('../assets/images/ic-clear.png'),
@@ -62,4 +62,7 @@ export default {
   IMG_ONBOARDING1: require('../assets/images/onBoarding1.png'),
   IMG_ONBOARDING2: require('../assets/images/onBoarding2.png'),
   IMG_ONBOARDING3: require('../assets/images/onBoarding3.png'),
+  IC_SUCCESS: require('../assets/images/ic-success.png'),
+  IC_FAIL: require('../assets/images/ic-error.png'),
+  IC_NO_NOTIFICATION: require('../assets/images/ic-no-notification.png'),
 };

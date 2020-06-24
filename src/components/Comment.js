@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {View, Text, Image} from 'react-native';
-import {BASE_URL} from '../services/URL';
 
 import * as constants from '../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -19,7 +18,11 @@ export default class Comment extends Component {
         <View style={styles.container} key={index}>
           <View style={styles.Userinfo}>
             <Image
-              source={{uri: `${BASE_URL}/${item.avatar}`}}
+              source={
+                item.avatar !== null
+                  ? {uri: item.avatar}
+                  : constants.Images.IC_AVATAR1
+              }
               style={{
                 width: EStyleSheet.value('36rem'),
                 height: EStyleSheet.value('36rem'),
@@ -52,7 +55,6 @@ export default class Comment extends Component {
               style={{
                 fontSize: EStyleSheet.value('14rem'),
                 fontFamily: constants.Fonts.light,
-                marginLeft: EStyleSheet.value('5rem'),
               }}>
               {item.content}
             </Text>
@@ -98,11 +100,14 @@ export default class Comment extends Component {
 
 const styles = EStyleSheet.create({
   container: {
-    marginVertical: '10rem',
+    marginVertical: '15rem',
     flexDirection: 'column',
   },
   Userinfo: {
     flexDirection: 'row',
     marginBottom: '5rem',
+  },
+  comment: {
+    marginLeft: '40rem',
   },
 });
