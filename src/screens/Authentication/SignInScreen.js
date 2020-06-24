@@ -1,14 +1,27 @@
 import React, {Component} from 'react';
-import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Keyboard,
+} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import * as constants from '../../utils/Constants';
 import LinearGradient from 'react-native-linear-gradient';
-
-import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Contants';
+import {validateEmail, validateEmpty} from '../../utils/Validate';
+import {Images, FontSizes, Fonts, Colors, WIDTH} from '../../utils/Constants';
+import {connect} from 'react-redux';
+import {actions, types} from '../../redux/reducers/UserReducer';
+import Dialog, {DialogContent} from 'react-native-popup-dialog';
 
 EStyleSheet.build({$rem: WIDTH / 380});
-
-export default class SignInScreen extends Component {
+// let token = null;
+class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,13 +30,52 @@ export default class SignInScreen extends Component {
       placeholderEmail: 'Email',
       placeholderPassword: 'Mật khẩu',
       show: false,
+      error: '',
+      isLoading: false,
     };
   }
+  //check if user not login
 
-  onPressSignIn = () => {
-    this.props.navigation.navigate('Main');
+  onPressSignIn = async () => {
+    this.setState({isLoading: true});
+    let email = this.state.email;
+    let password = this.state.password;
+    let checkEmptyEmail = validateEmpty(email);
+    let checkEmptyPass = validateEmpty(password);
+    if (!checkEmptyEmail || !checkEmptyPass) {
+      this.setState({
+        error: 'Tài khoản hoặc mật khẩu không được bỏ trống!',
+        isLoading: false,
+      });
+    } else {
+      if (!validateEmail(email)) {
+        this.setState({error: 'Email không hợp lệ', isLoading: false});
+      } else {
+        let params = new URLSearchParams();
+        params.append('email', email);
+        params.append('password', password);
+        await this.props.login(params);
+        if (this.props.user.status === 200) {
+          this.setState({isLoading: false});
+          this.storeToken();
+          this.props.navigation.navigate('Sharing');
+        } else {
+          this.setState({
+            error: this.props.user.data.message,
+            isLoading: false,
+          });
+        }
+      }
+    }
   };
 
+  storeToken = async () => {
+    try {
+      await AsyncStorage.setItem('token', this.props.user.data.token);
+    } catch (e) {
+      // saving error
+    }
+  };
   render() {
     const {
       email,
@@ -31,6 +83,7 @@ export default class SignInScreen extends Component {
       placeholderEmail,
       placeholderPassword,
       show,
+      error,
     } = this.state;
     return (
       <KeyboardAwareScrollView
@@ -42,12 +95,39 @@ export default class SignInScreen extends Component {
           backgroundColor: Colors.backgroundColor,
         }}>
         <View style={styles.container}>
+          <Dialog visible={this.state.isLoading}>
+            <DialogContent>
+              <View style={styles.loadingDialog}>
+                <ActivityIndicator
+                  size={EStyleSheet.value('40rem')}
+                  color="#34D374"
+                />
+                <Text
+                  style={{
+                    fontFamily: constants.Fonts.light,
+                    fontSize: EStyleSheet.value('15rem'),
+                    marginLeft: EStyleSheet.value('10rem'),
+                  }}>
+                  Đang đăng nhập
+                </Text>
+              </View>
+            </DialogContent>
+          </Dialog>
           <View style={styles.viewLogo}>
             <Image
               source={Images.IC_LOGO}
               resizeMode="contain"
               style={styles.image}
             />
+            {error === '' ? null : (
+              <View
+                style={[
+                  styles.ErrorInput,
+                  {marginBottom: EStyleSheet.value('10rem')},
+                ]}>
+                <Text style={[styles.textEmail, {color: 'red'}]}>{error}</Text>
+              </View>
+            )}
           </View>
           <View style={styles.viewTextInput}>
             <View
@@ -106,7 +186,9 @@ export default class SignInScreen extends Component {
                 placeholderTextColor={Colors.deactive}
                 ref={ref => (this.passRef = ref)}
                 value={password}
-                onSubmitEditing={() => this.onPressSignIn()}
+                onSubmitEditing={() => (
+                  Keyboard.dismiss(), this.onPressSignIn()
+                )}
                 style={styles.textPassword}
                 onFocus={() => this.setState({placeholderPassword: ''})}
                 onEndEditing={() =>
@@ -132,7 +214,8 @@ export default class SignInScreen extends Component {
             </View>
           </View>
           <View style={styles.viewButton}>
-            <TouchableOpacity onPress={this.onPressSignIn}>
+            <TouchableOpacity
+              onPress={() => (Keyboard.dismiss(), this.onPressSignIn())}>
               <LinearGradient
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 0}}
@@ -165,7 +248,22 @@ export default class SignInScreen extends Component {
     );
   }
 }
-
+const mapStateToProps = ({user}) => {
+  return {
+    user: user,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    login: parrams => dispatch(actions.login(parrams)),
+    reset: () => dispatch(actions.reset()),
+  };
+};
+// eslint-disable-next-line prettier/prettier
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SignInScreen);
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -201,6 +299,12 @@ const styles = EStyleSheet.create({
     width: '315rem',
     borderBottomWidth: 0.5,
     borderColor: Colors.primary,
+  },
+  ErrorInput: {
+    width: '285rem',
+    position: 'absolute',
+    left: '32rem',
+    bottom: '-20rem',
   },
   textEmail: {
     color: Colors.deactive,
@@ -247,5 +351,13 @@ const styles = EStyleSheet.create({
     color: Colors.deactive,
     fontFamily: Fonts.light,
     marginRight: 5,
+  },
+  loadingDialog: {
+    paddingTop: '20rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: EStyleSheet.value('80rem'),
+    width: EStyleSheet.value('200rem'),
   },
 });
