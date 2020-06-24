@@ -88,6 +88,7 @@ class InfoGroupScreen extends Component {
       data: this.state.data,
       isLeader: this.state.isLeader,
       title: this.state.title,
+      isWillGo: this.state.isWillGo,
     });
   };
   onPressMemberInfo = data => {

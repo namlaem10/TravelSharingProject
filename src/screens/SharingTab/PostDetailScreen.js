@@ -10,6 +10,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import * as constants from '../../utils/Constants';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -184,9 +185,23 @@ class PostDetailScreen extends Component {
     this.setState({showRating: rating});
   };
   onSendRating = () => {
-    this.setState({showRating: false, rating_choose: 0});
     const {data, rating_choose} = this.state;
-    this.props.post_rating(data._id, rating_choose);
+    if (rating_choose > 1) {
+      this.props.post_rating(data._id, rating_choose);
+      this.setState({showRating: false, rating_choose: 0});
+    } else {
+      Alert.alert(
+        'Lưu ý',
+        'Vui lòng chọn ít nhất là 1 sao',
+        [
+          {
+            text: 'Chọn lại',
+            style: 'cancel',
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
   render() {
     const {
@@ -269,6 +284,17 @@ class PostDetailScreen extends Component {
                 }}>
                 Gửi đánh giá
               </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: EStyleSheet.value('10rem'),
+                right: EStyleSheet.value('5rem'),
+                height: EStyleSheet.value('30rem'),
+                width: EStyleSheet.value('30rem'),
+              }}
+              onPress={() => this.setState({showRating: false})}>
+              <Text style={{fontSize: EStyleSheet.value('20rem')}}>X</Text>
             </TouchableOpacity>
           </DialogContent>
         </Dialog>

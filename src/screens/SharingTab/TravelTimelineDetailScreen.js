@@ -27,7 +27,7 @@ export default class TravelTimelineDetailScreen extends Component {
     }
   };
   onPressItem = item => {
-    console.log(item);
+    console.log(item._id);
   };
   _renderItem = () => {
     let array = [];

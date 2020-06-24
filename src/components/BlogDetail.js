@@ -152,7 +152,7 @@ export default class BlogDetail extends Component {
                 source={constants.Images.IC_GOLD_STAR}
                 style={styles.smallIcon}
               />
-              <Text>{dataRating.rating_count}</Text>
+              <Text>Lượt đánh giá: {dataRating.rating_count}</Text>
             </View>
             <View style={styles.icItem}>
               <Image

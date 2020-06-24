@@ -68,6 +68,7 @@ export default class MapScreen extends Component {
   };
   render() {
     const {title, region, routing, data, isLoading, userLocation} = this.state;
+    let count = 0;
     return isLoading ? (
       <View
         style={{
@@ -96,6 +97,7 @@ export default class MapScreen extends Component {
             />
           ) : null}
           {data.map(item => {
+            count++;
             return (
               <Marker
                 key={item._id}
@@ -103,8 +105,19 @@ export default class MapScreen extends Component {
                   latitude: item.location.latitude,
                   longitude: item.location.longitude,
                 }}
-                title={item.tourist_destination_name}
-              />
+                title={item.tourist_destination_name}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'white',
+                    padding: EStyleSheet.value('5rem'),
+                  }}>
+                  <Text style={styles.leaderText}>
+                    {count}. {item.tourist_destination_name}
+                  </Text>
+                </View>
+              </Marker>
             );
           })}
           {routing !== undefined ? (

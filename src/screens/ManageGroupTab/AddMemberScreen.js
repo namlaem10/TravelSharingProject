@@ -59,6 +59,7 @@ class AddMemberScreen extends Component {
             this.props.navigation.navigate(location, {
               data: nextProps.groupInfo.data[0],
               title: this.props.navigation.getParam('title'),
+              isWillGo: this.props.navigation.getParam('isWillGo'),
             });
           }, 2000);
         } else {
@@ -141,9 +142,11 @@ class AddMemberScreen extends Component {
           isLeader: this.props.navigation.getParam('isLeader'),
         });
       } else if (location === 'InfoGroup') {
+        console.log('vào infoGroup');
         this.props.navigation.navigate(location, {
           data: this.props.navigation.getParam('data'),
           title: this.props.navigation.getParam('title'),
+          isWillGo: this.props.navigation.getParam('isWillGo'),
         });
       }
     } else {

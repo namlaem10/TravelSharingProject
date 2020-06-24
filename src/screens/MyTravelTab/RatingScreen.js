@@ -118,7 +118,21 @@ class RatingScreen extends Component {
   }
   onSendRating = () => {
     const {data, rating_choose} = this.state;
-    this.props.rating_tourist(data, rating_choose);
+    if (rating_choose > 1) {
+      this.props.rating_tourist(data, rating_choose);
+    } else {
+      Alert.alert(
+        'Lưu ý',
+        'Vui lòng chọn ít nhất là 1 sao',
+        [
+          {
+            text: 'Chọn lại',
+            style: 'cancel',
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');

@@ -253,7 +253,7 @@ class NewsFeedScreen extends Component {
               <TextInput
                 style={styles.textArea}
                 underlineColorAndroid="transparent"
-                placeholder={'nội dung báo cáo'}
+                placeholder={'Nội dung báo cáo'}
                 placeholderTextColor="grey"
                 numberOfLines={10}
                 multiline={true}
@@ -365,7 +365,7 @@ class NewsFeedScreen extends Component {
               data={data}
               ListHeaderComponent={this.renderHeader}
               renderItem={({item}) =>
-                item.isShare ? (
+                item.isShare && !item.is_hidden ? (
                   <NewsFeedItem
                     data={item}
                     key={item._id}
