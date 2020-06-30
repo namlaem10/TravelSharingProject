@@ -76,7 +76,9 @@ class ManageGroupScreen extends Component {
     }
   }
   _renderItem = item => {
-    if (!item.isShare) {
+    let today = new Date();
+    let endDay = new Date(item.end_day);
+    if (!(endDay < today && endDay.getDate() !== today.getDate())) {
       return <TeamItem data={item} onPress={this.onPressItem} />;
     }
   };

@@ -190,7 +190,10 @@ class ShareTimeLineDetailScreen extends Component {
     }
   };
   onPressItem = item => {
-    console.log(item);
+    this.props.navigation.navigate('Rating', {
+      data: item,
+      location: 'ShareTimeLineDetail',
+    });
   };
   onPressRating = item => {
     this.props.navigation.navigate('Rating', {data: item});
@@ -227,6 +230,7 @@ class ShareTimeLineDetailScreen extends Component {
           onDragEnd={this.onDragEnd}
           onPressMap={this.onPressMap}
           onPressRating={this.onPressRating}
+          onPressItem={this.onPressItem}
         />,
       );
     }

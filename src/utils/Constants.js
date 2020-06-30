@@ -70,6 +70,11 @@ export async function GetRoutes(schedule_detail, numberOfDay) {
     console.log(error);
   }
 }
+
+export function trimString(x) {
+  return x.replace(/\s+/g, ' ').trim();
+}
+
 export function groupBy(objectArray, property) {
   return objectArray.reduce(function(acc, obj) {
     let key = obj[property];

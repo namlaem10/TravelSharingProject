@@ -119,12 +119,20 @@ class ChattingScreen extends Component {
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
     if (location !== '') {
+      let data = this.props.navigation.getParam('data');
+      let currentDate = new Date();
+      let startDate = new Date(data.start_day);
+      let isWillGo = false;
+      if (startDate < currentDate) {
+        isWillGo = true;
+      }
       this.props.navigation.navigate(location, {
         data: this.props.navigation.getParam('data'),
         isGone: this.props.navigation.getParam('isGone'),
         isShare: this.props.navigation.getParam('isShare'),
         isLeader: this.props.navigation.getParam('isLeader'),
         title: this.props.navigation.getParam('title'),
+        isWillGo: isWillGo,
       });
     } else {
       this.props.navigation.goBack();

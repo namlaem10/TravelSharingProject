@@ -186,7 +186,7 @@ class PostDetailScreen extends Component {
   };
   onSendRating = () => {
     const {data, rating_choose} = this.state;
-    if (rating_choose > 1) {
+    if (rating_choose > 0) {
       this.props.post_rating(data._id, rating_choose);
       this.setState({showRating: false, rating_choose: 0});
     } else {

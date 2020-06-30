@@ -91,38 +91,67 @@ class MemberScreen extends Component {
     if (isLeader) {
       array.map((item, index) => {
         let avatar = item.avatar;
-        let renderItem = (
-          <TouchableOpacity
-            key={index}
-            style={styles.memberItem}
-            onLongPress={() => this.onLongPressItem(item)}>
-            <Image
-              source={
-                avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
-              }
-              style={{
-                width: EStyleSheet.value('84rem'),
-                height: EStyleSheet.value('84rem'),
-                borderRadius: EStyleSheet.value('42rem'),
-              }}
-            />
-            <Text
-              style={{
-                fontSize: EStyleSheet.value('14rem'),
-                fontFamily: constants.Fonts.medium,
-              }}>
-              {item.display_name}
-            </Text>
-            <Text
-              style={{
-                fontSize: EStyleSheet.value('14rem'),
-                fontFamily: constants.Fonts.regular,
-                color: '#797979',
-              }}>
-              {item.phone}
-            </Text>
-          </TouchableOpacity>
-        );
+        let renderItem =
+          index > 0 ? (
+            <TouchableOpacity
+              key={index}
+              style={styles.memberItem}
+              onLongPress={() => this.onLongPressItem(item)}>
+              <Image
+                source={
+                  avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+                }
+                style={{
+                  width: EStyleSheet.value('84rem'),
+                  height: EStyleSheet.value('84rem'),
+                  borderRadius: EStyleSheet.value('42rem'),
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('14rem'),
+                  fontFamily: constants.Fonts.medium,
+                }}>
+                {item.display_name}
+              </Text>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('14rem'),
+                  fontFamily: constants.Fonts.regular,
+                  color: '#797979',
+                }}>
+                {item.phone}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <View key={index} style={styles.memberItem}>
+              <Image
+                source={
+                  avatar !== null ? {uri: avatar} : constants.Images.IC_AVATAR1
+                }
+                style={{
+                  width: EStyleSheet.value('84rem'),
+                  height: EStyleSheet.value('84rem'),
+                  borderRadius: EStyleSheet.value('42rem'),
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('14rem'),
+                  fontFamily: constants.Fonts.medium,
+                }}>
+                {item.display_name}
+              </Text>
+              <Text
+                style={{
+                  fontSize: EStyleSheet.value('14rem'),
+                  fontFamily: constants.Fonts.regular,
+                  color: '#797979',
+                }}>
+                {item.phone}
+              </Text>
+            </View>
+          );
         render.push(renderItem);
       });
     } else {

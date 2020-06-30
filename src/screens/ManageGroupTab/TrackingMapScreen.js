@@ -46,23 +46,42 @@ class TrackingMapScreen extends Component {
   }
   onPressBack = () => {
     const location = this.props.navigation.getParam('location', '');
-    if (location !== '' && location !== 'notificationService') {
-      if (location === 'Notification') {
-        this.props.navigation.navigate(location);
-      } else {
-        this.props.navigation.navigate(location, {
-          data: this.props.navigation.getParam('data'),
-          isLeader: this.state.isLeader,
-          title: this.props.navigation.getParam('title'),
-        });
-      }
+    if (location === 'Notification') {
+      this.props.navigation.navigate(location);
     } else if (location === 'notificationService') {
       let data = this.state.groupData;
       let title =
         data.departure.destination_name +
         ' - ' +
         data.destination.destination_name;
-      this.props.navigation.navigate('InfoGroup', {data: data, title: title});
+      let currentDate = new Date();
+      let startDate = new Date(data.start_day);
+      let isWillGo = false;
+      if (startDate < currentDate) {
+        isWillGo = true;
+      }
+      this.props.navigation.navigate('InfoGroup', {
+        data: data,
+        title: title,
+        isWillGo: isWillGo,
+      });
+    } else if (location === 'InfoGroup') {
+      let data = this.state.groupData;
+      let title =
+        data.departure.destination_name +
+        ' - ' +
+        data.destination.destination_name;
+      let currentDate = new Date();
+      let startDate = new Date(data.start_day);
+      let isWillGo = false;
+      if (startDate < currentDate) {
+        isWillGo = true;
+      }
+      this.props.navigation.navigate('InfoGroup', {
+        data: data,
+        title: title,
+        isWillGo: isWillGo,
+      });
     } else {
       this.props.navigation.goBack();
     }

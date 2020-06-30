@@ -54,11 +54,10 @@ export default class BlogDetail extends Component {
   onPressSend = () => {
     const {onPressSendComment} = this.props;
     const {messageText} = this.state;
-    if (messageText.replace(/ /g, '+') !== '') {
+    let newText = constants.trimString(messageText);
+    if (newText !== '') {
       this.setState({comment: false, height: 0, messageText: ''});
-      onPressSendComment(messageText);
-    } else {
-      this.setState({comment: false, height: 0, messageText: ''});
+      onPressSendComment(newText);
     }
   };
   RenderComment = () => {
