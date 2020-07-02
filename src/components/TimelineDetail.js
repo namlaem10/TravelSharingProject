@@ -42,9 +42,13 @@ export default class TimelineDetail extends Component {
           }
         }
       }
-      timeText = `${hour < 10 ? '0' + hour : hour}:${
-        minute < 10 ? '0' + minute : minute
-      }`;
+      if (hour <= 24) {
+        timeText = `${hour < 10 ? '0' + hour : hour}:${
+          minute < 10 ? '0' + minute : minute
+        }`;
+      } else {
+        timeText = 'Qua ngày';
+      }
       viewData.push(
         <TimeLineItem
           data={item}
