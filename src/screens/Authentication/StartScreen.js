@@ -72,10 +72,13 @@ export default class StartScreen extends Component {
         />
         <View style={styles.viewLogo}>
           <Image
-            source={Images.IC_MANAGEGROUP_DEACTIVE}
+            source={Images.IC_LOGO}
             style={styles.imageLogo}
             resizeMode="contain"
           />
+        </View>
+        <View style={styles.viewAppName}>
+          <Text style={styles.textAppName}>Travel Sharing</Text>
         </View>
         <View style={styles.viewTitle}>
           <Text style={styles.textTitle}>
@@ -93,22 +96,33 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
   },
   viewLogo: {
-    flex: 0.7,
+    flex: 0.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   imageLogo: {
-    width: '150rem',
-    height: '150rem',
+    width: '300rem',
+    height: '300rem',
+  },
+  viewAppName: {
+    flex: 0.1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   viewTitle: {
-    flex: 0.3,
+    flex: 0.4,
     alignItems: 'center',
-    paddingHorizontal: '40rem',
+    paddingHorizontal: '20rem',
     justifyContent: 'center',
   },
   textTitle: {
     fontSize: FontSizes.startTitle,
+    color: Colors.white,
+    fontFamily: Fonts.thin,
+    textAlign: 'center',
+  },
+  textAppName: {
+    fontSize: FontSizes.time,
     color: Colors.white,
     fontFamily: Fonts.light,
     textAlign: 'center',

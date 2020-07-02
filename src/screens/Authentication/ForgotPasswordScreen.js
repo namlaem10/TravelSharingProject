@@ -269,8 +269,8 @@ const styles = EStyleSheet.create({
     // backgroundColor: 'red',
   },
   image: {
-    width: '130rem',
-    height: '130rem',
+    width: '200rem',
+    height: '200rem',
     backgroundColor: 'transparent',
   },
   buttonClear: {

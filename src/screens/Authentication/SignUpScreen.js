@@ -483,12 +483,10 @@ const styles = EStyleSheet.create({
     height: '200rem',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingBottom: '10rem',
   },
   image: {
-    width: '110rem',
-    height: '110rem',
-    backgroundColor: 'transparent',
+    width: '200rem',
+    height: '200rem',
   },
   buttonClear: {
     position: 'absolute',
