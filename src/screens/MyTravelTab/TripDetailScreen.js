@@ -149,6 +149,8 @@ class TripDetailScreen extends Component {
     this.props.navigation.navigate('TrackingMap', {
       location: 'TripDetail',
       data: data,
+      isLeader: this.props.navigation.getParam('isLeader'),
+      isWillGo: this.props.navigation.getParam('isWillGo', false),
     });
   };
   onPressSendComment = comment => {

@@ -79,7 +79,10 @@ class ChattingScreen extends Component {
     });
   };
   componentDidMount = async () => {
-    BackHandler.addEventListener('hardwareBackPress', this.onPressBack);
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.onPressBack();
+      return true;
+    });
     const groupData = this.props.navigation.getParam('data');
     const GroupRef = database.ref('groupChats/' + groupData._id);
     GroupRef.on('child_changed', snapshot => {
@@ -94,7 +97,7 @@ class ChattingScreen extends Component {
     });
   };
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.onPressBack);
+    this.backHandler.remove();
   }
   renderSend(props) {
     return (

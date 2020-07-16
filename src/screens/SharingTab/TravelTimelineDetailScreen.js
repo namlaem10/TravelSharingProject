@@ -60,11 +60,16 @@ export default class TravelTimelineDetailScreen extends Component {
   };
   render() {
     const page = this.props.navigation.getParam('page', 1) - 1;
+    const background = this.props.navigation.getParam('background');
     return (
       <View style={styles.container}>
         <View style={styles.backgroundHeader}>
           <ImageBackground
-            source={require('../../assets/images/vinhhalong.jpeg')}
+            source={
+              background === undefined
+                ? require('../../assets/images/vinhhalong.jpeg')
+                : {uri: background}
+            }
             style={{
               width: '100%',
               height: '100%',

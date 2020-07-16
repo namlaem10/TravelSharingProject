@@ -65,6 +65,12 @@ class TrackingMapScreen extends Component {
         title: title,
         isWillGo: isWillGo,
       });
+    } else if (location === 'TripDetail') {
+      this.props.navigation.navigate('TripDetail', {
+        data: this.props.navigation.getParam('data', ''),
+        iisLeader: this.props.navigation.getParam('isLeader'),
+        isWillGo: this.props.navigation.getParam('isWillGo', false),
+      });
     } else if (location === 'InfoGroup') {
       let data = this.state.groupData;
       let title =
@@ -129,11 +135,11 @@ class TrackingMapScreen extends Component {
       }
     }
   };
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.onPressBack);
-  }
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.onPressBack);
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.onPressBack();
+      return true;
+    });
     const location = this.props.navigation.getParam('location', '');
     if (location === 'notificationService') {
       this.props.get_travel_by_id(
@@ -202,6 +208,9 @@ class TrackingMapScreen extends Component {
         });
       });
     }
+  }
+  componentWillUnmount() {
+    this.backHandler.remove();
   }
   async UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.notification.type === types.GET_TRAVEL_BY_ID) {

@@ -128,6 +128,9 @@ class CreatePostScreen extends Component {
         {cancelable: false},
       );
     } else {
+      this.setState({
+        loadingVisible: true,
+      });
       await this.props.create_post(
         idHanhTrinh,
         textTitle,

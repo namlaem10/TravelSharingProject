@@ -99,6 +99,12 @@ class PostDetailScreen extends Component {
   onPressDetailButton = () => {
     const {data, routeData} = this.state;
     this.props.navigation.navigate('TravelTimelineDetail', {
+      background:
+        data !== null
+          ? data.background !== null
+            ? data.background
+            : data.destination.destination_image
+          : null,
       data: data.schedule.schedule_detail,
       page: 1,
       totalDay: data.schedule.number_of_days,
