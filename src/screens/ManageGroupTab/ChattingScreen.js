@@ -18,6 +18,9 @@ EStyleSheet.build({$rem: constants.WIDTH / 380});
 import HeaderBar from '../../components/HeaderBar';
 import database from '../../utils/fireBaseConfig';
 
+// Functions
+import { corpusFunction } from '../../Functions/Corpus/corpusWord'
+
 class ChattingScreen extends Component {
   constructor(props) {
     super(props);
@@ -142,6 +145,7 @@ class ChattingScreen extends Component {
     }
   };
   onSend(messages = []) {
+    corpusFunction(messages)
     const groupId = this.state.groupData._id;
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
